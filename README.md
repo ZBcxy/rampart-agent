@@ -1,238 +1,269 @@
-# BEI JI XING Agent
+# BeiJiXing Agent
 
-A powerful AI Agent framework inspired by leading agents like Claude Code, OpenAI Models, and Hermes Agent.
+> Your Intelligent AI Assistant for Linux Terminal
 
-## 🚀 Quick Start
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Platform](https://img.shields.io/badge/platform-Linux-green.svg)
+![Python](https://img.shields.io/badge/python-3.8+-yellow.svg)
 
-### One-Click Installation
+## Overview
+
+BeiJiXing Agent is a powerful AI agent designed for Linux terminal environments. It provides intelligent assistance through a command-line interface, featuring modular architecture, easy installation, and seamless integration with your workflow.
+
+## Features
+
+### 🎨 Visual Design
+- Beautiful ASCII art logo display
+- Multiple logo styles (default, minimal, box)
+- Animated loading effects
+- Version information panel
+- Real-time status display
+
+### 🚀 Core Capabilities
+- **Intelligent CLI** - Interactive command-line interface
+- **Module System** - Extensible architecture with hot-swappable modules
+- **Memory Management** - Three-tier memory architecture
+- **Performance Monitoring** - Real-time performance metrics
+- **Exception Handling** - Comprehensive error management
+
+### 📦 Module System
+- `code_analysis` - Code quality and pattern analysis
+- `web_search` - Web search capabilities
+- `file_manager` - Advanced file operations
+- `data_processing` - Data transformation and analysis
+- `api_integration` - REST API client
+- `monitoring` - System resource monitoring
+
+## Installation
+
+### One-Line Installation (Recommended)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/954510662-bot/beijixing-Agent/main/installer.py | python3 -
-```
-
-Or using wget:
-
-```bash
-wget -qO- https://raw.githubusercontent.com/954510662-bot/beijixing-Agent/main/installer.py | python3 -
+curl -sSL https://raw.githubusercontent.com/954510662-bot/beijixing-Agent/main/install.sh | bash
 ```
 
 ### Manual Installation
 
 ```bash
 # Clone the repository
-git clone https://github.com/954510662-bot/beijixing-Agent.git
-cd beijixing-Agent
+git clone https://github.com/954510662-bot/beijixing-Agent.git ~/.beijixing
 
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
-pip install -e .
-
-# Run the agent
-python cli/agent_cli.py
+# Run installation script
+cd ~/.beijixing
+bash install.sh
 ```
 
-## ✨ Features
+### After Installation
 
-### Core Functionality
-- **Natural Language Understanding**: Advanced NLU capabilities for complex command parsing
-- **Multi-turn Conversation**: Seamless context retention across dialogue sessions
-- **Tool Integration**: Extensible tool framework for external API integration
-- **Planning Engine**: Intelligent task decomposition and planning
+1. Restart your terminal or run:
+   ```bash
+   source ~/.bashrc
+   ```
 
-### Memory System
-- **Working Memory**: Short-term context management
-- **Episodic Memory**: Long-term interaction history storage
-- **Semantic Memory**: Knowledge base with keyword indexing
+2. Start BeiJiXing Agent:
+   ```bash
+   beijixing
+   ```
 
-### Security & Compliance
-- **Sandbox Execution**: Secure code execution environment
-- **Input Validation**: Comprehensive input sanitization
-- **Rate Limiting**: Built-in request throttling
+## Usage
 
-## 🏗️ Architecture
-
-```
-beijixing/
-├── core/                # Core engine modules
-│   ├── planner/         # Planning engine
-│   ├── executor/        # Task executor with sandbox
-│   ├── memory/          # Three-tier memory system
-│   ├── align/           # Alignment and arbitration
-│   └── ...
-├── gateway/             # API gateway
-├── cli/                 # Command-line interface
-├── tests/               # Test suites
-└── docs/                # Documentation
-```
-
-## 📖 Documentation
-
-- [Technical Documentation](docs/TECHNICAL_DOCUMENTATION.md)
-- [User Manual](docs/USER_MANUAL.md)
-- [Optimization Plan](docs/OPTIMIZATION_PLAN.md)
-
-## 🔧 Usage
-
-### Command Line Interface
+### Quick Start
 
 ```bash
-# Interactive mode
+# Start interactive mode
 beijixing
 
-# Run specific task
-beijixing "Analyze sales data and generate report"
-
-# Memory management
-beijixing memory search "keyword"
-beijixing memory add "important information"
-
-# Help
+# Show help
 beijixing --help
+
+# Show version
+beijixing --version
+
+# Display logo
+beijixing --logo
 ```
 
-### API Mode
+### Logo Display Options
 
 ```bash
-# Start API server
-python -m gateway.main
+# Default logo with animation
+beijixing --logo
 
-# Access API
-curl http://localhost:8000/v1/chat \
-  -H "Content-Type: application/json" \
-  -d '{"message": "Hello, agent!"}'
+# Minimal style
+beijixing --logo --style minimal
+
+# Box style
+beijixing --logo --style box
+
+# Without animation
+beijixing --logo --no-animate
 ```
 
-## 🧪 Testing
+### Module Management
 
 ```bash
-# Run all tests
-python -m pytest tests/ -v
+# List all modules
+beijixing config list
 
-# Run unit tests
-python -m pytest tests/unit/ -v
+# Add a module
+beijixing config add code_analysis
 
-# Run integration tests
-python -m pytest tests/integration/ -v
+# Remove a module
+beijixing config remove code_analysis
 
-# Run with coverage
-python -m pytest tests/ -v --cov=beijixing
+# Enable a module
+beijixing config enable code_analysis
+
+# Disable a module
+beijixing config disable code_analysis
+
+# Show module status
+beijixing config status
+beijixing config status code_analysis
 ```
 
-## 🛠️ Development
+### Version Upgrade
 
-### Prerequisites
-- Python 3.12+
+```bash
+# Check for updates
+beijixing upgrade
+
+# Upgrade to latest version
+beijixing upgrade --latest
+
+# Show changelog
+beijixing upgrade --changelog
+
+# Rollback to previous version
+beijixing upgrade --rollback
+```
+
+### Configuration
+
+```bash
+# Show configuration
+beijixing --config
+
+# List installed modules
+beijixing --modules
+```
+
+## Architecture
+
+```
+BeiJiXing Agent
+├── core/              # Core modules
+│   ├── logo.py       # Logo display module
+│   ├── planner/       # Planning engine
+│   ├── executor/      # Execution engine
+│   ├── memory/        # Memory management
+│   ├── align/         # Alignment engine
+│   ├── exceptions.py  # Exception handling
+│   └── performance.py # Performance monitoring
+├── cli/               # CLI interface
+├── gateway/           # API gateway
+├── skills/            # Skill definitions
+├── tests/             # Test suite
+└── docs/              # Documentation
+```
+
+## Configuration Files
+
+- **Config Directory**: `~/.beijixing/`
+- **Modules**: `~/.beijixing/modules/`
+- **Logs**: `~/.beijixing/logs/`
+- **Data**: `~/.beijixing/data/`
+- **Backups**: `~/.beijixing/backups/`
+
+## Requirements
+
+### System Requirements
+- Linux operating system
+- Python 3.8 or higher
 - Git
-- WSL Ubuntu 22.04+ (recommended)
+- pip3
 
-### Setup Development Environment
+### Optional Dependencies
+- curl (for one-line installation)
+- zsh (for enhanced shell support)
+
+## Development
+
+### Running Tests
 
 ```bash
-# Clone repository
-git clone https://github.com/954510662-bot/beijixing-Agent.git
-cd beijixing-Agent
-
-# Create virtual environment
-python -m venv .venv
-source .venv/bin/activate
-
-# Install development dependencies
-pip install -e .[dev]
-
-# Setup pre-commit hooks
-pre-commit install
+cd ~/.beijixing
+source venv/bin/activate
+pytest tests/ -v
 ```
 
-### Code Formatting
+### Code Style
 
 ```bash
-# Format code with Black
+# Format code
 black .
 
-# Sort imports with isort
-isort .
-
-# Lint with Flake8
+# Check code style
 flake8 .
 ```
 
-## 📊 Performance
+## Troubleshooting
 
-| Module | Average Time | P99 Time |
-|--------|--------------|----------|
-| Plan Generation | 0.39 ms | 0.69 ms |
-| Working Memory Write | 0.43 ms | - |
-| Semantic Memory Search | 0.10 ms | - |
-| Confidence Evaluation | 0.01 ms | - |
+### Common Issues
 
-## ❓ FAQ
+**Issue: `beijixing: command not found`**
 
-### Q: How to install on Windows?
-
-**A:** We recommend using WSL (Windows Subsystem for Linux) for the best experience:
-
+Solution:
 ```bash
-# Install WSL
-wsl --install -d Ubuntu-22.04
-
-# Then run the one-click installer inside WSL
-curl -sSL https://raw.githubusercontent.com/954510662-bot/beijixing-Agent/main/installer.py | python3 -
+source ~/.bashrc
+# or restart your terminal
 ```
 
-### Q: How to update the agent?
+**Issue: Python version error**
 
-**A:** Run the installer again or pull the latest changes:
-
+Solution:
 ```bash
-cd ~/beijixing-agent
-git pull
-pip install -e .
+python3 --version  # Check Python version
+# Ensure Python 3.8+ is installed
 ```
 
-### Q: How to add custom tools?
+**Issue: Permission denied**
 
-**A:** Create a tool module in `core/executor/tools/` and register it in `tool_registry.py`.
-
-### Q: How to change the AI model?
-
-**A:** Set the `BEIJIXING_MODEL` environment variable:
-
+Solution:
 ```bash
-export BEIJIXING_MODEL="custom-model-7B"
-beijixing
+chmod +x ~/.local/bin/beijixing
+chmod +x ~/.beijixing/install.sh
 ```
 
-### Q: How to enable API access?
+### Logs
 
-**A:** Start the gateway server:
-
+Check logs at:
 ```bash
-python -m gateway.main --host 0.0.0.0 --port 8000
+cat ~/.beijixing/logs/beijixing.log
 ```
 
-## 📝 License
+## Contributing
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+Contributions are welcome! Please feel free to submit issues and pull requests.
 
-## 🤝 Contributing
+## License
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+This project is licensed under the MIT License.
 
-## 📧 Contact
+## Support
 
-For support or inquiries, please open an issue on GitHub.
+For issues and questions:
+- GitHub Issues: https://github.com/954510662-bot/beijixing-Agent/issues
+- Documentation: https://github.com/954510662-bot/beijixing-Agent/wiki
+
+## Acknowledgments
+
+Inspired by:
+- Claude Code
+- OpenClaw
+- Hermes Agent
+- Codex
 
 ---
 
-**BEI JI XING Agent** - Empowering AI-powered automation
-
----
-
-## 🚀 One-Click Installation (Short Version)
-
-```bash
-curl -sSL https://raw.githubusercontent.com/954510662-bot/beijixing-Agent/main/installer.py | python3 -
-```
+**BeiJiXing Agent** - Your Intelligent AI Assistant
