@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "beijixing"
+version = "0.1.0"
+description = "BeiJiXing - Autonomous Agent Framework"
+authors = [
+    { name = "BeiJiXing Team", email = "team@beijixing.ai" }
+]
+readme = "README.md"
+license = "Apache-2.0"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+requires-python = ">=3.11"
+
+[project.urls]
+"Homepage" = "https://github.com/beijixing-ai/beijixing"
+"Bug Tracker" = "https://github.com/beijixing-ai/beijixing/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["core*", "gateway*", "infra*", "multi_agent*", "sandbox*", "skills*", "sdk*"]
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+line_length = 120
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+show_error_codes = true
+ignore_missing_imports = true
