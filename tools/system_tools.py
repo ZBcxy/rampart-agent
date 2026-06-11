@@ -3,7 +3,6 @@
 import os
 import platform
 import subprocess
-import time
 from datetime import datetime
 from typing import Any, Dict
 
@@ -110,7 +109,6 @@ def _system_info() -> Dict[str, Any]:
 
 def _shell_exec(command: str, timeout: int = 30, working_dir: str = None) -> Dict[str, Any]:
     """Execute a shell command."""
-    import shlex
 
     try:
         result = subprocess.run(
@@ -164,7 +162,6 @@ def _time_now(timezone: str = None, format: str = None) -> Dict[str, Any]:
 
     if timezone:
         try:
-            from datetime import timezone as tz
             import zoneinfo
             tz_info = zoneinfo.ZoneInfo(timezone)
             now_tz = datetime.now(tz_info)

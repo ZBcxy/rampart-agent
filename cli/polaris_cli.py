@@ -8,14 +8,12 @@ Polaris 智能体命令行主程序
 import os
 import sys
 import argparse
-import subprocess
-from typing import Optional, List, Dict, Any
 
 # 添加项目根目录到 Python 路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from core.logo import PolarisLogo, LogoConfig, display_splash, display_version_info
+    from core.logo import PolarisLogo, LogoConfig, display_version_info
 except ImportError:
     PolarisLogo = None
     LogoConfig = type('LogoConfig', (), {'VERSION': '1.0.0'})()
@@ -40,7 +38,7 @@ class PolarisCLI:
     
     def _init_agent(self):
         """Lazy-init the Agent with tools."""
-        import asyncio, os
+        import os
         from core.agent import Agent, AgentConfig
 
         config = AgentConfig(

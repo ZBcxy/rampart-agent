@@ -1,10 +1,9 @@
 """File System Tools - Read, write, list, search, and manage files."""
 
-import glob
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from tools.registry import ToolDefinition, ToolRegistry
 

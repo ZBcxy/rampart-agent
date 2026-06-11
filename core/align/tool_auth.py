@@ -19,7 +19,6 @@ Usage:
     approved = await handler.request_confirmation("shell_exec", {"command": "rm file.txt"})
 """
 
-import json
 import threading
 from dataclasses import dataclass, field
 from datetime import datetime

@@ -7,11 +7,10 @@ collaborative problem-solving patterns.
 
 import asyncio
 import threading
-import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Coroutine, Dict, List, Optional, Set
+from typing import Any, Callable, Coroutine, Dict, List, Optional
 
 from multi_agent.blackboard import Blackboard, BlackboardEntry, EntryStatus
 

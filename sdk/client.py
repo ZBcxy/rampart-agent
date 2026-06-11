@@ -4,7 +4,6 @@ Provides a Python client for interacting with the Polaris Agent Gateway API.
 Supports synchronous and asynchronous usage patterns.
 """
 
-import asyncio
 import json
 import time
 from dataclasses import dataclass, field

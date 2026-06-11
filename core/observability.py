@@ -239,7 +239,6 @@ tracer = Tracer()
 
 def console_exporter(span: Span):
     """Simple console exporter for development."""
-    import json as _json
     print(f"[TRACE] {span.name}: {span.duration_ms:.1f}ms status={span.status}", file=sys.stderr)
 
 

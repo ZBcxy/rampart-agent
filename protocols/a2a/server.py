@@ -6,21 +6,18 @@ A2A JSON-RPC task lifecycle via HTTP + SSE.
 
 import json
 import uuid
-from datetime import datetime
-from typing import Any, AsyncGenerator, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, Optional
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse, StreamingResponse
 
 from protocols.a2a.types import (
     AgentCard,
-    AgentCapabilities,
     AgentSkill,
     Artifact,
     Message,
     Task,
     TaskState,
-    TextPart,
 )
 
 

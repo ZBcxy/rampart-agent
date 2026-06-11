@@ -4,7 +4,6 @@ Provides tool discovery, schema validation, execution tracking,
 and OpenAI-compatible function calling schema generation.
 """
 
-import json
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field

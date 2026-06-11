@@ -8,10 +8,8 @@ All modules wired in:
 - ConfirmationHandler: human-in-the-loop for dangerous tools
 """
 
-import asyncio
 import json
 import time
-import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, AsyncIterator, Callable, Dict, List, Optional

@@ -10,8 +10,6 @@ import os
 import sys
 import time
 import shutil
-from datetime import datetime
-from typing import Optional, List
 
 
 __version__ = "1.1.0"

@@ -5,7 +5,6 @@ can read from and write to. It serves as the central communication hub
 for collaborative problem-solving.
 """
 
-import json
 import threading
 from collections import defaultdict
 from dataclasses import dataclass, field

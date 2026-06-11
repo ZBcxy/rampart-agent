@@ -7,12 +7,11 @@ exponential backoff, and comprehensive error recovery.
 import asyncio
 import time
 from collections import defaultdict
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from pydantic import BaseModel, Field
 
 from .dag_executor import DAGExecutor, ExecutionResult
 
@@ -127,7 +126,6 @@ class CircuitBreaker:
 
 class CircuitBreakerOpenError(Exception):
     """Raised when a circuit breaker is open and rejecting requests."""
-    pass
 
 
 @dataclass

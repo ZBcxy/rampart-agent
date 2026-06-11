@@ -4,11 +4,8 @@ Extends SemanticMemory with real vector embeddings for semantic search.
 Falls back gracefully to keyword matching when no embedding provider is available.
 """
 
-import json
 import math
-from dataclasses import dataclass, field
-from datetime import datetime
-from pathlib import Path
+from dataclasses import dataclass
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from .semantic_memory import MemoryVector, SemanticMemory
@@ -69,7 +66,7 @@ class EmbeddingSemanticMemory(SemanticMemory):
 
         if config.provider == "openai":
             try:
-                import openai
+                pass
 
                 if config.api_key:
                     self._embedding_func = self._openai_embed

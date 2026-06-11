@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 
 class PolarisException(Exception):
@@ -22,31 +22,26 @@ class PolarisException(Exception):
 class PlannerException(PolarisException):
     """Base exception for planner-related errors"""
 
-    pass
 
 
 class PlanGenerationError(PlannerException):
     """Error occurred during plan generation"""
 
-    pass
 
 
 class PlanValidationError(PlannerException):
     """Plan validation failed"""
 
-    pass
 
 
 class ConfidenceError(PlannerException):
     """Confidence calculation error"""
 
-    pass
 
 
 class ExecutorException(PolarisException):
     """Base exception for executor-related errors"""
 
-    pass
 
 
 class ExecutionError(ExecutorException):
@@ -78,13 +73,11 @@ class ToolExecutionError(ExecutorException):
 class SandboxError(ExecutorException):
     """Error occurred in sandbox"""
 
-    pass
 
 
 class MemoryException(PolarisException):
     """Base exception for memory-related errors"""
 
-    pass
 
 
 class MemoryNotFoundError(MemoryException):
@@ -98,31 +91,26 @@ class MemoryNotFoundError(MemoryException):
 class MemoryStorageError(MemoryException):
     """Memory storage error"""
 
-    pass
 
 
 class GatewayException(PolarisException):
     """Base exception for gateway-related errors"""
 
-    pass
 
 
 class InvalidRequestError(GatewayException):
     """Invalid request error"""
 
-    pass
 
 
 class AuthenticationError(GatewayException):
     """Authentication error"""
 
-    pass
 
 
 class AuthorizationError(GatewayException):
     """Authorization error"""
 
-    pass
 
 
 class RateLimitError(GatewayException):
@@ -136,7 +124,6 @@ class RateLimitError(GatewayException):
 class AlignException(PolarisException):
     """Base exception for align-related errors"""
 
-    pass
 
 
 class SafetyViolationError(AlignException):
@@ -150,13 +137,11 @@ class SafetyViolationError(AlignException):
 class ContentFilterError(AlignException):
     """Content filter error"""
 
-    pass
 
 
 class ConfigurationException(PolarisException):
     """Configuration error"""
 
-    pass
 
 
 class ConfigurationMissingError(ConfigurationException):
@@ -170,19 +155,16 @@ class ConfigurationMissingError(ConfigurationException):
 class ResourceException(PolarisException):
     """Resource-related exception"""
 
-    pass
 
 
 class ResourceNotFoundError(ResourceException):
     """Resource not found"""
 
-    pass
 
 
 class ResourceExhaustedError(ResourceException):
     """Resource exhausted"""
 
-    pass
 
 
 class TimeoutException(PolarisException):
@@ -196,7 +178,6 @@ class TimeoutException(PolarisException):
 class RetryableException(PolarisException):
     """Base class for retryable exceptions"""
 
-    pass
 
 
 def exception_handler_factory() -> Dict[str, Any]:

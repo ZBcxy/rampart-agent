@@ -16,7 +16,7 @@ import json
 import os
 import subprocess
 from dataclasses import dataclass, field
-from typing import Any, AsyncIterator, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from mcp.protocol import (
     MCPMethod,

@@ -7,7 +7,7 @@ Policies govern autonomy levels, resource usage limits, and operational boundari
 import threading
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List
 
 
 class AutonomyLevel(Enum):

@@ -1,7 +1,6 @@
 """Code Execution & Analysis Tools."""
 
 import ast
-import textwrap
 from typing import Any, Dict
 
 from tools.registry import ToolDefinition, ToolRegistry

@@ -1,7 +1,6 @@
 """Prompt Manager — Load, version, and render prompt templates."""
 
 import json
-import os
 from pathlib import Path
 from string import Template
 from typing import Any, Dict, Optional

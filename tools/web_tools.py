@@ -1,8 +1,7 @@
 """Web Tools - HTTP requests, web search, content fetching."""
 
-import json
 import urllib.parse
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 import requests
 

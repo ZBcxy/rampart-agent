@@ -2,7 +2,7 @@
 
 import csv
 import io
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from tools.registry import ToolDefinition, ToolRegistry
 

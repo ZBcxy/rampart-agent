@@ -28,7 +28,7 @@ Usage with Claude Code:
 import asyncio
 import json
 import sys
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 from mcp.protocol import (
     MCPMethod,

@@ -10,10 +10,7 @@ Usage:
     results = rag.query("What is the capital of France?", top_k=5)
 """
 
-import hashlib
 import json
-import os
-import re
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path

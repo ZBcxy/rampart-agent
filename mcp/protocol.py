@@ -6,9 +6,8 @@ Implements the Model Context Protocol (MCP) spec version 2024-11-05.
 import json
 import uuid
 from dataclasses import dataclass, field
-from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 
 # JSON-RPC 2.0 base types
