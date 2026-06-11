@@ -45,7 +45,9 @@ cd polaris-agent
 pip install -e .
 polaris
 
-# Docker
+# Docker (ghcr.io, 零配置)
+docker run -p 8000:8000 -e OPENAI_API_KEY=sk-... ghcr.io/ZBcxy/polaris-agent:latest
+# 或 docker compose
 docker compose up -d
 ```
 
