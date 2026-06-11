@@ -8,7 +8,7 @@ version: "3.9"
 services:
   # ── Main Agent Gateway ───────────────────────────────────────────────
   polaris:
-    image: ghcr.io/ZBcxy/polaris-agent:latest
+    image: ghcr.io/zbcxy/polaris-agent:latest
     # build: .  # 或本地构建
     container_name: polaris-agent
     ports:
