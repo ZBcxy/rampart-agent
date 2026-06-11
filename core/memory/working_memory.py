@@ -1,6 +1,6 @@
 from collections import deque
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
 
@@ -215,6 +215,3 @@ class WorkingMemory:
                 else 0
             ),
         }
-
-
-from datetime import timedelta

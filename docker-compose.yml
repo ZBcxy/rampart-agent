@@ -1,0 +1,77 @@
+# ── Polaris Agent — One-command deployment ──────────────────────────────
+# Start: docker compose up -d
+# Stop:  docker compose down
+# Logs:  docker compose logs -f polaris
+
+version: "3.9"
+
+services:
+  # ── Main Agent Gateway ───────────────────────────────────────────────
+  polaris:
+    build: .
+    container_name: polaris-agent
+    ports:
+      - "${SERVER_PORT:-8000}:8000"
+      - "${MCP_PORT:-9000}:9000"
+    environment:
+      # LLM (required)
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_API_BASE=${OPENAI_API_BASE:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o}
+      - LLM_PROVIDER=${LLM_PROVIDER:-openai}
+      # Server
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=8000
+      - JWT_SECRET=${JWT_SECRET:-polaris-dev-secret-change-in-production}
+      # Agent
+      - POLARIS_AUTONOMY=${POLARIS_AUTONOMY:-L3}
+      - POLARIS_MAX_STEPS=${POLARIS_MAX_STEPS:-20}
+      - POLARIS_LOG_LEVEL=${POLARIS_LOG_LEVEL:-INFO}
+      # Memory (optional, uses in-memory fallback if Redis unavailable)
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=6379
+      - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-openai}
+    volumes:
+      - polaris_data:/home/polaris/.polaris
+      - ./docs:/app/docs:ro
+    depends_on:
+      redis:
+        condition: service_started
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8000/v1/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ── Redis (cache + message queue) ─────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: polaris-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ── MCP Server (stdio mode exposed via HTTP bridge) ──────────────────
+  mcp-server:
+    build: .
+    container_name: polaris-mcp
+    command: ["python", "-m", "uvicorn", "mcp.server:create_app", "--host", "0.0.0.0", "--port", "9000"]
+    ports:
+      - "9000:9000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gpt-4o}
+    restart: unless-stopped
+
+volumes:
+  polaris_data:
+  redis_data:

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BeiJiXing Agent Logo Display Module
+"""Polaris Agent Logo Display Module
 
 该模块负责在终端启动时展示视觉效果良好的品牌标识，
 包含动态/静态logo呈现、版本信息显示以及简短的欢迎语。
@@ -15,7 +15,7 @@ from typing import Optional, List
 
 
 __version__ = "1.1.0"
-__author__ = "BeiJiXing Team"
+__author__ = "Polaris Team"
 
 
 class LogoConfig:
@@ -23,8 +23,8 @@ class LogoConfig:
     
     VERSION = __version__
     BUILD_DATE = "2026-05-21"
-    AUTHOR = "BeiJiXing Team"
-    WELCOME_MESSAGE = "Welcome to BeiJiXing Agent!"
+    AUTHOR = "Polaris Team"
+    WELCOME_MESSAGE = "Welcome to Polaris Agent!"
     SUBTITLE = "Your Intelligent AI Assistant"
     
     # 支持的终端颜色
@@ -37,6 +37,7 @@ class LogoConfig:
         'WARNING': '\033[93m',
         'FAIL': '\033[91m',
         'RED': '\033[91m',
+        'WHITE': '\033[97m',
         'ENDC': '\033[0m',
         'BOLD': '\033[1m',
         'UNDERLINE': '\033[4m',
@@ -58,72 +59,66 @@ def get_terminal_width() -> int:
 
 
 def get_static_logo() -> str:
-    """获取静态 ASCII Art Logo
-    
+    """获取 Polaris Agent ASCII Art Logo
+
     Returns:
         str: 格式化的 logo 字符串
     """
     width = get_terminal_width()
-    
+    line = "─" * min(width, 80)
+
     logo = f"""
-{LogoConfig.COLORS['CYAN']}{'=' * min(width, 100)}{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}╭{line}╮{LogoConfig.COLORS['ENDC']}
 
-{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['GREEN']}
-    ██████╗ ███████╗██╗   ██╗███████╗██████╗  ██████╗ ███╗   ██╗
-    ██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝██╔══██╗██╔═══██╗████╗  ██║
-    ██████╔╝█████╗   ╚████╔╝ █████╗  ██████╔╝██║   ██║██╔██╗ ██║
-    ██╔═══╝ ██╔══╝    ╚██╔╝  ██╔══╝  ██╔══██╗██║   ██║██║╚██╗██║
-    ██║     ███████╗   ██║   ███████╗██║  ██║╚██████╔╝██║ ╚████║
-    ╚═╝     ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['YELLOW']}         ★
+{LogoConfig.COLORS['YELLOW']}        ▐ ▐
+{LogoConfig.COLORS['YELLOW']}   ▄▄▄▄█▄▐█▄▄▄▄
+{LogoConfig.COLORS['CYAN']}   █{LogoConfig.COLORS['BOLD']}  POLARIS  {LogoConfig.COLORS['ENDC']}{LogoConfig.COLORS['CYAN']}█
+{LogoConfig.COLORS['CYAN']}   █  {LogoConfig.COLORS['ENDC']}{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['WHITE']}A G E N T{LogoConfig.COLORS['ENDC']}   {LogoConfig.COLORS['CYAN']}█
+{LogoConfig.COLORS['CYAN']}   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 {LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}╰{line}╯{LogoConfig.COLORS['ENDC']}
 
-{LogoConfig.COLORS['CYAN']}{'=' * min(width, 100)}{LogoConfig.COLORS['ENDC']}
-
-{LogoConfig.COLORS['YELLOW']}  Version: {LogoConfig.VERSION}    |    Build: {LogoConfig.BUILD_DATE}{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['GREEN']}  {LogoConfig.WELCOME_MESSAGE}{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['WHITE']}  {LogoConfig.WELCOME_MESSAGE}{LogoConfig.COLORS['ENDC']}
 {LogoConfig.COLORS['BLUE']}  {LogoConfig.SUBTITLE}{LogoConfig.COLORS['ENDC']}
-
-{LogoConfig.COLORS['CYAN']}{'=' * min(width, 100)}{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}  v{LogoConfig.VERSION}  |  {LogoConfig.AUTHOR}{LogoConfig.COLORS['ENDC']}
 """
     return logo
 
 
 def get_minimal_logo() -> str:
-    """获取简洁版 Logo
-    
+    """获取简洁版 Polaris Logo
+
     Returns:
         str: 简洁的 logo 字符串
     """
-    return f"""{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['GREEN']}
-    ██████╗ ███████╗██╗   ██╗███████╗
-    ██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝
-    ██████╔╝█████╗   ╚████╔╝ █████╗
-    ██╔═══╝ ██╔══╝    ╚██╔╝  ██╔══╝
-    ██║     ███████╗   ██║   ███████╗
-    ╚═╝     ╚══════╝   ╚═╝   ╚══════╝
+    return f"""{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['YELLOW']}
+      ★
+     ▐ ▐
+▄▄▄▄█▄▐█▄▄▄▄
+{LogoConfig.COLORS['CYAN']}█ {LogoConfig.COLORS['WHITE']}POLARIS AGENT{LogoConfig.COLORS['CYAN']} █
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 {LogoConfig.COLORS['ENDC']}
 """
 
 
 def get_box_logo() -> str:
-    """获取方框版 Logo
-    
+    """获取方框版 Polaris Logo
+
     Returns:
         str: 方框风格的 logo 字符串
     """
     width = get_terminal_width()
-    border = "=" * (min(width, 80) - 2)
-    
-    return f"""{LogoConfig.COLORS['CYAN']}+{border}+{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}                                                                                          {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['GREEN']}██████╗ ███████╗██╗   ██╗███████╗██████╗  ██████╗ ███╗   ██╗{LogoConfig.COLORS['ENDC']}         {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['GREEN']}██╔══██╗██╔════╝╚██╗ ██╔╝██╔════╝██╔══██╗██╔═══██╗████╗  ██║{LogoConfig.COLORS['ENDC']}         {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['GREEN']}██████╔╝█████╗   ╚████╔╝ █████╗  ██████╔╝██║   ██║██╔██╗ ██║{LogoConfig.COLORS['ENDC']}         {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['GREEN']}██╔═══╝ ██╔══╝    ╚██╔╝  ██╔══╝  ██╔══██╗██║   ██║██║╚██╗██║{LogoConfig.COLORS['ENDC']}         {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['GREEN']}██║     ███████╗   ██║   ███████╗██║  ██║╚██████╔╝██║ ╚████║{LogoConfig.COLORS['ENDC']}         {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['GREEN']}╚═╝     ╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝{LogoConfig.COLORS['ENDC']}         {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}                                                                                          {LogoConfig.COLORS['CYAN']}|{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}+{border}+{LogoConfig.COLORS['ENDC']}
+    border = "─" * (min(width, 72) - 2)
+
+    return f"""{LogoConfig.COLORS['CYAN']}┌{border}┐{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}{' ' * len(border)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}          {LogoConfig.COLORS['YELLOW']}★{LogoConfig.COLORS['ENDC']}{' ' * (len(border) - 11)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}    {LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['CYAN']}P O L A R I S   A G E N T{LogoConfig.COLORS['ENDC']}{' ' * (len(border) - 30)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}    {LogoConfig.COLORS['BLUE']}Autonomous Multi-Agent Framework{LogoConfig.COLORS['ENDC']}{' ' * (len(border) - 37)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}{' ' * len(border)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  v{LogoConfig.VERSION} | {LogoConfig.BUILD_DATE} | {LogoConfig.AUTHOR}{' ' * (len(border) - 45)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}└{border}┘{LogoConfig.COLORS['ENDC']}
 """
 
 
@@ -170,7 +165,7 @@ def display_version_info() -> None:
     """显示版本信息"""
     print(f"""
 {LogoConfig.COLORS['CYAN']}┌{'─' * 50}┐{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['BOLD']}BeiJiXing Agent{LogoConfig.COLORS['ENDC']} {' ' * 24}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
+{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['BOLD']}Polaris Agent{LogoConfig.COLORS['ENDC']} {' ' * 24}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
 {LogoConfig.COLORS['CYAN']}├{'─' * 50}┤{LogoConfig.COLORS['ENDC']}
 {LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  Version:    {LogoConfig.VERSION:<32}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
 {LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  Build Date: {LogoConfig.BUILD_DATE:<32}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
@@ -189,7 +184,7 @@ def display_welcome() -> None:
 
     {LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['GREEN']}{LogoConfig.WELCOME_MESSAGE}{LogoConfig.COLORS['ENDC']}
 
-    {LogoConfig.COLORS['BLUE']}Type 'beijixing --help' for usage information.{LogoConfig.COLORS['ENDC']}
+    {LogoConfig.COLORS['BLUE']}Type 'polaris --help' for usage information.{LogoConfig.COLORS['ENDC']}
 
 {LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['GREEN']}{'=' * min(width, 80)}{LogoConfig.COLORS['ENDC']}
 """)
@@ -218,8 +213,8 @@ def display_info_panel(model: str = "default", status: str = "Ready", mode: str 
 """)
 
 
-class BeiJiXingLogo:
-    """BeiJiXing Logo 显示类"""
+class PolarisLogo:
+    """Polaris Logo 显示类"""
     
     def __init__(self, style: str = 'default', animate: bool = False, show_info: bool = True):
         """初始化 Logo 显示
@@ -255,7 +250,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='BeiJiXing Agent Logo Display',
+        description='Polaris Agent Logo Display',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -318,7 +313,7 @@ Examples:
     elif args.info:
         display_info_panel()
     else:
-        logo = BeiJiXingLogo(style=args.style, animate=args.animate)
+        logo = PolarisLogo(style=args.style, animate=args.animate)
         logo.display()
 
 

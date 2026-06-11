@@ -1,82 +1,66 @@
-.PHONY: all setup install install-dev lint format test test-unit test-integration test-e2e coverage build run-dev docker-build clean
+.PHONY: all setup install test test-unit test-integration lint clean \
+        docker-build docker-up docker-down docker-logs docker-push \
+        run run-gateway run-mcp
 
-# Default target
+# ── Development ──────────────────────────────────────────────────────────
 all: install
 
-# Setup development environment
 setup:
-	@echo "=== Setting up development environment ==="
-	pip install -e .
-	pip install -r requirements-dev.txt
-	pre-commit install
+	python -m venv venv && venv/bin/pip install -r requirements.txt -r requirements-dev.txt
 
-# Install production dependencies
 install:
-	@echo "=== Installing production dependencies ==="
 	pip install -e .
 
-# Install development dependencies
-install-dev:
-	@echo "=== Installing development dependencies ==="
-	pip install -e .
-	pip install -r requirements-dev.txt
-
-# Run linting
-lint:
-	@echo "=== Running linting ==="
-	flake8 beijixing/ tests/
-	mypy beijixing/
-	bandit -r beijixing/ -f json -o bandit-report.json
-
-# Format code
-format:
-	@echo "=== Formatting code ==="
-	black beijixing/ tests/
-	isort beijixing/ tests/
-
-# Run all tests
 test:
-	@echo "=== Running all tests ==="
-	pytest tests/
+	python -m pytest tests/ -v
 
-# Run unit tests
 test-unit:
-	@echo "=== Running unit tests ==="
-	pytest tests/unit/
+	python -m pytest tests/unit/ -v
 
-# Run integration tests
 test-integration:
-	@echo "=== Running integration tests ==="
-	pytest tests/integration/
+	python -m pytest tests/integration/ -v
 
-# Run e2e tests
-test-e2e:
-	@echo "=== Running e2e tests ==="
-	pytest tests/e2e/
+lint:
+	python -m flake8 core/ tools/ mcp/ protocols/ --max-line-length=120 --ignore=E501,W503
 
-# Generate coverage report
-coverage:
-	@echo "=== Generating coverage report ==="
-	pytest tests/ --cov=beijixing --cov-report=html --cov-report=term
-
-# Build package
-build:
-	@echo "=== Building package ==="
-	python -m build
-
-# Run development server
-run-dev:
-	@echo "=== Starting development server ==="
-	uvicorn gateway.main:app --host 0.0.0.0 --port 8000 --reload
-
-# Build Docker image
-docker-build:
-	@echo "=== Building Docker image ==="
-	docker build -t beijixing:latest .
-
-# Clean build artifacts
 clean:
-	@echo "=== Cleaning build artifacts ==="
-	rm -rf dist/ build/ *.egg-info/ .pytest_cache/ .mypy_cache/ htmlcov/
-	find . -type f -name "*.pyc" -delete
-	find . -type d -name "__pycache__" -delete
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	find . -type f -name "*.pyc" -delete 2>/dev/null || true
+	rm -rf .pytest_cache dist build *.egg-info
+
+# ── Run ──────────────────────────────────────────────────────────────────
+run:
+	python -m cli.polaris_cli
+
+run-gateway:
+	python -m uvicorn gateway.main:app --host 0.0.0.0 --port 8000 --reload
+
+run-mcp:
+	python -m mcp.server --stdio
+
+# ── Docker ───────────────────────────────────────────────────────────────
+DOCKER_IMAGE ?= polaris-agent
+DOCKER_TAG ?= latest
+
+docker-build:
+	docker build -t $(DOCKER_IMAGE):$(DOCKER_TAG) .
+
+docker-build-multi:
+	docker buildx build --platform linux/amd64,linux/arm64 \
+		-t $(DOCKER_IMAGE):$(DOCKER_TAG) --push .
+
+docker-up:
+	docker compose up -d
+
+docker-down:
+	docker compose down
+
+docker-logs:
+	docker compose logs -f polaris
+
+docker-shell:
+	docker compose exec polaris bash
+
+docker-push:
+	docker tag $(DOCKER_IMAGE):$(DOCKER_TAG) $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG)
+	docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG)

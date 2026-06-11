@@ -1,8 +1,8 @@
 from typing import Any, Dict, List, Optional
 
 
-class BeiJiXingException(Exception):
-    """Base exception class for BeiJiXing Agent"""
+class PolarisException(Exception):
+    """Base exception class for Polaris Agent"""
 
     def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(message)
@@ -19,7 +19,7 @@ class BeiJiXingException(Exception):
         }
 
 
-class PlannerException(BeiJiXingException):
+class PlannerException(PolarisException):
     """Base exception for planner-related errors"""
 
     pass
@@ -43,7 +43,7 @@ class ConfidenceError(PlannerException):
     pass
 
 
-class ExecutorException(BeiJiXingException):
+class ExecutorException(PolarisException):
     """Base exception for executor-related errors"""
 
     pass
@@ -81,7 +81,7 @@ class SandboxError(ExecutorException):
     pass
 
 
-class MemoryException(BeiJiXingException):
+class MemoryException(PolarisException):
     """Base exception for memory-related errors"""
 
     pass
@@ -101,7 +101,7 @@ class MemoryStorageError(MemoryException):
     pass
 
 
-class GatewayException(BeiJiXingException):
+class GatewayException(PolarisException):
     """Base exception for gateway-related errors"""
 
     pass
@@ -133,7 +133,7 @@ class RateLimitError(GatewayException):
         self.retry_after = retry_after
 
 
-class AlignException(BeiJiXingException):
+class AlignException(PolarisException):
     """Base exception for align-related errors"""
 
     pass
@@ -153,7 +153,7 @@ class ContentFilterError(AlignException):
     pass
 
 
-class ConfigurationException(BeiJiXingException):
+class ConfigurationException(PolarisException):
     """Configuration error"""
 
     pass
@@ -167,7 +167,7 @@ class ConfigurationMissingError(ConfigurationException):
         self.config_key = config_key
 
 
-class ResourceException(BeiJiXingException):
+class ResourceException(PolarisException):
     """Resource-related exception"""
 
     pass
@@ -185,7 +185,7 @@ class ResourceExhaustedError(ResourceException):
     pass
 
 
-class TimeoutException(BeiJiXingException):
+class TimeoutException(PolarisException):
     """Operation timed out"""
 
     def __init__(self, message: str, timeout_seconds: float):
@@ -193,7 +193,7 @@ class TimeoutException(BeiJiXingException):
         self.timeout_seconds = timeout_seconds
 
 
-class RetryableException(BeiJiXingException):
+class RetryableException(PolarisException):
     """Base class for retryable exceptions"""
 
     pass

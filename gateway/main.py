@@ -18,8 +18,8 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="BeiJiXing Agent Gateway API",
-        description="API gateway for BeiJiXing autonomous agent framework",
+        title="Polaris Agent Gateway API",
+        description="API gateway for Polaris autonomous agent framework",
         version="1.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
@@ -51,16 +51,16 @@ app = create_app()
 
 @app.get("/", tags=["Root"])
 async def root(request: Request):
-    return {"message": "BeiJiXing Agent Gateway", "version": "1.0.0"}
+    return {"message": "Polaris Agent Gateway", "version": "1.0.0"}
 
 
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="BeiJiXing Agent Gateway",
+        title="Polaris Agent Gateway",
         version="1.0.0",
-        description="API gateway for BeiJiXing autonomous agent framework",
+        description="API gateway for Polaris autonomous agent framework",
         routes=app.routes,
     )
     app.openapi_schema = openapi_schema

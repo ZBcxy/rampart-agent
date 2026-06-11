@@ -1,5 +1,6 @@
 import asyncio
 import functools
+import inspect
 import time
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -97,7 +98,7 @@ class PerformanceMonitor:
                     )
                     raise
 
-            if asyncio.iscoroutinefunction(func):
+            if inspect.iscoroutinefunction(func):
                 return async_wrapper
             return sync_wrapper
 

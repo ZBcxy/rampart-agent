@@ -1,20 +1,96 @@
-from .executor import DAGExecutor, ExecutionResult, SandboxManager, ToolBlueprint, ToolMatchResult, ToolWeaver
-from .planner import ConfidenceEvaluator, ExecutionObservation, OODALoop, Planner, PlanNode, PlanRevision, PlanTree
+from .agent import Agent, AgentConfig, AgentResult, AgentStep
+from .cache import ResponseCache, cache
+from .eval import (
+    AssertionEval,
+    EvalCase,
+    EvalReport,
+    EvalResult,
+    EvalSuite,
+    LLMJudgeEval,
+    eval_plan_has_steps,
+    eval_no_error,
+    eval_confidence_above,
+    eval_tool_called,
+)
+from .executor import (
+    CircuitBreaker,
+    DAGExecutor,
+    ExecutionResult,
+    RetryConfig,
+    RetryableDAGExecutor,
+    SandboxManager,
+    ToolBlueprint,
+    ToolMatchResult,
+    ToolWeaver,
+)
+from .memory import EmbeddingConfig, EmbeddingSemanticMemory, EpisodicMemory, SemanticMemory, WorkingMemory
+from .observability import Span, Tracer, log, metrics, setup_logging, tracer
+from .planner import (
+    ConfidenceEvaluator,
+    ExecutionObservation,
+    LLMPlanner,
+    LLMPlannerConfig,
+    OODALoop,
+    Planner,
+    PlanNode,
+    PlanRevision,
+    PlanTree,
+)
+from .prompts import PromptManager
 
 __all__ = [
-    # Planner exports
+    # Agent
+    "Agent",
+    "AgentConfig",
+    "AgentResult",
+    "AgentStep",
+    # Planner
     "Planner",
+    "LLMPlanner",
+    "LLMPlannerConfig",
     "PlanTree",
     "PlanNode",
     "PlanRevision",
     "ExecutionObservation",
     "ConfidenceEvaluator",
     "OODALoop",
-    # Executor exports
+    # Executor
     "ToolBlueprint",
     "ToolMatchResult",
     "ToolWeaver",
     "ExecutionResult",
     "DAGExecutor",
+    "RetryableDAGExecutor",
+    "RetryConfig",
+    "CircuitBreaker",
     "SandboxManager",
+    # Memory
+    "WorkingMemory",
+    "SemanticMemory",
+    "EmbeddingSemanticMemory",
+    "EmbeddingConfig",
+    "EpisodicMemory",
+    # Observability
+    "tracer",
+    "Tracer",
+    "Span",
+    "log",
+    "metrics",
+    "setup_logging",
+    # Eval
+    "EvalSuite",
+    "EvalCase",
+    "EvalResult",
+    "EvalReport",
+    "AssertionEval",
+    "LLMJudgeEval",
+    "eval_plan_has_steps",
+    "eval_no_error",
+    "eval_confidence_above",
+    "eval_tool_called",
+    # Cache
+    "ResponseCache",
+    "cache",
+    # Prompts
+    "PromptManager",
 ]

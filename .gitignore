@@ -7,6 +7,7 @@ __pycache__/
 env/
 venv/
 .venv/
+*.egg-info/
 
 # Build artifacts
 dist/
@@ -17,7 +18,6 @@ build/
 .pytest_cache/
 .coverage
 htmlcov/
-bandit-report.json
 
 # IDE
 .vscode/
@@ -33,11 +33,18 @@ Thumbs.db
 .env
 .env.local
 .env.*.local
-config/secrets/
 
 # Logs
 *.log
 logs/
 
-# Docker
+# Docker data
+polaris_data/
+redis_data/
 docker-compose.override.yml
+
+# Node (if using npx for MCP)
+node_modules/
+
+# SDK dist
+sdk/dist/

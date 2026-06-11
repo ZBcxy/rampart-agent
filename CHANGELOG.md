@@ -1,51 +1,35 @@
 # CHANGELOG
 
-All notable changes to BeiJiXing Agent will be documented in this file.
+## v1.1.0 (2026-06-11) — Polaris Agent
 
-## [1.1.0] - 2026-05-21
+### Breaking
+- Renamed: BeiJiXing Agent → Polaris Agent
+- CLI: `beijixing` → `polaris`, config: `~/.beijixing` → `~/.polaris`
 
-### Added
-- Comprehensive code quality review and optimization
-- Removed duplicate CLI files (agent_cli.py)
-- Improved project structure and organization
-- Enhanced test coverage (46 unit tests)
-- Added CHANGELOG.md for version tracking
+### New
+- LLM-powered OODA Agent with PromptManager (zero hardcoded prompts)
+- 26 executable tools across 5 categories with ToolRegistry
+- MCP Server + Client (v2025-11-25): tools, resources, prompts, tasks, icons
+- A2A Server + Client (v1.0): Agent Cards, task lifecycle, SSE streaming
+- Multi-agent blackboard + role-based coordinator
+- Embedding semantic memory (OpenAI, SentenceTransformers, hybrid search)
+- Retry executor with circuit breaker + dead letter queue
+- 5-rule alignment guard, L0-L4 policy engine, tool authorization, HITL
+- Observability: JSON logging, span tracing, metrics
+- Eval framework: assertion + LLM-as-judge
+- LLM response cache: memory + Redis
+- RAG pipeline: ingest → chunk → embed → retrieve
+- Python SDK: sync + async client
+- Docker: multi-stage, multi-arch (amd64/arm64), docker-compose with Redis
+- New Polaris star ASCII art logo (3 styles)
 
 ### Fixed
-- Code quality issues identified by flake8
-- Redundant file cleanup
-- Project structure optimization
+- Critical: `timedelta` import in working_memory.py
+- All orphan modules wired into agent core
+- CLI and Gateway call real Agent instead of demo stubs
 
-### Security
-- All tests passing with no critical issues
-- Code quality validation complete
+### Tests
+- 139 passed (96 unit + 43 integration)
 
-## [1.0.0] - 2026-05-21
-
-### Added
-- Initial release of BeiJiXing Agent
-- Logo display module with multiple styles
-- Interactive CLI interface
-- Three-tier memory architecture (working, episodic, semantic)
-- Planning engine with confidence evaluation
-- DAG executor with dependency management
-- Comprehensive exception handling system
-- Performance monitoring and benchmarking
-- Module configuration system
-- Version upgrade mechanism
-- GitHub Actions CI/CD pipeline
-- Complete documentation (README, INSTALLER_GUIDE)
-- 46 unit tests with 100% passing
-
-### Features
-- One-line installation via curl
-- Global CLI access with `beijixing` command
-- Module management system
-- Automatic environment configuration
-- Backups and rollback support
-
-### Architecture
-- Core modules (planner, executor, memory, align)
-- API gateway with REST endpoints
-- SDK for integration
-- Comprehensive test suite
+## v0.1.0
+- Initial skeleton: OODA loop, DAG executor, memory stubs, FastAPI gateway
