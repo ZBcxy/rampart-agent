@@ -36,18 +36,34 @@ class PolarisCLI:
         os.makedirs(self.CONFIG_DIR, exist_ok=True)
         os.makedirs(self.MODULES_DIR, exist_ok=True)
     
-    def _init_agent(self):
+    def _init_agent(self, use_local: bool = False):
         """Lazy-init the Agent with tools."""
         import os
         from core.agent import Agent, AgentConfig
 
-        config = AgentConfig(
-            model=os.environ.get("LLM_MODEL", "gpt-4o"),
-            provider=os.environ.get("LLM_PROVIDER", "openai"),
-            api_key=os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"),
-            api_base=os.environ.get("OPENAI_API_BASE"),
-            max_steps=int(os.environ.get("POLARIS_MAX_STEPS", "20")),
-        )
+        # Local model (Ollama / vLLM / llama.cpp)
+        if use_local or os.environ.get("LOCAL_LLM_PROVIDER"):
+            provider = os.environ.get("LOCAL_LLM_PROVIDER", "ollama")
+            model = os.environ.get("LOCAL_LLM_MODEL", "qwen3:8b")
+            base_url = os.environ.get("LOCAL_LLM_URL", None)
+            if provider == "ollama":
+                base_url = base_url or "http://localhost:11434/v1"
+
+            config = AgentConfig(
+                model=model,
+                provider="openai",
+                api_key="not-needed",
+                api_base=base_url,
+                max_steps=int(os.environ.get("POLARIS_MAX_STEPS", "20")),
+            )
+        else:
+            config = AgentConfig(
+                model=os.environ.get("LLM_MODEL", "gpt-4o"),
+                provider=os.environ.get("LLM_PROVIDER", "openai"),
+                api_key=os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"),
+                api_base=os.environ.get("OPENAI_API_BASE"),
+                max_steps=int(os.environ.get("POLARIS_MAX_STEPS", "20")),
+            )
 
         agent = Agent(config=config)
 
