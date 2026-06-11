@@ -35,10 +35,17 @@
 ## Quick Start
 
 ```bash
-git clone https://github.com/ZBcxy/BeiJiXing-agent.git ~/.polaris
-cd ~/.polaris
-python install.py
+# 一条命令安装
+curl -sSL https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/install.py | python3
+
+# 或手动克隆
+git clone git@github.com:ZBcxy/polaris-agent.git
+cd polaris-agent
+pip install -e .
 polaris
+
+# Docker
+docker compose up -d
 ```
 
 ## Supported Protocols
