@@ -180,6 +180,18 @@ class RetryableException(PolarisException):
 
 
 
+class FailureAttributionException(PolarisException):
+    """Base exception for failure attribution errors."""
+
+
+class UnclassifiedFailureError(FailureAttributionException):
+    """Failure could not be classified into a known category."""
+
+
+class InsufficientEvidenceError(FailureAttributionException):
+    """Insufficient evidence to confidently classify the failure."""
+
+
 def exception_handler_factory() -> Dict[str, Any]:
     """Factory for exception handling configuration"""
     return {

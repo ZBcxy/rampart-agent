@@ -1,3 +1,4 @@
+from .code_harness import ActionCodeValidator, CodeHarness, HarnessTraceItem
 from .dag_executor import DAGExecutor, ExecutionResult
 from .retry_executor import (
     CircuitBreaker,
@@ -22,4 +23,7 @@ __all__ = [
     "CircuitState",
     "SandboxManager",
     "SandboxInstance",
+    "ActionCodeValidator",
+    "CodeHarness",
+    "HarnessTraceItem",
 ]

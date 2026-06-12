@@ -1,5 +1,7 @@
 from .agent import Agent, AgentConfig, AgentResult, AgentStep
 from .cache import ResponseCache, cache
+from .context_selector import ContextChunk, ContextSelector, SelectedContext
+from .entropy_audit import EntropyAuditor, EntropyFactor, EntropyReport, EntropyStrategy
 from .eval import (
     AssertionEval,
     EvalCase,
@@ -23,6 +25,8 @@ from .executor import (
     ToolMatchResult,
     ToolWeaver,
 )
+from .failure_attribution import FailureCategory, FailureClassifier, FailureEvidence, FailureReport
+from .intervention import InterventionLog, InterventionRecord, InterventionType
 from .memory import EmbeddingConfig, EmbeddingSemanticMemory, EpisodicMemory, SemanticMemory, WorkingMemory
 from .observability import Span, Tracer, log, metrics, setup_logging, tracer
 from .planner import (
@@ -93,4 +97,22 @@ __all__ = [
     "cache",
     # Prompts
     "PromptManager",
+    # Failure Attribution
+    "FailureCategory",
+    "FailureClassifier",
+    "FailureEvidence",
+    "FailureReport",
+    # Entropy Audit
+    "EntropyAuditor",
+    "EntropyFactor",
+    "EntropyReport",
+    "EntropyStrategy",
+    # Intervention
+    "InterventionLog",
+    "InterventionRecord",
+    "InterventionType",
+    # Context Selector
+    "ContextChunk",
+    "ContextSelector",
+    "SelectedContext",
 ]

@@ -232,15 +232,18 @@ class ConfirmationHandler:
             execute()
     """
 
-    def __init__(self, callback: Optional[Callable[[str, Dict], bool]] = None, timeout: float = 300.0):
+    def __init__(self, callback: Optional[Callable[[str, Dict], bool]] = None, timeout: float = 300.0,
+                 intervention_log: Any = None):
         """
         Args:
             callback: Function(tool_name, arguments) -> bool for user confirmation
             timeout: Max seconds to wait for confirmation
+            intervention_log: Optional InterventionLog for recording human decisions
         """
         self.callback = callback
         self.timeout = timeout
         self._pending: Dict[str, Any] = {}
+        self._intervention_log = intervention_log
 
     async def request_confirmation(self, tool_name: str, arguments: Dict[str, Any]) -> bool:
         """Request user confirmation for a tool call.
@@ -249,12 +252,21 @@ class ConfirmationHandler:
             True if user approved, False if denied or timed out
         """
         import asyncio
+        import json as _json
 
         if not self.callback:
+            if self._intervention_log:
+                self._intervention_log.record(
+                    intervention_type="deny",  # type: ignore
+                    original=_json.dumps({"tool": tool_name, "arguments": arguments}),
+                    modified=None,
+                    reason="No confirmation callback configured — auto-denied",
+                    context={"tool_name": tool_name, "arguments": arguments},
+                )
             return False
 
         # Build confirmation message
-        msg = self._format_message(tool_name, arguments)
+        _ = self._format_message(tool_name, arguments)
 
         try:
             if asyncio.iscoroutinefunction(self.callback):
@@ -264,11 +276,27 @@ class ConfirmationHandler:
                 )
             else:
                 approved = self.callback(tool_name, arguments)
-            return bool(approved)
+            result = bool(approved)
         except asyncio.TimeoutError:
-            return False
+            result = False
         except Exception:
-            return False
+            result = False
+
+        # Record intervention
+        if self._intervention_log:
+            from core.intervention import InterventionType
+            try:
+                self._intervention_log.record(
+                    intervention_type=InterventionType.CONFIRM if result else InterventionType.DENY,
+                    original=_json.dumps({"tool": tool_name, "arguments": arguments}),
+                    modified=None,
+                    reason="User confirmation response" if result else "User denied or timeout",
+                    context={"tool_name": tool_name, "arguments": arguments},
+                )
+            except Exception:
+                pass  # Never let intervention logging break the flow
+
+        return result
 
     def request_confirmation_sync(self, tool_name: str, arguments: Dict[str, Any]) -> bool:
         """Synchronous confirmation request."""
