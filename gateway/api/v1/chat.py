@@ -9,11 +9,25 @@ from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from core.align.align_guard import AlignGuard
+from core.align.policy_engine import AutonomyLevel, PolicyEngine
 
 router = APIRouter()
 
 # Lazy-init the real Agent with tools
 _agent = None
+
+# Module-level alignment singletons (shared across requests)
+_align_guard = AlignGuard(enabled=True)
+_policy_engine = PolicyEngine(autonomy_level=AutonomyLevel.L3_AUTONOMOUS)
+
+# Autonomy level string-to-enum lookup
+_AUTONOMY_LEVEL_MAP: dict[str, AutonomyLevel] = {
+    "L0": AutonomyLevel.L0_MANUAL,
+    "L1": AutonomyLevel.L1_ASSISTED,
+    "L2": AutonomyLevel.L2_SUPERVISED,
+    "L3": AutonomyLevel.L3_AUTONOMOUS,
+    "L4": AutonomyLevel.L4_FULL,
+}
 
 
 def _get_agent():
@@ -141,7 +155,7 @@ async def create_chat_completion(request: Request, body: ChatRequest):
 
     # Check alignment guard on user input
     user_content = body.messages[-1].content or ""
-    guard_result = align_guard.check_input(user_content)
+    guard_result = _align_guard.check_input(user_content)
     if not guard_result.allowed:
         return ChatResponse(
             id=chat_id,
@@ -162,11 +176,11 @@ async def create_chat_completion(request: Request, body: ChatRequest):
 
     # Check policy
     options = body.options or ChatOptions()
-    autonomy_level = AutonomyLevel[f"{options.autonomy_level}_level".upper().replace("L", "L")] if options.autonomy_level else None
+    autonomy_level = _AUTONOMY_LEVEL_MAP.get(options.autonomy_level.upper()) if options.autonomy_level else None
     if autonomy_level:
-        policy_engine.set_autonomy_level(autonomy_level)
+        _policy_engine.set_autonomy_level(autonomy_level)
 
-    policy_decision = policy_engine.check_operation("chat_request")
+    policy_decision = _policy_engine.check_operation("chat_request")
     if not policy_decision.allowed:
         raise HTTPException(status_code=403, detail=policy_decision.reason)
 

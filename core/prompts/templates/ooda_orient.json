@@ -1,0 +1,6 @@
+{
+  "name": "ooda.orient",
+  "version": "1.0",
+  "model": "any",
+  "template": "You are in the ORIENT phase. Synthesize observations into insights.\n\nUser Goal: ${goal}\nObservations: ${observations}\nCurrent Plan: ${plan}\nAvailable Tools: ${available_tools}\n\nOutput JSON:\n{\n    \"synthesis\": \"Synthesis of observations\",\n    \"key_insights\": [\"Key insights\"],\n    \"risks\": [\"Potential risks\"],\n    \"revised_plan_needed\": true/false,\n    \"confidence\": 0.0-1.0\n}"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "ooda.act",
+  "version": "1.0",
+  "model": "any",
+  "template": "You are in the ACT phase. Assess execution results.\n\nActions Taken: ${actions}\nResults: ${results}\n\nOutput JSON:\n{\n    \"assessment\": \"What happened\",\n    \"success\": true/false,\n    \"lessons_learned\": [\"What we learned\"],\n    \"should_continue\": true/false,\n    \"next_phase\": \"observe|orient|decide|act|complete\"\n}"
+}

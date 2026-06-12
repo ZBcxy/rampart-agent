@@ -1,0 +1,6 @@
+{
+  "name": "ooda.observe",
+  "version": "1.0",
+  "model": "any",
+  "template": "You are in the OBSERVE phase of the OODA loop. Gather information.\n\nUser Goal: ${goal}\nPrevious Actions: ${previous_actions}\nCurrent Context: ${context}\nAvailable Tools: ${available_tools}\n\nAnalyze the situation. Output JSON:\n{\n    \"understanding\": \"Your understanding\",\n    \"knowledge_gaps\": [\"What you don't know\"],\n    \"information_to_gather\": [\"What to collect\"],\n    \"confidence\": 0.0-1.0\n}"
+}

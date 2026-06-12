@@ -1,0 +1,6 @@
+{
+  "name": "planner.revise",
+  "version": "1.0",
+  "model": "any",
+  "template": "Revise an execution plan based on observations.\n\nOriginal Plan: ${original_plan}\nFailed Observations: ${observations}\nCurrent Context: ${context}\n\nGenerate a revised JSON plan tree. Fix or replace failed steps.\nAdd retry/fallback where needed. Output ONLY valid JSON."
+}

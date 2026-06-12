@@ -1,0 +1,6 @@
+{
+  "name": "planner.generate",
+  "version": "1.0",
+  "model": "any",
+  "template": "Generate an execution plan from a user goal.\n\nUser Goal: ${goal}\nContext: ${context}\n\nOutput a JSON plan tree:\n{\n    \"goal_interpretation\": \"Restate goal clearly\",\n    \"reasoning\": \"Why this approach\",\n    \"plan_tree\": {\n        \"type\": \"action\",\n        \"content\": \"Step description\",\n        \"confidence\": 0.85,\n        \"children\": [...]\n    }\n}\n\nNode types: action, branch, parallel, human.\nLimit plans to 3-8 top-level steps, max depth 4. Output ONLY valid JSON."
+}

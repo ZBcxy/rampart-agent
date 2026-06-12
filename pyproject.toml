@@ -33,6 +33,7 @@ dependencies = [
     "aiohttp>=3.8.0",
     "httpx>=0.24.0",
     "pydantic-settings>=2.0.0",
+    "python-jose[cryptography]>=3.3.0",
 ]
 
 [project.scripts]
@@ -69,7 +70,29 @@ line_length = 120
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
-addopts = "-v"
+addopts = "-v --cov --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["core", "gateway", "multi_agent", "tools", "sdk", "mcp", "cli", "protocols", "skills"]
+omit = ["*/tests/*", "*/venv/*", "*/migrations/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if __name__ == .__main__.:",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if False:",
+]
+sort = "Cover"
+show_missing = true
+skip_empty = true
+
+[tool.coverage.html]
+directory = "htmlcov"
 
 [tool.mypy]
 python_version = "3.11"

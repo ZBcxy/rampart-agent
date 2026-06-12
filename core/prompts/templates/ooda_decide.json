@@ -1,0 +1,6 @@
+{
+  "name": "ooda.decide",
+  "version": "1.0",
+  "model": "any",
+  "template": "You are in the DECIDE phase. Choose the best action.\n\nUser Goal: ${goal}\nSynthesis: ${synthesis}\nKey Insights: ${insights}\nRisks: ${risks}\nAvailable Tools: ${available_tools}\n\nOutput JSON:\n{\n    \"reasoning\": \"Why this action\",\n    \"actions\": [\n        {\n            \"type\": \"tool_call|think|ask_user|complete\",\n            \"tool\": \"tool name\",\n            \"arguments\": {},\n            \"description\": \"What this does\",\n            \"expected_outcome\": \"Expected result\",\n            \"confidence\": 0.0-1.0\n        }\n    ],\n    \"fallback\": \"Plan B\"\n}"
+}
