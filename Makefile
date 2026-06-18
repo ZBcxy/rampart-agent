@@ -1,12 +1,13 @@
 .PHONY: all setup install test test-unit test-integration lint clean \
         docker-build docker-up docker-down docker-logs docker-push \
-        run run-gateway run-mcp
+        run run-gateway run-mcp run-single-shot \
+        init doctor config login sessions profiles
 
 # ── Development ──────────────────────────────────────────────────────────
 all: install
 
 setup:
-	python -m venv venv && venv/bin/pip install -r requirements.txt -r requirements-dev.txt
+	python -m venv venv && venv/bin/pip install -r requirements.txt
 
 install:
 	pip install -e .
@@ -21,12 +22,12 @@ test-integration:
 	python -m pytest tests/integration/ -v
 
 lint:
-	python -m flake8 core/ tools/ mcp/ protocols/ --max-line-length=120 --ignore=E501,W503
+	python -m flake8 core/ tools/ mcp/ protocols/ cli/ --max-line-length=120 --ignore=E501,W503
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
-	rm -rf .pytest_cache dist build *.egg-info
+	rm -rf .pytest_cache dist build *.egg-info htmlcov .coverage
 
 # ── Run ──────────────────────────────────────────────────────────────────
 run:
@@ -37,6 +38,62 @@ run-gateway:
 
 run-mcp:
 	python -m mcp.server --stdio
+
+run-single-shot:
+	python -m cli.polaris_cli "$(PROMPT)"
+
+# ── Lifecycle ────────────────────────────────────────────────────────────
+init:
+	python -m cli.polaris_cli init
+
+doctor:
+	python -m cli.polaris_cli doctor
+
+config:
+	python -m cli.polaris_cli config
+
+login:
+	python -m cli.polaris_cli login
+
+sessions:
+	python -m cli.polaris_cli sessions list
+
+profiles:
+	python -m cli.polaris_cli profiles list
+
+update:
+	python -m cli.polaris_cli update
+
+logo:
+	python -m cli.polaris_cli --logo
+
+logo-minimal:
+	python -m cli.polaris_cli --logo --style minimal
+
+logo-box:
+	python -m cli.polaris_cli --logo --style box
+
+# ── Install lifecycle ────────────────────────────────────────────────────
+install-full:
+	python install.py
+
+install-quiet:
+	python install.py --no-launch
+
+upgrade:
+	python install.py --upgrade
+
+uninstall:
+	python install.py --uninstall
+
+uninstall-keep:
+	python install.py --uninstall --keep-data
+
+verify:
+	python install.py --verify
+
+doctor-install:
+	python install.py --doctor
 
 # ── Docker ───────────────────────────────────────────────────────────────
 DOCKER_IMAGE ?= polaris-agent

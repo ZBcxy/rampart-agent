@@ -125,6 +125,10 @@ CLI_EPILOG = f"""
 {_c('y', 'Flags:')}
   {_c('c', '--model')}, {_c('c', '-m')} <name>          Override model
   {_c('c', '--approval-mode')} <mode>    Override autonomy (L0-L4)
+  {_c('c', '--pipe')}, {_c('c', '-p')}               Explicit pipe mode
+  {_c('c', '--output-format')} <fmt>     Output format (text | json)
+  {_c('c', '--resume')} <id>             Resume a session
+  {_c('c', '--no-logo')}                 Skip splash screen
   {_c('c', '--logo')} [--style ...]      Display logo & exit
   {_c('c', '--version')}, {_c('c', '-v')}           Show version info
   {_c('c', '--help')}, {_c('c', '-h')}              Show this help
@@ -584,29 +588,57 @@ def _ok(msg): print(f"{_c('g', '✓')} {msg}")
 
 # ── Single-shot mode (polaris "prompt") ────────────────────────────────────
 
-def run_single_shot(prompt: str, model_override=None, approval_override=None):
-    """Non-interactive single-shot execution. Returns exit code."""
+def run_single_shot(prompt: str, model_override=None, approval_override=None, output_format: str = "text"):
+    """Non-interactive single-shot execution. Returns exit code.
+
+    Args:
+        output_format: "text" for human-readable, "json" for structured output.
+    """
     import asyncio
 
     cm = _get_cm()
+    model_name = cm.get('LLM_MODEL', '?')
 
     # Check if configured
     if not _check_configured(cm):
-        print(f"{_c('r', '✗ Not configured.')} Run {_c('c', 'polaris init')} or {_c('c', 'polaris login')} first.", file=sys.stderr)
+        if output_format == "json":
+            print(json.dumps({"error": "not_configured", "message": "Run polaris init or polaris login first."}))
+        else:
+            print(f"{_c('r', '✗ Not configured.')} Run {_c('c', 'polaris init')} or {_c('c', 'polaris login')} first.", file=sys.stderr)
         return 1
 
     try:
         agent, cm = _init_agent(cm, model_override, approval_override)
     except Exception as e:
-        print(f"{_c('r', f'Failed to initialize: {e}')}", file=sys.stderr)
-        print(f"{_c('y', 'Run \"polaris init\" to configure.')}", file=sys.stderr)
+        if output_format == "json":
+            print(json.dumps({"error": "init_failed", "message": str(e)}))
+        else:
+            print(f"{_c('r', f'Failed to initialize: {e}')}", file=sys.stderr)
+            print(f"{_c('y', 'Run \"polaris init\" to configure.')}", file=sys.stderr)
         return 1
 
-    model_name = cm.get('LLM_MODEL', '?')
-    print(f"{_c('dim', f'Polaris v{VERSION}  |  {model_name}  |  processing...')}", file=sys.stderr)
+    if output_format != "json":
+        print(f"{_c('dim', f'Polaris v{VERSION}  |  {model_name}  |  processing...')}", file=sys.stderr)
 
     try:
         result = asyncio.run(agent.run(prompt))
+        if output_format == "json":
+            output = {
+                "success": result.success,
+                "model": model_name,
+                "summary": result.summary[:2000] if result.summary else "",
+                "tool_calls": [],
+            }
+            if result.tool_calls:
+                for tc in result.tool_calls[-10:]:
+                    output["tool_calls"].append({
+                        "tool": tc.get("tool", ""),
+                        "success": tc.get("error") is None,
+                        "result": str(tc.get("result", tc.get("error", "")))[:200],
+                    })
+            print(json.dumps(output, indent=2, ensure_ascii=False))
+            return 0 if result.success else 1
+
         if result.success:
             print(result.summary)
             if result.tool_calls:
@@ -618,7 +650,10 @@ def run_single_shot(prompt: str, model_override=None, approval_override=None):
             print(f"{_c('r', result.summary)}", file=sys.stderr)
             return 1
     except Exception as e:
-        print(f"{_c('r', f'Error: {e}')}", file=sys.stderr)
+        if output_format == "json":
+            print(json.dumps({"error": "execution_failed", "message": str(e)}))
+        else:
+            print(f"{_c('r', f'Error: {e}')}", file=sys.stderr)
         return 1
 
 
@@ -640,7 +675,7 @@ def run_pipe_mode(model_override=None):
 
 # ── Interactive REPL ───────────────────────────────────────────────────────
 
-def run_interactive(model_override=None, approval_override=None, resume_session_id=None):
+def run_interactive(model_override=None, approval_override=None, resume_session_id=None, show_logo=True):
     """Full interactive REPL with readline history, session tracking."""
     import asyncio
 
@@ -653,7 +688,8 @@ def run_interactive(model_override=None, approval_override=None, resume_session_
     _setup_readline()
 
     # Show splash
-    PolarisLogo(animate=True, show_info=True).display()
+    if show_logo:
+        PolarisLogo(animate=True, show_info=True).display()
 
     # Check if configured
     if not _check_configured(cm):
@@ -908,6 +944,10 @@ def main():
     # Flags
     parser.add_argument("--model", "-m", type=str, help="Override model for this session")
     parser.add_argument("--approval-mode", type=str, choices=["L0", "L1", "L2", "L3", "L4"], help="Override autonomy level")
+    parser.add_argument("--pipe", "-p", action="store_true", help="Explicit pipe mode (read from stdin)")
+    parser.add_argument("--output-format", type=str, choices=["text", "json"], default="text", help="Output format (default: text)")
+    parser.add_argument("--resume", type=str, help="Resume a session by ID (or 'last' for most recent)")
+    parser.add_argument("--no-logo", action="store_true", help="Skip splash screen in interactive mode")
     parser.add_argument("--logo", action="store_true", help="Display logo & exit")
     parser.add_argument("--style", "-s", choices=["default", "minimal", "box"], default="default")
     parser.add_argument("--version", "-v", action="store_true", help="Show version & exit")
@@ -972,18 +1012,44 @@ def main():
     # ── Determine mode: pipe, single-shot, or interactive ─────────────
     effective_prompt = prompt_arg or args.prompt
 
-    # Pipe / stdin mode
+    # Explicit pipe mode
+    if args.pipe:
+        pipe_data = sys.stdin.read().strip()
+        if not pipe_data:
+            print(f"{_c('r', 'No data on stdin.')}", file=sys.stderr)
+            sys.exit(1)
+        sys.exit(run_single_shot(pipe_data, args.model, args.approval_mode,
+                                 output_format=args.output_format))
+
+    # Implicit pipe / stdin mode
     if not _TTY or not sys.stdin.isatty():
         pipe_data = sys.stdin.read().strip()
         if pipe_data:
-            sys.exit(run_single_shot(pipe_data, args.model, args.approval_mode))
+            sys.exit(run_single_shot(pipe_data, args.model, args.approval_mode,
+                                     output_format=args.output_format))
+
+    # Handle --resume
+    resume_id = None
+    if args.resume:
+        if args.resume == "last":
+            # Find most recent session
+            meta_file = POLARIS_HOME / "sessions_index.json"
+            if meta_file.exists():
+                index = json.loads(meta_file.read_text())
+                if index:
+                    resume_id = sorted(index.keys(), key=lambda k: index[k].get("updated_at", ""), reverse=True)[0]
+                    print(f"{_c('dim', f'Resuming: {resume_id}')}")
+        else:
+            resume_id = args.resume
 
     # Single-shot mode
     if effective_prompt:
-        sys.exit(run_single_shot(effective_prompt, args.model, args.approval_mode))
+        sys.exit(run_single_shot(effective_prompt, args.model, args.approval_mode,
+                                 output_format=args.output_format))
 
     # Interactive mode
-    run_interactive(args.model, args.approval_mode)
+    run_interactive(args.model, args.approval_mode, resume_session_id=resume_id,
+                    show_logo=not args.no_logo)
 
 
 def _print_val(val):
