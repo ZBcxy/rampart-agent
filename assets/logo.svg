@@ -21,53 +21,63 @@
   <rect x="0" y="0" width="1600" height="300" rx="10" fill="url(#bg)"/>
   <rect x="0" y="0" width="1600" height="300" rx="10" stroke="#1E293B" stroke-width="1.5"/>
 
-  <!-- Robot at Computer icon — centered above text -->
-  <g transform="translate(800, 68)">
+  <!-- Robot at Computer — simple flat icon style -->
+  <g transform="translate(800, 72)">
     <!-- Laptop screen -->
-    <rect x="-32" y="-36" width="64" height="42" rx="5" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
+    <rect x="-36" y="-40" width="72" height="46" rx="6" fill="#1E293B" stroke="#334155" stroke-width="1.5"/>
     <!-- Screen content — code lines -->
-    <rect x="-24" y="-28" width="28" height="2.5" rx="1" fill="#6366F1" opacity="0.6"/>
-    <rect x="-24" y="-22" width="18" height="2.5" rx="1" fill="#94A3B8" opacity="0.4"/>
-    <rect x="-24" y="-16" width="22" height="2.5" rx="1" fill="#94A3B8" opacity="0.3"/>
-    <rect x="-24" y="-10" width="14" height="2.5" rx="1" fill="#94A3B8" opacity="0.25"/>
+    <rect x="-26" y="-32" width="32" height="3" rx="1.5" fill="#6366F1" opacity="0.7"/>
+    <rect x="-26" y="-25" width="22" height="3" rx="1.5" fill="#94A3B8" opacity="0.4"/>
+    <rect x="-26" y="-18" width="26" height="3" rx="1.5" fill="#94A3B8" opacity="0.3"/>
+    <rect x="-26" y="-11" width="16" height="3" rx="1.5" fill="#94A3B8" opacity="0.25"/>
     <!-- Screen glow -->
-    <rect x="-32" y="-36" width="64" height="42" rx="5" fill="#6366F1" opacity="0.06"/>
+    <rect x="-36" y="-40" width="72" height="46" rx="6" fill="#6366F1" opacity="0.05"/>
 
     <!-- Laptop base -->
-    <rect x="-44" y="8" width="88" height="5" rx="2.5" fill="#1E293B" stroke="#334155" stroke-width="1"/>
-    <rect x="-38" y="13" width="76" height="2.5" rx="1.2" fill="#0F172A" stroke="#1E293B" stroke-width="0.5"/>
+    <path d="M-52 10 L-48 8 L48 8 L52 10 L52 14 L-52 14 Z" fill="#1E293B" stroke="#334155" stroke-width="1.2"/>
+    <rect x="-44" y="14" width="88" height="3" rx="1.5" fill="#0F172A" stroke="#1E293B" stroke-width="0.5"/>
 
     <!-- Robot body -->
-    <rect x="38" y="-18" width="24" height="28" rx="6" fill="url(#gold)" opacity="0.9"/>
+    <rect x="41" y="-16" width="26" height="30" rx="7" fill="url(#gold)" opacity="0.92"/>
+    <!-- Body detail — chest panel -->
+    <rect x="49" y="-8" width="10" height="6" rx="2" fill="#0F172A" opacity="0.3"/>
+
     <!-- Robot head -->
-    <rect x="36" y="-38" width="28" height="22" rx="6" fill="url(#gold)" opacity="0.95"/>
+    <rect x="37" y="-42" width="34" height="27" rx="8" fill="url(#gold)" opacity="0.95"/>
     <!-- Antenna -->
-    <line x1="50" y1="-38" x2="50" y2="-46" stroke="#FACC15" stroke-width="2" stroke-linecap="round"/>
-    <circle cx="50" cy="-48" r="3" fill="#FDE68A"/>
-    <!-- Robot eyes -->
-    <circle cx="44" cy="-30" r="3" fill="#0F172A"/>
-    <circle cx="56" cy="-30" r="3" fill="#0F172A"/>
-    <!-- Eye glow -->
-    <circle cx="44" cy="-30" r="1.2" fill="#67E8F9"/>
-    <circle cx="56" cy="-30" r="1.2" fill="#67E8F9"/>
-    <!-- Robot mouth -->
-    <rect x="46" y="-22" width="8" height="2" rx="1" fill="#0F172A" opacity="0.6"/>
+    <line x1="54" y1="-42" x2="54" y2="-52" stroke="#FACC15" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="54" cy="-55" r="4" fill="#FDE68A"/>
+    <circle cx="54" cy="-55" r="2" fill="#FEF3C7"/>
+
+    <!-- Robot face -->
+    <!-- Eyes -->
+    <rect x="44" y="-34" width="8" height="8" rx="2" fill="#0F172A"/>
+    <rect x="56" y="-34" width="8" height="8" rx="2" fill="#0F172A"/>
+    <!-- Eye highlights -->
+    <rect x="46" y="-32" width="3" height="3" rx="1" fill="#67E8F9"/>
+    <rect x="58" y="-32" width="3" height="3" rx="1" fill="#67E8F9"/>
+    <!-- Mouth -->
+    <rect x="48" y="-22" width="12" height="3" rx="1.5" fill="#0F172A" opacity="0.5"/>
+    <!-- Ear bolts -->
+    <rect x="34" y="-32" width="4" height="8" rx="1.5" fill="#EAB308" opacity="0.8"/>
+    <rect x="70" y="-32" width="4" height="8" rx="1.5" fill="#EAB308" opacity="0.8"/>
+
     <!-- Robot arms reaching toward laptop -->
-    <line x1="38" y1="-10" x2="28" y2="-14" stroke="#FACC15" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
-    <line x1="38" y1="-2" x2="28" y2="0" stroke="#FACC15" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
-    <!-- Robot hands -->
-    <circle cx="28" cy="-14" r="3.5" fill="#EAB308" opacity="0.7"/>
-    <circle cx="28" cy="0" r="3.5" fill="#EAB308" opacity="0.7"/>
+    <path d="M41 -8 Q34 -10 30 -8" stroke="#EAB308" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+    <path d="M41 0 Q34 2 30 4" stroke="#EAB308" stroke-width="5" stroke-linecap="round" opacity="0.85"/>
+    <!-- Hands -->
+    <circle cx="30" cy="-8" r="4" fill="#FACC15" opacity="0.9"/>
+    <circle cx="30" cy="4" r="4" fill="#FACC15" opacity="0.9"/>
   </g>
 
   <!-- Title -->
-  <text x="800" y="170" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="800" fill="#F8FAFC" letter-spacing="5">Polaris Agent</text>
+  <text x="800" y="172" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="56" font-weight="800" fill="#F8FAFC" letter-spacing="5">Polaris Agent</text>
 
-  <!-- Tagline — slightly larger -->
-  <text x="800" y="210" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94A3B8" letter-spacing="2">Navigate Complexity with AI</text>
+  <!-- Tagline -->
+  <text x="800" y="212" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94A3B8" letter-spacing="2">Navigate Complexity with AI</text>
 
   <!-- Accent divider -->
-  <line x1="500" y1="230" x2="1100" y2="230" stroke="url(#accent)" stroke-width="1.5"/>
+  <line x1="500" y1="232" x2="1100" y2="232" stroke="url(#accent)" stroke-width="1.5"/>
 
   <!-- Framework description -->
   <text x="800" y="265" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="15" fill="#64748B" letter-spacing="1">Autonomous Agent Framework — OODA Loop · MCP · A2A · 26 Tools</text>
