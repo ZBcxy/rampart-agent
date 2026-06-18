@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.svg" alt="✦ Polaris Agent" width="500">
+  <img src="assets/logo.svg" alt="✦ Polaris Agent" width="400">
   <h1>✦ Polaris Agent</h1>
   <p><strong>Navigate Complexity with AI</strong></p>
   <p>Autonomous Agent Framework — OODA Loop · MCP · A2A · 26 Tools</p>
