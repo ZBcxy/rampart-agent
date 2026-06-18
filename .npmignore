@@ -1,0 +1,26 @@
+# Only include what's declared in "files" in package.json
+# This file ensures Python sources and dev files stay out of the npm tarball
+
+core/
+gateway/
+tools/
+mcp/
+protocols/
+multi_agent/
+sdk/
+cli/
+skills/
+tests/
+assets/
+venv/
+.git/
+__pycache__/
+*.pyc
+*.egg-info/
+Dockerfile
+docker-compose.yml
+Makefile
+install.py
+pyproject.toml
+requirements.txt
+.env.example

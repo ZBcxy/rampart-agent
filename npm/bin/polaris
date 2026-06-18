@@ -1,64 +1,97 @@
-#!/usr/bin/env bash
-# ✦ Polaris Agent — npm bin wrapper
-# This script is installed by npm as the `polaris` command.
-# It locates the Python polaris CLI and execs it with all forwarded arguments.
-set -e
+#!/usr/bin/env node
+/**
+ * ✦ Polaris Agent — npm bin entry point
+ *
+ * This script locates the Python polaris CLI and execs it.
+ * It's a thin wrapper — the real work is done by the Python package.
+ */
 
-# ── Locate Python polaris ─────────────────────────────────────────────────
+const { spawnSync, execSync } = require("child_process");
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
 
-# Try the standard pip-installed path first
-POLARIS_PYTHON=""
+function main() {
+  const args = process.argv.slice(2);
 
-# Check ~/.local/bin/polaris (pip --user install)
-if [ -x "$HOME/.local/bin/polaris" ]; then
-    exec "$HOME/.local/bin/polaris" "$@"
-fi
+  // ── Try 1: polaris in PATH (pip/pipx) ─────────────────────────────────
+  const pathPolaris = findInPath("polaris");
+  if (pathPolaris && pathPolaris !== __filename) {
+    const result = spawnSync(pathPolaris, args, { stdio: "inherit" });
+    process.exit(result.status ?? 1);
+  }
 
-# Check if polaris is in PATH (installed via pipx or system pip)
-if command -v polaris &>/dev/null; then
-    # Avoid recursion — if this script IS the polaris in PATH, skip
-    POLARIS_CMD=$(command -v polaris)
-    if [ "$POLARIS_CMD" != "$0" ]; then
-        exec polaris "$@"
-    fi
-fi
+  // ── Try 2: ~/.local/bin/polaris ──────────────────────────────────────
+  const localBin = path.join(os.homedir(), ".local", "bin", "polaris");
+  if (fs.existsSync(localBin)) {
+    const result = spawnSync(localBin, args, { stdio: "inherit" });
+    process.exit(result.status ?? 1);
+  }
 
-# Check for pipx-installed
-if [ -x "$HOME/.local/pipx/venvs/polaris-agent/bin/polaris" ]; then
-    exec "$HOME/.local/pipx/venvs/polaris-agent/bin/polaris" "$@"
-fi
+  // ── Try 3: pipx venv ─────────────────────────────────────────────────
+  const pipxBin = path.join(os.homedir(), ".local", "pipx", "venvs", "polaris-agent", "bin", "polaris");
+  if (fs.existsSync(pipxBin)) {
+    const result = spawnSync(pipxBin, args, { stdio: "inherit" });
+    process.exit(result.status ?? 1);
+  }
 
-# ── Try Python module directly ────────────────────────────────────────────
+  // ── Try 4: Python module directly ────────────────────────────────────
+  const python = findPython();
+  if (python) {
+    // Check if polaris package is importable
+    try {
+      execSync(`"${python}" -c "import cli.polaris_cli"`, { stdio: "ignore" });
+      const result = spawnSync(python, ["-m", "cli.polaris_cli", ...args], { stdio: "inherit" });
+      process.exit(result.status ?? 1);
+    } catch {
+      // Package not installed yet
+    }
+  }
 
-# Find a working Python 3.11+
-for py in python3.12 python3.11 python3; do
-    if command -v "$py" &>/dev/null; then
-        VER=$("$py" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')" 2>/dev/null || echo "0")
-        MAJOR=$(echo "$VER" | cut -d. -f1)
-        MINOR=$(echo "$VER" | cut -d. -f2)
-        if [ "$MAJOR" -ge 3 ] && [ "$MINOR" -ge 11 ] 2>/dev/null; then
-            # Check if polaris package is installed
-            if "$py" -c "import cli.polaris_cli" 2>/dev/null; then
-                exec "$py" -m cli.polaris_cli "$@"
-            fi
-        fi
-    fi
-done
+  // ── Not found ─────────────────────────────────────────────────────────
+  console.error("");
+  console.error("  ✦ Polaris Agent is not fully installed yet.");
+  console.error("");
+  console.error("  The npm package is a distribution wrapper. The Python package");
+  console.error("  still needs to be installed. Choose one:");
+  console.error("");
+  console.error("    1. pip install polaris-agent");
+  console.error("    2. pipx install polaris-agent");
+  console.error("    3. curl -sSL https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/install.py | python3");
+  console.error("");
+  console.error("  Then run: polaris");
+  console.error("");
+  process.exit(1);
+}
 
-# ── Not found ─────────────────────────────────────────────────────────────
+function findInPath(cmd) {
+  const paths = process.env.PATH.split(path.delimiter);
+  for (const dir of paths) {
+    const full = path.join(dir, cmd);
+    if (fs.existsSync(full)) return full;
+    // Windows
+    if (process.platform === "win32" && fs.existsSync(full + ".exe")) return full + ".exe";
+  }
+  return null;
+}
 
-cat >&2 << 'EOF'
+function findPython() {
+  for (const py of ["python3.12", "python3.11", "python3", "python"]) {
+    const p = findInPath(py);
+    if (p) {
+      try {
+        const ver = execSync(`"${p}" -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"`, {
+          encoding: "utf-8",
+          stdio: ["ignore", "pipe", "ignore"],
+        }).trim();
+        const [major, minor] = ver.split(".").map(Number);
+        if (major >= 3 && minor >= 11) return p;
+      } catch {
+        continue;
+      }
+    }
+  }
+  return null;
+}
 
-  ✦ Polaris Agent is not fully installed yet.
-
-  The npm package is a distribution wrapper. The Python package
-  still needs to be installed. Choose one:
-
-    1. pip install polaris-agent
-    2. pipx install polaris-agent
-    3. curl -sSL https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/install.py | python3
-
-  Then run: polaris
-
-EOF
-exit 1
+main();
