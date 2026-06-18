@@ -25,8 +25,9 @@ class TestLogoGeneration:
         logo = logo_mod.get_default_logo()
         assert logo is not None
         assert len(logo) > 0
-        assert "POLARIS" in logo_mod._strip_ansi(logo)
-        assert "Navigate Complexity with AI" in logo_mod._strip_ansi(logo)
+        plain = logo_mod._strip_ansi(logo)
+        assert "P O L A R I S" in plain  # spaced out in default logo
+        assert "Navigate Complexity with AI" in plain
 
     def test_minimal_logo(self, logo_mod):
         logo = logo_mod.get_minimal_logo()
@@ -41,7 +42,7 @@ class TestLogoGeneration:
         assert logo is not None
         assert len(logo) > 0
         plain = logo_mod._strip_ansi(logo)
-        assert "POLARIS" in plain
+        assert "P O L A R I S" in plain
         assert "Navigate Complexity with AI" in plain
 
     def test_logo_styles_are_different(self, logo_mod):

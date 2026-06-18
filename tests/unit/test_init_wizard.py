@@ -24,13 +24,12 @@ def temp_cm():
     spec = iu.spec_from_file_location("_cm_test2", str(src))
     mod = iu.module_from_spec(spec)
 
+    import os as _os
     with tempfile.TemporaryDirectory() as tmp:
         home = Path(tmp)
-        mod.POLARIS_HOME = home
-        mod.CONFIG_FILE = home / "config.json"
-        mod.ENV_FILE = home / ".env"
+        _os.environ["POLARIS_HOME"] = str(home)
         spec.loader.exec_module(mod)
-        cm = mod.ConfigManager(home=home)
+        cm = mod.ConfigManager(cwd=home)
         yield cm, mod
 
 
@@ -85,6 +84,6 @@ class TestConfigManagerIntegration:
         assert cm.config_path.exists()
 
         # Re-read
-        cm2 = mod.ConfigManager(home=cm.home)
+        cm2 = mod.ConfigManager(cwd=cm.home)
         assert cm2.get("LLM_MODEL") == "test-model"
         assert cm2.get("POLARIS_AUTONOMY") == "L2"
