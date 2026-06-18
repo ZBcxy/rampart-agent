@@ -1,26 +1,44 @@
-# Product Hunt Launch — Polaris Agent
+# Product Hunt Launch Kit — ✦ Polaris Agent
 
 ## 基本信息
 
 | 字段 | 内容 |
 |------|------|
 | **Product Name** | Polaris Agent |
-| **Tagline** | A complete CLI agent that works out of the box — local models, full lifecycle, 26 tools |
+| **Tagline** | An OODA-powered CLI agent — local models, full lifecycle, 26 tools. `npm i -g` ready. |
 | **Website** | https://github.com/ZBcxy/polaris-agent |
-| **Topics** | Developer Tools, CLI, Artificial Intelligence, Open Source, Productivity |
+| **npm** | https://www.npmjs.com/package/polaris-agent |
+| **Topics** | Developer Tools, CLI, AI, Open Source, Productivity |
 | **Pricing** | Free / Open Source (Apache 2.0) |
+
+---
+
+## 页面截图（5 张）
+
+按 Product Hunt gallery 顺序：
+
+| # | 文件 | 内容 | 命令 |
+|---|------|------|------|
+| 1 | `docs/screenshots/01-logo.png` | 北斗七星叙事风 Logo + 启动画面 | `polaris --logo` |
+| 2 | `docs/screenshots/02-doctor.png` | 一键环境诊断 | `polaris doctor` |
+| 3 | `docs/screenshots/03-config.png` | 配置管理面板 | `polaris config` |
+| 4 | `docs/screenshots/04-help.png` | 完整命令参考 | `polaris --help` |
 
 ---
 
 ## Tagline（60 字符限制）
 
+**主选：**
 ```
 ✦ Polaris Agent — Navigate Complexity with AI
 ```
 
-备选：
+**备选（A/B 测试）：**
 ```
-The CLI agent with Claude Code's lifecycle + Ollama's freedom
+An OODA-powered CLI agent that works out of the box
+```
+```
+The agent CLI with full lifecycle — local models, zero config
 ```
 
 ---
@@ -28,152 +46,143 @@ The CLI agent with Claude Code's lifecycle + Ollama's freedom
 ## Description（260 字符限制）
 
 ```
-Polaris is the agent CLI that does everything you expect — single-shot answers,
-pipe mode for scripts, interactive REPL with session history, and a full
-lifecycle of config / profiles / MCP / update / doctor. Auto-detects Ollama
-for zero-API-key local runs. OODA Loop engine + 26 built-in tools. npm i -g.
+✦ OODA Loop engine + 26 tools + MCP + A2A. Single-shot, pipe, or interactive
+REPL. Auto-detects Ollama — zero API key needed. Session history, named profiles,
+self-update, one-command diagnostics. Full lifecycle like Claude Code, but
+runs on local models. npm i -g polaris-agent && polaris init — 30 seconds.
 ```
 
 ---
 
-## Maker’s First Comment（最重要，发布后第一时间发）
+## Gallery 图片说明（每张图配一句 caption）
 
-This is the long-form comment that tells the story:
+1. **Logo / Splash** — "Big Dipper → Polaris. Every agent needs a North Star."
+2. **Doctor** — "One command to diagnose everything: Python, Ollama, API keys, PATH, disk."
+3. **Config** — "Full config control. Set, get, export profiles. No .env hunting."
+4. **Help** — "Single-shot, pipe, REPL, sessions, profiles, MCP, update — one CLI."
+
+---
+
+## Maker's Comment
+
+Product Hunt 发布后立刻作为第一个评论发出：
 
 ---
 
 ```
 Hey Product Hunt! ✦ Maker here.
 
-I built Polaris because I was tired of AI agent frameworks that either required
-50 lines of config to start, or had great local model support but no CLI, or
-had a nice CLI but locked you into a single cloud provider.
+I got tired of agent frameworks that required 10 config steps, or had great
+CLI but cloud-only, or worked locally but had no lifecycle commands.
 
-**What Polaris does differently:**
+**Polaris is the CLI agent I wanted to use myself:**
 
-1. Full lifecycle — not just "type a prompt"
-   polaris "fix this bug"          # single-shot, like `claude "..."` or `codex`
-   cat log.txt | polaris           # pipe mode — works in scripts
-   polaris                         # interactive REPL with readline history
-   polaris sessions resume last    # pick up where you left off
-   polaris --output-format json    # structured output for automation
+✦ It has three modes — like Claude Code
+  polaris "analyze this bug"       # single-shot
+  cat errors.log | polaris         # pipe mode for scripts
+  polaris                          # interactive REPL + sessions
 
-2. Zero config for local models
-   If Ollama is running, Polaris auto-detects it on first launch.
-   No .env, no export, no config file. Just `polaris`.
+✦ Zero config for local models
+  If Ollama is running, Polaris finds it. No .env, no export, no config file.
+  ollama pull qwen3:8b && polaris    # that's it.
 
-3. Built-in lifecycle management
-   polaris init       # interactive setup wizard (30 seconds)
-   polaris config     # show/change any setting
-   polaris profiles   # work profile vs personal profile
-   polaris doctor     # diagnose Python, Ollama, API keys, PATH, disk
-   polaris update     # self-update
-   polaris mcp add    # register MCP servers
+✦ Built-in lifecycle — everything you'd expect from a mature CLI
+  polaris init          30-second setup wizard
+  polaris doctor        diagnose your environment in one command
+  polaris profiles      work vs personal configs
+  polaris sessions      resume conversations later
+  polaris update        self-update
+  polaris mcp add       register MCP servers
+  polaris config set    change any setting, persisted instantly
 
-4. OODA Loop engine
-   Observe → Orient → Decide → Act. The same decision cycle used by
-   fighter pilots. Polaris is the only agent framework with a native
-   OODA loop architecture.
+✦ OODA Loop engine
+  Observe → Orient → Decide → Act. The only agent framework with this
+  architecture. Fighter-pilot-grade decision cycles.
 
-5. Protocol-native
-   MCP Server: expose 26 tools to Claude Code, Continue, Zed
-   MCP Client: consume external MCP tools
-   A2A: Agent-to-Agent discovery and delegation
+✦ Protocol-native
+  MCP Server (26 tools exposed to Claude Code / Continue / Zed)
+  MCP Client (consume external tools)
+  A2A (Agent-to-Agent discovery and delegation)
 
-**Quick comparison:**
-| Feature | Polaris | Claude Code | LangGraph | CrewAI |
-|---------|:-----:|:-----:|:-----:|:-----:|
-| Single-shot | ✓ | ✓ | - | - |
-| Pipe mode | ✓ | ✓ | - | - |
-| Sessions | ✓ | ✓ | ✓ | - |
-| Self-update | ✓ | ✓ | - | - |
-| Config profiles | ✓ | - | - | - |
-| Ollama auto-detect | ✓ | - | - | - |
-| MCP Server+Client | ✓ | ✓ | - | - |
-| OODA Loop | ✓ | - | - | - |
+**Comparison:**
+| Feature | Polaris | Claude Code | LangGraph | CrewAI | Codex |
+|---------|:-----:|:-----:|:-----:|:-----:|:-----:|
+| Single-shot mode | ✓ | ✓ | - | - | ✓ |
+| Pipe / stdin | ✓ | ✓ | - | - | ✓ |
+| Session history | ✓ | ✓ | ✓ | - | ✓ |
+| Self-update | ✓ | ✓ | - | - | ✓ |
+| Config profiles | ✓ | - | - | - | - |
+| Local model auto-detect | ✓ | - | - | - | - |
+| MCP Server+Client | ✓ | ✓ | - | - | - |
+| A2A Protocol | ✓ | - | - | - | - |
+| OODA Loop | ✓ | - | - | - | - |
 
-**Get started:**
+**Get started in 30 seconds:**
 ```bash
-npm i -g polaris-agent    # or pip install polaris-agent
-polaris init              # 30-second setup wizard
-polaris "Hello!"          # done!
+npm i -g polaris-agent     # or: pip install polaris-agent
+polaris init               # interactive wizard — pick your LLM
+polaris "Hello, world!"    # you're running
 ```
 
-It's Apache 2.0, 139 tests passing, 17.7k lines of Python.
-Would love your feedback, issues, and PRs!
+Apache 2.0. 139 tests. 17.7k Python. Full source on GitHub.
+Star if you find it useful. PRs welcome. Happy to answer questions!
 
 ✦ Navigate Complexity with AI
 ```
 
 ---
 
-## Media Assets
-
-### 截图 1: 终端启动画面（北斗七星叙事风 Logo）
+## Maker Comment 精简版（如果觉得太长）
 
 ```
-Command: polaris --logo
+✦ Polaris Agent — maker here.
 
-Content: Full default logo with Big Dipper → Polaris constellation,
-         "POLARIS" brand text, tagline, and info panel
-```
+What makes it different:
+① Full lifecycle CLI (single-shot / pipe / REPL / sessions / profiles / MCP)
+② Auto-detects Ollama — zero config for local models
+③ OODA Loop engine — the only agent framework with this architecture
+④ MCP Server + Client + A2A — protocol-native
 
-### 截图 2: polaris doctor 诊断输出
+30 seconds to start:
+  npm i -g polaris-agent && polaris init && polaris "Hello!"
 
-```
-Command: polaris doctor
-
-Content: Environment diagnostics showing Python version, Ollama status,
-         API key status, PATH check, disk space — all in colored panels
-```
-
-### 截图 3: 配置管理
-
-```
-Command: polaris config
-
-Content: Full configuration display with categorized sections
-         (LLM Provider / Local LLM / Agent Runtime / Server / Memory)
-```
-
-### 截图 4: 帮助信息
-
-```
-Command: polaris --help
-
-Content: Full lifecycle command reference with colored output
-```
-
-### Demo GIF（如果有条件）
-
-```
-1. polaris init (30s wizard)
-2. polaris "What is the OODA loop?" (single-shot)
-3. echo "summarize: ..." | polaris (pipe mode)
-4. polaris sessions list → polaris sessions resume ...
+Apache 2.0. Would love your feedback!
 ```
 
 ---
 
-## 发布时间建议
+## 发布时间 & 节奏
 
-- **日期**: 周二或周三（Product Hunt 流量最高）
-- **时间**: 北京时间晚上 10:00 = Pacific 7:00 AM = Eastern 10:00 AM
-- **预热**: 提前 2 天在 Twitter/Reddit 发预告
-- **首小时**: Maker comment + 回复每一条评论
-- **首日**: 在 Hacker News / Reddit 交叉发布链接
+| 时间 | 动作 |
+|------|------|
+| **周一 22:00 CST** | Product Hunt 提交审核（选 "Coming Soon"） |
+| **周二 22:00 CST** | 正式上线 → 立刻发 Maker Comment |
+| **周二 22:15** | HN Show HN + Reddit r/LocalLLaMA 发帖，文末带 PH 链接 |
+| **周二 22:30** | Twitter 发 demo 截图，带 PH 链接 |
+| **周二 22:30 - 24:00** | 逐条回复 Product Hunt 评论区 |
+| **周三全天** | 回复 GitHub Issues / Reddit 评论 |
+| **周四** | V2EX 中文介绍 + 总结 PH 成绩 |
+
+**关键原则：**
+- PH 前 4 小时决定排名 —— Maker 必须在场逐条回复
+- 不要在 PH 评论里 spam 链接 —— 只回答问题
+- Reddit / HN 帖子里带 PH 链接但不过度推销 —— "Also on Product Hunt today if you prefer that format"
 
 ---
 
-## 社交联动
+## 社交预热帖
 
-发布当天同时在以下渠道发帖，互相引流：
+**提前 2 天（Twitter）：**
+```
+Shipping something open-source this week.
+If you've ever wished Claude Code could run on local models... ✦
+```
 
-| 时间 | 渠道 | 内容 |
-|------|------|------|
-| T-2d | Twitter/X | "Shipping something this week. It starts with ✦" |
-| T-0 | Product Hunt | Launch |
-| T+1h | HN Show HN | "Show HN: Polaris Agent — CLI agent with full lifecycle" |
-| T+1h | r/LocalLLaMA | "Polaris Agent — local-first CLI agent, auto-detects Ollama" |
-| T+2h | Twitter/X | 发 demo GIF + PH 链接 |
-| T+1d | V2EX | 中文介绍 + PH 回顾 |
+**提前 1 天（Twitter/Reddit）：**
+```
+Tomorrow ✦ A CLI agent that:
+• Works like Claude Code (single-shot / pipe / REPL / sessions)
+• Runs on Ollama with zero config
+• Has an OODA loop engine
+• Is npm i -g away
+```
