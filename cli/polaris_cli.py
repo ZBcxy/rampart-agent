@@ -578,7 +578,6 @@ def cmd_config_show():
     empty  = _c("c", "│") + " " * BOX_W + _c("c", "│")
 
     # Source labels
-    SRC = {"env": "ENV", "local": "LOCAL", "project": "PROJ", "global": "GLOB", "default": "DEF"}
     SRC_C = {"env": _c("y", "ENV"), "local": _c("m", "LOC"), "project": _c("b", "PRJ"),
              "global": _c("c", "GLB"), "default": _c("dim", "DEF")}
 
@@ -952,7 +951,7 @@ def main():
     cu = cs.add_parser("unset", help="Unset a key"); cu.add_argument("key"); cu.add_argument("--global", "-g", dest="layer", action="store_const", const="global", help="Remove from global"); cu.add_argument("--project", "-p", dest="layer", action="store_const", const="project", help="Remove from project"); cu.add_argument("--local", "-l", dest="layer", action="store_const", const="local", help="Remove from local")
     cs.add_parser("reset", help="Reset to defaults")
     cs.add_parser("path", help="Show config file path")
-    cpath = cs.add_parser("paths", help="Show all config file paths")
+    cs.add_parser("paths", help="Show all config file paths")
     ce = cs.add_parser("export", help="Export as named profile"); ce.add_argument("--profile", "-p", required=True)
 
     # profiles
