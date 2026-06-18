@@ -210,9 +210,25 @@ Inside the interactive REPL:
 
 ## Configuration
 
-Config priority: **CLI flags > env vars > `~/.polaris/config.json` > `.env` > defaults**
+Config priority (like Claude Code's `settings.json`):
 
-All configuration is managed through `polaris config` commands or the `~/.polaris/config.json` file.
+```
+CLI flags > env vars > .polaris/config.local.json > .polaris/config.json > ~/.polaris/config.json > defaults
+    ↑                        ↑                          ↑                      ↑
+  session              project-local              project (committed)       global
+                       (gitignored)
+```
+
+Three config files, three scopes:
+
+| File | Scope | Git | Use |
+|------|-------|-----|-----|
+| `~/.polaris/config.json` | Global | — | API keys, default model, personal settings |
+| `.polaris/config.json` | Project | Commit | Team model choice, project env vars |
+| `.polaris/config.local.json` | Project | Ignore | Personal overrides per project |
+
+`polaris config` shows which layer provides each value (GLB/PRJ/LOC/DEF).
+`polaris config set KEY VAL --project` writes to the project layer.
 
 ### Key variables
 
