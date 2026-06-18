@@ -19,8 +19,8 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     app = FastAPI(
         title="Polaris Agent Gateway API",
-        description="API gateway for Polaris autonomous agent framework",
-        version="1.0.0",
+        description="✦ Polaris Agent — Navigate Complexity with AI. REST API gateway for the Polaris autonomous agent framework.",
+        version="1.1.0",
         docs_url="/docs",
         redoc_url="/redoc",
         lifespan=lifespan,

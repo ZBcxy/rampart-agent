@@ -1,319 +1,313 @@
 #!/usr/bin/env python3
-"""Polaris Agent Logo Display Module
+"""Polaris Agent — Terminal Brand Identity
 
-该模块负责在终端启动时展示视觉效果良好的品牌标识，
-包含动态/静态logo呈现、版本信息显示以及简短的欢迎语。
-参考 Claude Code、OpenClaw、Hermes 等主流智能体的设计风格。
+✦ Polaris (北极星智能体)
+Brand mark: ✦ U+2726 four-pointed star
+Tagline: Navigate Complexity with AI
+
+Three display styles:
+  default — Big Dipper → Polaris narrative (北斗七星叙事风)
+  minimal — Bare symbol + version (极简符号风)
+  box     — Starfield card (星空主题风)
 """
 
 import os
 import sys
 import time
 import shutil
-
+import platform
+import getpass
 
 __version__ = "1.1.0"
 __author__ = "Polaris Team"
 
+# ── Terminal capability detection ──────────────────────────────────────────
 
-class LogoConfig:
-    """Logo 配置类"""
-    
-    VERSION = __version__
-    BUILD_DATE = "2026-05-21"
-    AUTHOR = "Polaris Team"
-    WELCOME_MESSAGE = "Welcome to Polaris Agent!"
-    SUBTITLE = "Your Intelligent AI Assistant"
-    
-    # 支持的终端颜色
-    COLORS = {
-        'HEADER': '\033[95m',
-        'BLUE': '\033[94m',
-        'CYAN': '\033[96m',
-        'GREEN': '\033[92m',
-        'YELLOW': '\033[93m',
-        'WARNING': '\033[93m',
-        'FAIL': '\033[91m',
-        'RED': '\033[91m',
-        'WHITE': '\033[97m',
-        'ENDC': '\033[0m',
-        'BOLD': '\033[1m',
-        'UNDERLINE': '\033[4m',
+_HAS_UNICODE = sys.stdout.encoding and "utf" in sys.stdout.encoding.lower()
+_SUPPORTS_COLOR = (
+    hasattr(sys.stdout, "isatty") and sys.stdout.isatty()
+) or os.environ.get("FORCE_COLOR", False) or os.environ.get("CLICOLOR_FORCE", False)
+_NO_COLOR = os.environ.get("NO_COLOR", False)
+
+
+def _c(code: str, text: str) -> str:
+    """Apply ANSI color if terminal supports it."""
+    if not _SUPPORTS_COLOR or _NO_COLOR:
+        return text
+    colors = {
+        "cyan": "\033[36m",
+        "blue": "\033[94m",
+        "bold": "\033[1m",
+        "yellow": "\033[93m",
+        "green": "\033[92m",
+        "white": "\033[97m",
+        "dim": "\033[2m",
+        "reset": "\033[0m",
+        "magenta": "\033[95m",
     }
-    
-    # 检测终端是否支持颜色
-    SUPPORTS_COLOR = (
-        hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
-    ) or os.environ.get('FORCE_COLOR', False)
+    return f"{colors.get(code, '')}{text}{colors['reset']}"
 
 
-def get_terminal_width() -> int:
-    """获取终端宽度"""
+def _symbol(char: str, fallback: str = "*") -> str:
+    """Return a Unicode symbol or safe fallback."""
+    return char if _HAS_UNICODE else fallback
+
+
+def _term_width() -> int:
     try:
-        width = shutil.get_terminal_size().columns
-        return width if width > 0 else 80
-    except:
+        w = shutil.get_terminal_size().columns
+        return w if w > 0 else 80
+    except Exception:
         return 80
 
 
-def get_static_logo() -> str:
-    """获取 Polaris Agent ASCII Art Logo
+# ── Brand constants ────────────────────────────────────────────────────────
 
-    Returns:
-        str: 格式化的 logo 字符串
+BRAND_MARK = _symbol("✦", "*")
+STAR = _symbol("★", "*")
+DOT = _symbol("·", ".")
+DIAMOND = _symbol("◆", "<>")
+
+VERSION = __version__
+BUILD_DATE = "2026-06-18"
+AUTHOR = "Polaris Team"
+TAGLINE = "Navigate Complexity with AI"
+SUBTITLE = "Autonomous Agent Framework"
+
+
+# ── Logo generators ────────────────────────────────────────────────────────
+
+def get_default_logo() -> str:
+    """北斗七星叙事风 — Big Dipper pointing to Polaris.
+
+    Dubhe and Merak (the Pointer stars) form a line that leads to Polaris,
+    the North Star. This logo tells that story.
     """
-    width = get_terminal_width()
-    line = "─" * min(width, 80)
+    w = min(_term_width(), 80)
 
-    logo = f"""
-{LogoConfig.COLORS['CYAN']}╭{line}╮{LogoConfig.COLORS['ENDC']}
-
-{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['YELLOW']}         ★
-{LogoConfig.COLORS['YELLOW']}        ▐ ▐
-{LogoConfig.COLORS['YELLOW']}   ▄▄▄▄█▄▐█▄▄▄▄
-{LogoConfig.COLORS['CYAN']}   █{LogoConfig.COLORS['BOLD']}  POLARIS  {LogoConfig.COLORS['ENDC']}{LogoConfig.COLORS['CYAN']}█
-{LogoConfig.COLORS['CYAN']}   █  {LogoConfig.COLORS['ENDC']}{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['WHITE']}A G E N T{LogoConfig.COLORS['ENDC']}   {LogoConfig.COLORS['CYAN']}█
-{LogoConfig.COLORS['CYAN']}   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}╰{line}╯{LogoConfig.COLORS['ENDC']}
-
-{LogoConfig.COLORS['WHITE']}  {LogoConfig.WELCOME_MESSAGE}{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['BLUE']}  {LogoConfig.SUBTITLE}{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}  v{LogoConfig.VERSION}  |  {LogoConfig.AUTHOR}{LogoConfig.COLORS['ENDC']}
-"""
-    return logo
+    # Big Dipper asterism → Polaris
+    lines = [
+        f"         {_c('dim', DOT + '  ' + DOT + '  ' + DOT)}           {_c('dim', 'Dubhe · Merak · Phecda')}",
+        f"           {_c('dim', DOT + '  ' + DOT)}                 {_c('dim', 'Megrez · Alioth')}",
+        f"            {_c('dim', DOT)}                    {_c('dim', 'Mizar')}",
+        f"             {_c('dim', DOT)}                   {_c('dim', 'Alkaid')}",
+        f"              {_c('yellow', _c('bold', BRAND_MARK))}                  {_c('cyan', _c('bold', 'Polaris ✦'))}",
+        "",
+        f"     {_c('cyan', '═══')} {_c('bold', _c('white', 'P O L A R I S'))} {_c('cyan', '═' * (w - 30))}",
+        f"        {_c('blue', TAGLINE)}",
+        f"     {_c('dim', f'v{VERSION}  |  {AUTHOR}')}",
+    ]
+    return "\n".join(lines)
 
 
 def get_minimal_logo() -> str:
-    """获取简洁版 Polaris Logo
-
-    Returns:
-        str: 简洁的 logo 字符串
-    """
-    return f"""{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['YELLOW']}
-      ★
-     ▐ ▐
-▄▄▄▄█▄▐█▄▄▄▄
-{LogoConfig.COLORS['CYAN']}█ {LogoConfig.COLORS['WHITE']}POLARIS AGENT{LogoConfig.COLORS['CYAN']} █
-▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-{LogoConfig.COLORS['ENDC']}
-"""
+    """极简符号风 — single line brand mark, similar to Claude Code's ⦿."""
+    return (
+        f"\n{_c('yellow', _c('bold', BRAND_MARK))} "
+        f"{_c('bold', _c('white', 'POLARIS'))} "
+        f"{_c('dim', f'— {TAGLINE}')}"
+        f"\n{_c('dim', f'v{VERSION}')}\n"
+    )
 
 
 def get_box_logo() -> str:
-    """获取方框版 Polaris Logo
+    """星空主题风 — framed card with starfield feel."""
+    w = min(_term_width(), 72)
+    inner = w - 2
 
-    Returns:
-        str: 方框风格的 logo 字符串
-    """
-    width = get_terminal_width()
-    border = "─" * (min(width, 72) - 2)
+    def row(left: str, center: str, right: str = "") -> str:
+        pad = inner - len(_strip_ansi(center))
+        return f"{_c('cyan', left)}{center}{' ' * max(0, pad)}{_c('cyan', right)}"
 
-    return f"""{LogoConfig.COLORS['CYAN']}┌{border}┐{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}{' ' * len(border)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}          {LogoConfig.COLORS['YELLOW']}★{LogoConfig.COLORS['ENDC']}{' ' * (len(border) - 11)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}    {LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['CYAN']}P O L A R I S   A G E N T{LogoConfig.COLORS['ENDC']}{' ' * (len(border) - 30)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}    {LogoConfig.COLORS['BLUE']}Autonomous Multi-Agent Framework{LogoConfig.COLORS['ENDC']}{' ' * (len(border) - 37)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}{' ' * len(border)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  v{LogoConfig.VERSION} | {LogoConfig.BUILD_DATE} | {LogoConfig.AUTHOR}{' ' * (len(border) - 45)}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}└{border}┘{LogoConfig.COLORS['ENDC']}
-"""
+    lines = [
+        _c("cyan", "┌" + "─" * inner + "┐"),
+        row("│", f"   {_c('dim', DOT)}  {_c('dim', DOT)}  {BRAND_MARK}  {_c('dim', DOT)}  {_c('dim', DOT)}  {_c('dim', DOT)}", "│"),
+        row("│", "", "│"),
+        row("│", f"     {_c('bold', _c('white', 'P O L A R I S   A G E N T'))}", "│"),
+        row("│", f"      {_c('blue', TAGLINE)}", "│"),
+        row("│", "", "│"),
+        row("│", f"   {_c('dim', f'v{VERSION}  |  {AUTHOR}  |  {platform.python_version()}')}", "│"),
+        _c("cyan", "└" + "─" * inner + "┘"),
+    ]
+    return "\n".join(lines)
 
 
-def animate_loading(duration: float = 1.0, frames: int = 10) -> None:
-    """动态加载动画
-    
-    Args:
-        duration: 动画持续时间（秒）
-        frames: 动画帧数
-    """
-    if not LogoConfig.SUPPORTS_COLOR:
+def _strip_ansi(text: str) -> str:
+    import re
+    return re.sub(r"\033\[[0-9;]*m", "", text)
+
+
+# ── Animated loading ───────────────────────────────────────────────────────
+
+def _animate_starfield(frames: int = 8, duration: float = 0.6) -> None:
+    """Brief starfield twinkle before logo appears."""
+    if not _SUPPORTS_COLOR:
         return
-    
-    symbols = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
-    
+    stars = [DOT, "·", "˙", "⋅", "∙"]
     interval = duration / frames
     for i in range(frames):
-        symbol = symbols[i % len(symbols)]
-        print(f"\r{LogoConfig.COLORS['CYAN']}{symbol} {LogoConfig.WELCOME_MESSAGE}{LogoConfig.COLORS['ENDC']}", end='', flush=True)
+        s = stars[i % len(stars)]
+        print(f"\r  {_c('yellow', s)}", end="", flush=True)
         time.sleep(interval)
-    
-    print(f"\r{' ' * 50}\r", end='')
+    print("\r" + " " * 8 + "\r", end="")
 
 
-def display_splash(animate: bool = False, style: str = 'default') -> None:
-    """显示启动画面
-    
-    Args:
-        animate: 是否显示动态效果
-        style: Logo 样式 ('default', 'minimal', 'box')
+# ── PolarisLogo class ──────────────────────────────────────────────────────
+
+class PolarisLogo:
+    """Display Polaris Agent brand identity in the terminal.
+
+    Usage:
+        logo = PolarisLogo(style="default", animate=True)
+        logo.display()
+
+        logo.display_version()
+        logo.display_info_panel(model="gpt-4o")
     """
-    if animate and LogoConfig.SUPPORTS_COLOR:
-        animate_loading(duration=0.5)
-    
-    if style == 'minimal':
-        print(get_minimal_logo())
-    elif style == 'box':
-        print(get_box_logo())
-    else:
-        print(get_static_logo())
+
+    def __init__(
+        self,
+        style: str = "default",
+        animate: bool = False,
+        show_info: bool = True,
+        model: str = "",
+        status: str = "Ready",
+        mode: str = "Interactive",
+    ):
+        self.style = style
+        self.animate = animate and _SUPPORTS_COLOR and not _NO_COLOR
+        self.show_info = show_info
+        self.model = model
+        self.status = status
+        self.mode = mode
+
+    def display(self) -> None:
+        """Show full splash screen: logo + optional info panel."""
+        # Clear screen for clean presentation
+        if self.show_info:
+            os.system("cls" if os.name == "nt" else "clear")
+
+        if self.animate:
+            _animate_starfield()
+
+        if self.style == "minimal":
+            print(get_minimal_logo())
+        elif self.style == "box":
+            print(get_box_logo())
+        else:
+            print(get_default_logo())
+
+        if self.show_info:
+            self.display_info_panel()
+
+    def display_version(self) -> None:
+        """Show version card."""
+        w = min(_term_width(), 60)
+        print(f"""
+{_c('cyan', '┌' + '─' * (w - 2) + '┐')}
+{_c('cyan', '│')}  {_c('bold', f'{BRAND_MARK} Polaris Agent')}{' ' * (w - 23)}{_c('cyan', '│')}
+{_c('cyan', '├' + '─' * (w - 2) + '┤')}
+{_c('cyan', '│')}  Version:    {VERSION:<30}{_c('cyan', '│')}
+{_c('cyan', '│')}  Build Date: {BUILD_DATE:<30}{_c('cyan', '│')}
+{_c('cyan', '│')}  Author:     {AUTHOR:<30}{_c('cyan', '│')}
+{_c('cyan', '│')}  Python:     {platform.python_version():<30}{_c('cyan', '│')}
+{_c('cyan', '│')}  Platform:   {platform.platform()[:29]:<30}{_c('cyan', '│')}
+{_c('cyan', '└' + '─' * (w - 2) + '┘')}
+""")
+
+    def display_welcome(self) -> None:
+        """Show welcome banner."""
+        print(f"""
+{_c('green', _c('bold', '═' * min(_term_width(), 80)))}
+  {_c('bold', f'{BRAND_MARK} Polaris Agent — {TAGLINE}')}
+  {_c('dim', f'Type "help" for usage, "exit" to quit.')}
+{_c('green', _c('bold', '═' * min(_term_width(), 80)))}
+""")
+
+    def display_info_panel(self) -> None:
+        """Show compact runtime info panel."""
+        user = getpass.getuser()
+        workspace = os.path.basename(os.getcwd())
+        model = self.model or os.environ.get("LLM_MODEL", "not configured")
+        w = min(_term_width(), 70)
+        inner = w - 2
+
+        def row(label: str, value: str, label2: str = "", value2: str = "") -> str:
+            left = f"  [{label}]  {value}"
+            if label2:
+                left += f"    [{label2}]  {value2}"
+            pad = inner - len(_strip_ansi(left))
+            return f"{_c('cyan', '│')}{left}{' ' * max(0, pad)}{_c('cyan', '│')}"
+
+        print(f"""
+{_c('cyan', '┌' + '─' * inner + '┐')}
+{row('Model', model[:28], 'Status', self.status)}
+{row('User', user[:28], 'Mode', self.mode)}
+{row('Workspace', workspace[:26], 'Version', VERSION)}
+{_c('cyan', '└' + '─' * inner + '┘')}
+""")
+
+
+# ── Convenience functions (backwards-compatible) ───────────────────────────
+
+def display_splash(animate: bool = False, style: str = "default") -> None:
+    PolarisLogo(style=style, animate=animate, show_info=True).display()
 
 
 def display_version_info() -> None:
-    """显示版本信息"""
-    print(f"""
-{LogoConfig.COLORS['CYAN']}┌{'─' * 50}┐{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  {LogoConfig.COLORS['BOLD']}Polaris Agent{LogoConfig.COLORS['ENDC']} {' ' * 24}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}├{'─' * 50}┤{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  Version:    {LogoConfig.VERSION:<32}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  Build Date: {LogoConfig.BUILD_DATE:<32}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  Author:     {LogoConfig.AUTHOR:<32}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  Python:     {sys.version.split()[0]:<32}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}└{'─' * 50}┘{LogoConfig.COLORS['ENDC']}
-""")
+    PolarisLogo().display_version()
 
 
 def display_welcome() -> None:
-    """显示欢迎信息"""
-    width = get_terminal_width()
-    
-    print(f"""
-{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['GREEN']}{'=' * min(width, 80)}{LogoConfig.COLORS['ENDC']}
-
-    {LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['GREEN']}{LogoConfig.WELCOME_MESSAGE}{LogoConfig.COLORS['ENDC']}
-
-    {LogoConfig.COLORS['BLUE']}Type 'polaris --help' for usage information.{LogoConfig.COLORS['ENDC']}
-
-{LogoConfig.COLORS['BOLD']}{LogoConfig.COLORS['GREEN']}{'=' * min(width, 80)}{LogoConfig.COLORS['ENDC']}
-""")
+    PolarisLogo().display_welcome()
 
 
-def display_info_panel(model: str = "default", status: str = "Ready", mode: str = "Interactive") -> None:
-    """显示信息面板
-    
-    Args:
-        model: 当前使用的模型名称
-        status: 系统状态
-        mode: 运行模式
-    """
-    import getpass
-    
-    user = getpass.getuser()
-    workspace = os.path.basename(os.getcwd())
-    width = get_terminal_width()
-    
-    print(f"""
-{LogoConfig.COLORS['CYAN']}┌{'─' * (min(width, 70) - 2)}┐{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  [Model]    {model:<30} [Status]  {status:<15}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  [User]     {user:<30} [Mode]    {mode:<15}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}  [Workspace] {workspace:<28} [Version] {LogoConfig.VERSION:<14}{LogoConfig.COLORS['CYAN']}│{LogoConfig.COLORS['ENDC']}
-{LogoConfig.COLORS['CYAN']}└{'─' * (min(width, 70) - 2)}┘{LogoConfig.COLORS['ENDC']}
-""")
+def display_info_panel(model: str = "", status: str = "Ready", mode: str = "Interactive") -> None:
+    PolarisLogo(model=model, status=status, mode=mode).display_info_panel()
 
 
-class PolarisLogo:
-    """Polaris Logo 显示类"""
-    
-    def __init__(self, style: str = 'default', animate: bool = False, show_info: bool = True):
-        """初始化 Logo 显示
-        
-        Args:
-            style: Logo 样式 ('default', 'minimal', 'box')
-            animate: 是否显示动态效果
-            show_info: 是否显示信息面板
-        """
-        self.style = style
-        self.animate = animate and LogoConfig.SUPPORTS_COLOR
-        self.show_info = show_info
-    
-    def display(self) -> None:
-        """显示启动画面"""
-        os.system('cls' if os.name == 'nt' else 'clear')
-        display_splash(animate=self.animate, style=self.style)
-        
-        if self.show_info:
-            display_info_panel()
-    
-    def display_version(self) -> None:
-        """显示版本信息"""
-        display_version_info()
-    
-    def display_welcome(self) -> None:
-        """显示欢迎信息"""
-        display_welcome()
-
+# ── CLI entry point ────────────────────────────────────────────────────────
 
 def main():
-    """主函数"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(
-        description='Polaris Agent Logo Display',
+        prog="polaris-logo",
+        description=f"{BRAND_MARK} Polaris Agent — Brand Identity Display",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  %(prog)s                    Display logo with animation
-  %(prog)s --no-animate       Display logo without animation
-  %(prog)s --style minimal    Display minimal logo
-  %(prog)s --style box        Display box-style logo
-  %(prog)s --version          Display version information
-  %(prog)s --info             Display information panel
-        """
+  %(prog)s                        Show full logo with info panel
+  %(prog)s --style minimal         Minimal single-line logo
+  %(prog)s --style box             Framed card logo
+  %(prog)s --no-animate            Skip animation
+  %(prog)s --version               Version card only
+  %(prog)s --welcome               Welcome banner only
+        """,
     )
-    
-    parser.add_argument(
-        '--animate', '-a',
-        action='store_true',
-        default=True,
-        help='Enable animation (default: True)'
-    )
-    
-    parser.add_argument(
-        '--no-animate',
-        action='store_true',
-        help='Disable animation'
-    )
-    
-    parser.add_argument(
-        '--style', '-s',
-        choices=['default', 'minimal', 'box'],
-        default='default',
-        help='Logo style (default: default)'
-    )
-    
-    parser.add_argument(
-        '--version', '-v',
-        action='store_true',
-        help='Display version information'
-    )
-    
-    parser.add_argument(
-        '--info', '-i',
-        action='store_true',
-        help='Display information panel'
-    )
-    
-    parser.add_argument(
-        '--welcome', '-w',
-        action='store_true',
-        help='Display welcome message'
-    )
-    
+
+    parser.add_argument("--style", "-s", choices=["default", "minimal", "box"], default="default")
+    parser.add_argument("--animate", "-a", action="store_true", default=True)
+    parser.add_argument("--no-animate", action="store_true")
+    parser.add_argument("--version", "-v", action="store_true")
+    parser.add_argument("--info", "-i", action="store_true")
+    parser.add_argument("--welcome", "-w", action="store_true")
     args = parser.parse_args()
-    
+
     if args.no_animate:
         args.animate = False
-    
+
+    logo = PolarisLogo(style=args.style, animate=args.animate, show_info=True)
+
     if args.version:
-        display_version_info()
+        logo.display_version()
     elif args.welcome:
-        display_welcome()
+        logo.display_welcome()
     elif args.info:
-        display_info_panel()
+        logo.display_info_panel()
     else:
-        logo = PolarisLogo(style=args.style, animate=args.animate)
         logo.display()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

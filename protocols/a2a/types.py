@@ -65,7 +65,7 @@ class Message:
     metadata: Dict[str, Any] = field(default_factory=dict)
 
     @classmethod
-    def text_message(cls, text: str, role: str = "user", task_id: str = None) -> "Message":
+    def text_message(cls, text: str, role: str = "user", task_id: str | None = None) -> "Message":
         return cls(role=role, parts=[{"type": "text", "text": text}], task_id=task_id)
 
 
@@ -163,10 +163,10 @@ class AgentCard:
 
     Published at: GET /.well-known/agent-card.json
     """
-    name: str
-    description: str
-    url: str  # Base URL of the agent
-    version: str = "1.0.0"
+    name: str = "Polaris Agent"
+    description: str = "Navigate Complexity with AI — Autonomous Agent Framework"
+    url: str = ""  # Base URL of the agent
+    version: str = "1.1.0"
     provider: Optional[Dict[str, str]] = None  # {name, url, organization}
     capabilities: AgentCapabilities = field(default_factory=AgentCapabilities)
     skills: List[AgentSkill] = field(default_factory=list)
