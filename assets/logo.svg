@@ -1,66 +1,104 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" fill="none">
   <defs>
+    <!-- Background gradient -->
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0F172A"/>
-      <stop offset="50%" stop-color="#1E1B4B"/>
-      <stop offset="100%" stop-color="#172554"/>
+      <stop offset="40%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#0F172A"/>
     </linearGradient>
+
+    <!-- Star gradient -->
     <linearGradient id="star" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#FDE68A"/>
-      <stop offset="50%" stop-color="#FACC15"/>
+      <stop offset="0%" stop-color="#FEF3C7"/>
+      <stop offset="40%" stop-color="#FACC15"/>
       <stop offset="100%" stop-color="#EAB308"/>
     </linearGradient>
+
+    <!-- Accent ring gradient -->
     <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#67E8F9" stop-opacity="0.6"/>
-      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0.3"/>
+      <stop offset="0%" stop-color="#67E8F9" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#A78BFA" stop-opacity="0.25"/>
+    </linearGradient>
+
+    <!-- Subtle glow for star -->
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#FDE68A" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#FDE68A" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Accent line gradient -->
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366F1" stop-opacity="0"/>
+      <stop offset="15%" stop-color="#6366F1" stop-opacity="0.6"/>
+      <stop offset="85%" stop-color="#6366F1" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
     </linearGradient>
   </defs>
 
-  <!-- Background circle -->
-  <circle cx="256" cy="256" r="248" fill="url(#bg)" stroke="#1E293B" stroke-width="16"/>
+  <!-- Background rectangle -->
+  <rect x="0" y="0" width="1200" height="400" rx="16" fill="url(#bg)"/>
+  <rect x="0" y="0" width="1200" height="400" rx="16" stroke="#1E293B" stroke-width="2"/>
 
-  <!-- Orbital rings -->
-  <ellipse cx="256" cy="256" rx="180" ry="60" stroke="url(#ring)" stroke-width="1.5" stroke-dasharray="6 8" transform="rotate(-30 256 256)" opacity="0.4"/>
-  <ellipse cx="256" cy="256" rx="200" ry="50" stroke="url(#ring)" stroke-width="1" stroke-dasharray="4 12" transform="rotate(20 256 256)" opacity="0.25"/>
+  <!-- Subtle orbital arcs behind the star -->
+  <ellipse cx="240" cy="200" rx="160" ry="50" stroke="url(#ring)" stroke-width="1.2" stroke-dasharray="6 10" transform="rotate(-25 240 200)" opacity="0.3"/>
+  <ellipse cx="240" cy="200" rx="180" ry="40" stroke="url(#ring)" stroke-width="0.8" stroke-dasharray="3 14" transform="rotate(15 240 200)" opacity="0.2"/>
 
-  <!-- Constellations dots (Big Dipper → Polaris hint) -->
-  <circle cx="148" cy="180" r="3" fill="#94A3B8" opacity="0.6"/>
-  <circle cx="176" cy="164" r="3" fill="#94A3B8" opacity="0.6"/>
-  <circle cx="204" cy="152" r="3" fill="#94A3B8" opacity="0.7"/>
-  <circle cx="200" cy="190" r="2.5" fill="#94A3B8" opacity="0.5"/>
-  <circle cx="226" cy="176" r="2.5" fill="#94A3B8" opacity="0.5"/>
-  <circle cx="232" cy="210" r="2" fill="#94A3B8" opacity="0.4"/>
-  <circle cx="244" cy="196" r="2" fill="#94A3B8" opacity="0.4"/>
+  <!-- Constellation dots — subtle backdrop -->
+  <circle cx="110" cy="150" r="2.5" fill="#94A3B8" opacity="0.4"/>
+  <circle cx="140" cy="135" r="2.5" fill="#94A3B8" opacity="0.4"/>
+  <circle cx="170" cy="125" r="2" fill="#94A3B8" opacity="0.5"/>
+  <circle cx="165" cy="170" r="2" fill="#94A3B8" opacity="0.3"/>
+  <circle cx="195" cy="158" r="2" fill="#94A3B8" opacity="0.3"/>
+  <circle cx="200" cy="190" r="1.5" fill="#94A3B8" opacity="0.25"/>
+  <circle cx="215" cy="175" r="1.5" fill="#94A3B8" opacity="0.25"/>
 
-  <!-- Faint line from pointer stars to Polaris -->
-  <line x1="204" y1="152" x2="256" y2="256" stroke="#64748B" stroke-width="0.5" opacity="0.3" stroke-dasharray="3 6"/>
+  <!-- Faint pointer lines -->
+  <line x1="170" y1="125" x2="240" y2="200" stroke="#64748B" stroke-width="0.5" opacity="0.15" stroke-dasharray="4 8"/>
 
-  <!-- Polaris star — four-pointed cross pattern -->
-  <g transform="translate(256, 256)">
-    <!-- Glow -->
-    <circle cx="0" cy="0" r="48" fill="#FDE68A" opacity="0.08"/>
-    <circle cx="0" cy="0" r="32" fill="#FDE68A" opacity="0.12"/>
-    <circle cx="0" cy="0" r="18" fill="#FDE68A" opacity="0.2"/>
+  <!-- Polaris star — centered vertically in left third -->
+  <g transform="translate(240, 200)">
+    <!-- Outer glow -->
+    <circle cx="0" cy="0" r="75" fill="url(#glow)"/>
 
-    <!-- Main 4-pointed star -->
-    <polygon points="0,-38 10,-10 38,0 10,10 0,38 -10,10 -38,0 -10,-10" fill="url(#star)" opacity="0.95"/>
+    <!-- Multi-layer glow rings -->
+    <circle cx="0" cy="0" r="55" fill="#FDE68A" opacity="0.06"/>
+    <circle cx="0" cy="0" r="38" fill="#FDE68A" opacity="0.10"/>
+    <circle cx="0" cy="0" r="22" fill="#FDE68A" opacity="0.18"/>
 
-    <!-- Inner diamond accent -->
-    <polygon points="0,-12 8,0 0,12 -8,0" fill="#FFF7ED" opacity="0.9"/>
+    <!-- Main four-pointed star -->
+    <polygon points="0,-45 12,-12 45,0 12,12 0,45 -12,12 -45,0 -12,-12" fill="url(#star)" opacity="0.95"/>
 
-    <!-- Small corner rays -->
-    <line x1="14" y1="-14" x2="22" y2="-22" stroke="#FDE68A" stroke-width="2" opacity="0.5"/>
-    <line x1="14" y1="14" x2="22" y2="22" stroke="#FDE68A" stroke-width="2" opacity="0.5"/>
-    <line x1="-14" y1="-14" x2="-22" y2="-22" stroke="#FDE68A" stroke-width="2" opacity="0.5"/>
-    <line x1="-14" y1="14" x2="-22" y2="22" stroke="#FDE68A" stroke-width="2" opacity="0.5"/>
+    <!-- Inner diamond -->
+    <polygon points="0,-14 9,0 0,14 -9,0" fill="#FFF7ED" opacity="0.9"/>
+
+    <!-- Corner accent rays -->
+    <line x1="16" y1="-16" x2="26" y2="-26" stroke="#FDE68A" stroke-width="2.5" opacity="0.45"/>
+    <line x1="16" y1="16" x2="26" y2="26" stroke="#FDE68A" stroke-width="2.5" opacity="0.45"/>
+    <line x1="-16" y1="-16" x2="-26" y2="-26" stroke="#FDE68A" stroke-width="2.5" opacity="0.45"/>
+    <line x1="-16" y1="16" x2="-26" y2="26" stroke="#FDE68A" stroke-width="2.5" opacity="0.45"/>
+
+    <!-- Tiny dot accents at ray tips -->
+    <circle cx="26" cy="-26" r="2" fill="#FDE68A" opacity="0.3"/>
+    <circle cx="26" cy="26" r="2" fill="#FDE68A" opacity="0.3"/>
+    <circle cx="-26" cy="-26" r="2" fill="#FDE68A" opacity="0.3"/>
+    <circle cx="-26" cy="26" r="2" fill="#FDE68A" opacity="0.3"/>
   </g>
 
-  <!-- Text: POLARIS -->
-  <text x="256" y="370" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="52" font-weight="700" fill="#F8FAFC" letter-spacing="8">POLARIS</text>
+  <!-- Vertical divider line -->
+  <line x1="390" y1="100" x2="390" y2="300" stroke="#334155" stroke-width="1" opacity="0.4"/>
+
+  <!-- Title: POLARIS -->
+  <text x="420" y="195" font-family="system-ui, -apple-system, sans-serif" font-size="72" font-weight="800" fill="#F8FAFC" letter-spacing="6">POLARIS</text>
+
+  <!-- Title underline accent -->
+  <rect x="420" y="210" width="180" height="3" rx="1.5" fill="#6366F1" opacity="0.7"/>
 
   <!-- Tagline -->
-  <text x="256" y="408" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="20" fill="#94A3B8" letter-spacing="3">NAVIGATE COMPLEXITY WITH AI</text>
+  <text x="420" y="248" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#94A3B8" letter-spacing="2">NAVIGATE COMPLEXITY WITH AI</text>
 
   <!-- Bottom accent line -->
-  <line x1="170" y1="432" x2="342" y2="432" stroke="#6366F1" stroke-width="2" opacity="0.5"/>
+  <line x1="420" y1="270" x2="1100" y2="270" stroke="url(#accent)" stroke-width="1.5"/>
+
+  <!-- Small version badge area -->
+  <text x="420" y="310" font-family="monospace" font-size="14" fill="#475569" letter-spacing="1">AUTONOMOUS AGENT FRAMEWORK  ·  OODA LOOP  ·  MCP  ·  A2A</text>
 </svg>
