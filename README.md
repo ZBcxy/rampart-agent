@@ -31,8 +31,10 @@ polaris                                 # Interactive REPL — full conversation
 ## Quick Start
 
 ```bash
-# 1. Install
-pip install polaris-agent
+# 1. Install (pick one)
+npm install -g polaris-agent     # npm (recommended)
+pip install polaris-agent        # PyPI
+pipx install polaris-agent       # pipx (isolated)
 
 # 2. Configure (interactive — 30 seconds)
 polaris init
@@ -44,9 +46,6 @@ polaris "Hello! What can you do?"
 ### More install options
 
 ```bash
-# pipx (isolated)
-pipx install polaris-agent
-
 # Docker
 docker run -p 8000:8000 -e OPENAI_API_KEY=sk-... ghcr.io/zbcxy/polaris-agent:latest
 docker compose up -d
@@ -161,15 +160,18 @@ polaris          # ✦ Auto-detected Ollama! Model: qwen3:8b
 | `polaris --logo [--style ...]` | Display brand logo |
 | `polaris --version` | Version info |
 
-### Install lifecycle
+### Install / Uninstall
 
 | Command | Description |
 |---------|-------------|
-| `python install.py` | Install + launch |
-| `python install.py --upgrade` | Upgrade in-place |
+| `npm install -g polaris-agent` | npm global install (recommended) |
+| `npm uninstall -g polaris-agent` | npm uninstall (cleanup everything) |
+| `pip install polaris-agent` | PyPI install |
+| `pip uninstall polaris-agent` | PyPI uninstall |
+| `pipx install polaris-agent` | pipx isolated install |
+| `python install.py` | One-command curl install |
 | `python install.py --uninstall` | Full uninstall |
-| `python install.py --uninstall --keep-data` | Uninstall, keep config |
-| `python install.py --verify` | Verify installation integrity |
+| `python install.py --verify` | Verify installation |
 | `python install.py --doctor` | Environment diagnostics |
 
 ---
