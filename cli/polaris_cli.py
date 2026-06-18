@@ -53,6 +53,12 @@ def _c(code: str, text: str) -> str:
     return f"\033[{colors.get(code, '0')}m{text}\033[0m"
 
 
+def _strip_ansi(text: str) -> str:
+    """Remove ANSI escape sequences, returning only visible characters."""
+    import re
+    return re.sub(r"\033\[[0-9;]*m", "", text)
+
+
 # ── Direct module imports (bypass core.__init__ heavy deps) ────────────────
 
 def _import_by_path(rel_path: str, name: str = None):
@@ -551,13 +557,39 @@ def cmd_mcp_remove(name: str):
 # ── Config commands ────────────────────────────────────────────────────────
 
 def cmd_config_show():
-    """Display full resolved configuration."""
+    """Display full configuration with layer sources (like Claude Code)."""
     cm = _get_cm()
     data = cm.to_dict()
 
-    print(f"\n{_c('c', '┌' + '─' * 58 + '┐')}")
-    print(f"{_c('c', '│')}  {_c('bold', '✦ Polaris Agent — Configuration'):<56}{_c('c', '│')}")
-    print(f"{_c('c', '├' + '─' * 58 + '┤')}")
+    BOX_W = 70
+    INNER_W = BOX_W - 2
+
+    def _pad(text: str, width: int) -> str:
+        visible = _strip_ansi(str(text))
+        return str(text) + " " * max(0, width - len(visible))
+
+    def _row(*cols: tuple[str, int]) -> str:
+        parts = [_pad(text, w) for text, w in cols]
+        return f"{_c('c', '│')} {_pad('  '.join(parts), INNER_W)} {_c('c', '│')}"
+
+    top    = _c("c", "┌" + "─" * BOX_W + "┐")
+    sep    = _c("c", "├" + "─" * BOX_W + "┤")
+    bottom = _c("c", "└" + "─" * BOX_W + "┘")
+    empty  = _c("c", "│") + " " * BOX_W + _c("c", "│")
+
+    # Source labels
+    SRC = {"env": "ENV", "local": "LOCAL", "project": "PROJ", "global": "GLOB", "default": "DEF"}
+    SRC_C = {"env": _c("y", "ENV"), "local": _c("m", "LOC"), "project": _c("b", "PRJ"),
+             "global": _c("c", "GLB"), "default": _c("dim", "DEF")}
+
+    print(f"\n{top}")
+    print(_row((_c("bold", "✦ Polaris Agent — Configuration"), INNER_W)))
+    # Show layer files
+    for label, path in cm.all_paths():
+        suffix = _c("g", " ✓") if path and path.exists() else _c("dim", " —")
+        p = str(path) if path else "(none)"
+        print(_row((_c("dim", label + ":"), 8), (_c("dim", p + suffix), 56)))
+    print(sep)
 
     categories = [
         ("LLM Provider", ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "LLM_MODEL", "LLM_PROVIDER",
@@ -569,18 +601,21 @@ def cmd_config_show():
     ]
 
     for cat, keys in categories:
-        print(f"{_c('c', '│')}  {_c('y', cat):<56}{_c('c', '│')}")
+        print(_row((_c("y", cat), INNER_W)))
         for k in keys:
             v = data.get(k, "")
+            src = cm.get_source(k)
+            src_tag = SRC_C.get(src, src)
+
             if k.endswith("_API_KEY") or k == "JWT_SECRET":
                 v = str(v)[:4] + "****" if v and len(str(v)) > 4 else _c("dim", "(not set)")
             elif v == "" or v is None:
                 v = _c("dim", "(default)")
-            print(f"{_c('c', '│')}    {_c('dim', k):<30} {str(v):<24}{_c('c', '│')}")
-        print(f"{_c('c', '│'):<60}{_c('c', '│')}")
 
-    print(f"{_c('c', '│')}  Config: {str(cm.config_path):<47}{_c('c', '│')}")
-    print(f"{_c('c', '└' + '─' * 58 + '┘')}\n")
+            print(_row((_c("dim", k), 24), (str(v), 26), (src_tag, 5)))
+        print(empty)
+
+    print(f"{bottom}\n")
 
 
 def _ok(msg): print(f"{_c('g', '✓')} {msg}")
@@ -913,10 +948,11 @@ def main():
     cs = cp.add_subparsers(dest="config_action")
     cs.add_parser("show", help="Show all config")
     cg = cs.add_parser("get", help="Get a value"); cg.add_argument("key")
-    cset = cs.add_parser("set", help="Set a value"); cset.add_argument("key"); cset.add_argument("value")
-    cu = cs.add_parser("unset", help="Unset a key"); cu.add_argument("key")
+    cset = cs.add_parser("set", help="Set a value"); cset.add_argument("key"); cset.add_argument("value"); cset.add_argument("--global", "-g", dest="layer", action="store_const", const="global", help="Write to global config"); cset.add_argument("--project", "-p", dest="layer", action="store_const", const="project", help="Write to project config (.polaris/config.json)"); cset.add_argument("--local", "-l", dest="layer", action="store_const", const="local", help="Write to local config (.polaris/config.local.json)")
+    cu = cs.add_parser("unset", help="Unset a key"); cu.add_argument("key"); cu.add_argument("--global", "-g", dest="layer", action="store_const", const="global", help="Remove from global"); cu.add_argument("--project", "-p", dest="layer", action="store_const", const="project", help="Remove from project"); cu.add_argument("--local", "-l", dest="layer", action="store_const", const="local", help="Remove from local")
     cs.add_parser("reset", help="Reset to defaults")
     cs.add_parser("path", help="Show config file path")
+    cpath = cs.add_parser("paths", help="Show all config file paths")
     ce = cs.add_parser("export", help="Export as named profile"); ce.add_argument("--profile", "-p", required=True)
 
     # profiles
@@ -982,10 +1018,20 @@ def main():
     if cmd == "config":
         act = getattr(args, "config_action", None)
         if act == "get":      _print_val(_get_cm().get(args.key))
-        elif act == "set":    cm_c = _get_cm(); cm_c.set(args.key, args.value); cm_c.write(); _ok(f"{args.key} = {args.value}")
-        elif act == "unset":  cm_c = _get_cm(); cm_c.unset(args.key); cm_c.write(); _ok(f"{args.key} unset")
+        elif act == "set":
+            cm_c = _get_cm(); layer = getattr(args, "layer", None) or "global"
+            cm_c.set(args.key, args.value, layer=layer); cm_c.write()
+            _ok(f"{args.key} = {args.value}  [{layer}]")
+        elif act == "unset":
+            cm_c = _get_cm(); layer = getattr(args, "layer", None) or "global"
+            cm_c.unset(args.key, layer=layer); cm_c.write()
+            _ok(f"{args.key} unset [{layer}]")
         elif act == "reset":  _get_cm().reset(); _ok("Config reset to defaults")
         elif act == "path":   print(str(_get_cm().config_path))
+        elif act == "paths":
+            for label, p in _get_cm().all_paths():
+                marker = " ✓" if p and p.exists() else ""
+                print(f"{label}: {p}{marker}")
         elif act == "export": cmd_config_export(args.profile)
         else:                 cmd_config_show()
         return

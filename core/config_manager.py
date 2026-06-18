@@ -1,19 +1,23 @@
-"""✦ Polaris Agent — Configuration Manager
+"""✦ Polaris Agent — Layered Configuration Manager
 
-Config priority (highest first):
-  1. CLI arguments
+Config layers (like Claude Code's settings.json + .claude.json):
+
+  1. CLI arguments                         (highest priority)
   2. Environment variables
-  3. ~/.polaris/config.json  (canonical config file)
-  4. .env file
-  5. Built-in defaults
+  3. .polaris/config.local.json  (project-local, gitignored)
+  4. .polaris/config.json        (project, committed)
+  5. ~/.polaris/config.json      (global)
+  6. Built-in defaults            (lowest)
 
 Usage:
     from core.config_manager import ConfigManager
 
     cm = ConfigManager()
     model = cm.get("LLM_MODEL")
-    cm.set("LLM_MODEL", "gpt-4o")
-    cm.write()  # persist to disk
+    cm.set("LLM_MODEL", "gpt-4o")   # writes to global by default
+    cm.set("LLM_MODEL", "claude-4", layer="project")
+    cm.write()                       # persist all layers
+    print(cm.get_source("LLM_MODEL"))  # "project"
 """
 
 import json
@@ -24,12 +28,9 @@ from typing import Any
 # ── Constants ──────────────────────────────────────────────────────────────
 
 POLARIS_HOME = Path(os.environ.get("POLARIS_HOME", Path.home() / ".polaris"))
-CONFIG_FILE = POLARIS_HOME / "config.json"
-ENV_FILE = POLARIS_HOME / ".env"
 
-# Canonical defaults — everything has a sensible fallback
+# Canonical defaults
 DEFAULTS: dict[str, Any] = {
-    # ── LLM Provider ──
     "LLM_MODEL": "gpt-4o",
     "LLM_PROVIDER": "openai",
     "LLM_TEMPERATURE": 0.3,
@@ -37,23 +38,19 @@ DEFAULTS: dict[str, Any] = {
     "OPENAI_API_KEY": "",
     "OPENAI_API_BASE": "",
     "ANTHROPIC_API_KEY": "",
-    # ── Server ──
     "SERVER_HOST": "0.0.0.0",
     "SERVER_PORT": 8000,
     "JWT_SECRET": "",
     "TOKEN_EXPIRE_HOURS": 24,
     "RATE_LIMIT_USER": 100,
     "CORS_ALLOW_ORIGINS": '["*"]',
-    # ── Agent Runtime ──
     "POLARIS_HOME": str(POLARIS_HOME),
     "POLARIS_LOG_LEVEL": "INFO",
     "POLARIS_AUTONOMY": "L2",
     "POLARIS_MAX_STEPS": 20,
-    # ── Local LLM ──
     "LOCAL_LLM_PROVIDER": "",
     "LOCAL_LLM_MODEL": "",
     "LOCAL_LLM_URL": "",
-    # ── Memory ──
     "REDIS_HOST": "localhost",
     "REDIS_PORT": 6379,
     "MILVUS_HOST": "localhost",
@@ -64,142 +61,204 @@ DEFAULTS: dict[str, Any] = {
 
 
 class ConfigManager:
-    """Unified configuration manager with layered priority resolution.
+    """Layered configuration manager.
 
-    Reads in order: defaults → .env → config.json → env vars.
-    Writes to: ~/.polaris/config.json
+    Three config files (plus env vars and defaults):
+      Layer 3 (project-local): .polaris/config.local.json   ← gitignored
+      Layer 2 (project):       .polaris/config.json         ← committed
+      Layer 1 (global):        ~/.polaris/config.json       ← user-global
+
+    Resolution order: env var > L3 > L2 > L1 > defaults
     """
 
-    def __init__(self, home: Path | None = None):
-        self._home = home or POLARIS_HOME
-        self._config_path = self._home / "config.json"
-        self._env_path = self._home / ".env"
-        self._data: dict[str, Any] = {}
+    def __init__(self, cwd: Path | None = None):
+        self._cwd = cwd or Path.cwd()
+        self._home = POLARIS_HOME
+
+        # Layer paths (highest priority first in resolution)
+        self._global_path = self._home / "config.json"
+        self._project_path: Path | None = self._find_project_config()
+        self._local_path: Path | None = self._find_local_config()
+
+        # Data stores per layer
+        self._global: dict[str, Any] = {}
+        self._project: dict[str, Any] = {}
+        self._local: dict[str, Any] = {}
+
         self._ensure_dirs()
-        self._load()
+        self._load_all()
+
+    # ── Layer discovery ─────────────────────────────────────────────────
+
+    def _find_project_config(self) -> Path | None:
+        """Walk up from cwd to find .polaris/config.json.
+        Stops before ~/.polaris to avoid treating global as project."""
+        d = self._cwd.resolve()
+        home = Path.home().resolve()
+        while True:
+            candidate = d / ".polaris" / "config.json"
+            if candidate.exists() and candidate != self._global_path:
+                return candidate
+            parent = d.parent
+            if parent == d or d == home:
+                break
+            d = parent
+        return None
+
+    def _find_local_config(self) -> Path | None:
+        """Walk up from cwd to find .polaris/config.local.json."""
+        d = self._cwd.resolve()
+        home = Path.home().resolve()
+        while True:
+            candidate = d / ".polaris" / "config.local.json"
+            if candidate.exists() and candidate != self._global_path:
+                return candidate
+            parent = d.parent
+            if parent == d or d == home:
+                break
+            d = parent
+        return None
 
     # ── File I/O ────────────────────────────────────────────────────────
 
     def _ensure_dirs(self) -> None:
         self._home.mkdir(parents=True, exist_ok=True)
 
-    def _load(self) -> None:
-        """Load config from JSON file. If absent, seed from .env."""
-        if self._config_path.exists():
-            try:
-                self._data = json.loads(self._config_path.read_text())
-            except (json.JSONDecodeError, Exception):
-                self._data = {}
-        else:
-            self._data = {}
-            self._seed_from_dotenv()
-
-    def _seed_from_dotenv(self) -> None:
-        """On first run, pull values from .env if it exists."""
-        if not self._env_path.exists():
-            return
+    def _load_json(self, path: Path) -> dict[str, Any]:
         try:
-            for line in self._env_path.read_text().splitlines():
-                line = line.strip()
-                if not line or line.startswith("#") or "=" not in line:
-                    continue
-                key, _, val = line.partition("=")
-                key = key.strip()
-                val = val.strip().strip('"').strip("'")
-                if key in DEFAULTS and val and val != f"{key}=your-key-here":
-                    self._data[key] = val
-        except Exception:
-            pass
+            return json.loads(path.read_text())
+        except (json.JSONDecodeError, FileNotFoundError, Exception):
+            return {}
+
+    def _load_all(self) -> None:
+        self._global = self._load_json(self._global_path)
+        if self._project_path:
+            self._project = self._load_json(self._project_path)
+        if self._local_path:
+            self._local = self._load_json(self._local_path)
 
     def write(self) -> None:
-        """Persist current config to disk."""
+        """Persist in-memory changes to the appropriate layer files."""
         self._ensure_dirs()
-        self._config_path.write_text(json.dumps(self._data, indent=2, ensure_ascii=False, default=str))
+        if self._global:
+            self._global_path.write_text(json.dumps(self._global, indent=2, ensure_ascii=False, default=str))
+        if self._project is not None and self._project_path:
+            self._project_path.parent.mkdir(parents=True, exist_ok=True)
+            self._project_path.write_text(json.dumps(self._project, indent=2, ensure_ascii=False, default=str))
+        if self._local is not None and self._local_path:
+            self._local_path.parent.mkdir(parents=True, exist_ok=True)
+            self._local_path.write_text(json.dumps(self._local, indent=2, ensure_ascii=False, default=str))
 
     def reload(self) -> None:
-        self._load()
+        self._load_all()
 
     # ── Get / Set ───────────────────────────────────────────────────────
 
     def get(self, key: str, default: Any = None) -> Any:
-        """Resolve a config value through the priority chain.
+        """Resolve a config value through all layers.
 
-        Priority: env var > config file > built-in defaults
+        Priority: env var > local > project > global > defaults
         """
-        # 1. Environment variable (highest priority)
+        # 1. Environment variable
         env_val = os.environ.get(key)
         if env_val is not None and env_val != "":
             return self._coerce(env_val, key)
 
-        # 2. Config file
-        if key in self._data and self._data[key] not in (None, ""):
-            return self._data[key]
+        # 2. Project-local layer
+        if key in self._local and self._local[key] not in (None, ""):
+            return self._local[key]
 
-        # 3. Built-in default
+        # 3. Project layer
+        if key in self._project and self._project[key] not in (None, ""):
+            return self._project[key]
+
+        # 4. Global layer
+        if key in self._global and self._global[key] not in (None, ""):
+            return self._global[key]
+
+        # 5. Defaults
         if key in DEFAULTS:
             return DEFAULTS[key]
 
         return default
 
-    def get_raw(self, key: str, default: Any = None) -> Any:
-        """Get value from config file only (ignore env vars)."""
-        return self._data.get(key, default or DEFAULTS.get(key))
+    def get_source(self, key: str) -> str:
+        """Return which layer provides the value: 'env' | 'local' | 'project' | 'global' | 'default'."""
+        if os.environ.get(key):
+            return "env"
+        if key in self._local and self._local[key] not in (None, ""):
+            return "local"
+        if key in self._project and self._project[key] not in (None, ""):
+            return "project"
+        if key in self._global and self._global[key] not in (None, ""):
+            return "global"
+        return "default"
 
-    def set(self, key: str, value: Any) -> None:
-        """Set a config value (in-memory, call write() to persist)."""
-        self._data[key] = value
+    def set(self, key: str, value: Any, layer: str = "global") -> None:
+        """Set a config value. layer: 'global', 'project', or 'local'."""
+        if layer == "local":
+            if self._local_path is None:
+                self._local_path = self._cwd / ".polaris" / "config.local.json"
+            self._local[key] = value
+        elif layer == "project":
+            if self._project_path is None:
+                self._project_path = self._cwd / ".polaris" / "config.json"
+            self._project[key] = value
+        else:
+            self._global[key] = value
 
-    def unset(self, key: str) -> None:
-        """Remove a config key (reverts to default/env)."""
-        self._data.pop(key, None)
+    def unset(self, key: str, layer: str = "global") -> None:
+        if layer == "local":
+            self._local.pop(key, None)
+        elif layer == "project":
+            self._project.pop(key, None)
+        else:
+            self._global.pop(key, None)
 
-    def reset(self) -> None:
-        """Clear all config, restoring defaults."""
-        self._data = {}
-        if self._config_path.exists():
-            self._config_path.unlink()
-        self._load()
+    def reset(self, layer: str | None = None) -> None:
+        """Clear config. If layer is None, clear all layers."""
+        if layer == "global" or layer is None:
+            self._global = {}
+            if self._global_path.exists():
+                self._global_path.unlink()
+        if layer == "project" or layer is None:
+            self._project = {}
+            if self._project_path and self._project_path.exists():
+                self._project_path.unlink()
+        if layer == "local" or layer is None:
+            self._local = {}
+            if self._local_path and self._local_path.exists():
+                self._local_path.unlink()
+        self._load_all()
 
     # ── Bulk ────────────────────────────────────────────────────────────
 
     def to_dict(self) -> dict[str, Any]:
-        """Return all resolved values (for display)."""
         result = {}
         for key in DEFAULTS:
             result[key] = self.get(key)
-        for key in self._data:
-            if key not in result:
-                result[key] = self._data[key]
+        for store in [self._global, self._project, self._local]:
+            for key in store:
+                if key not in result:
+                    result[key] = store[key]
         return result
 
     def to_env_file(self) -> str:
-        """Export config as .env file content."""
         lines = ["# ✦ Polaris Agent — Navigate Complexity with AI", ""]
         categories = [
-            ("LLM Provider", [
-                "OPENAI_API_KEY", "OPENAI_API_BASE", "ANTHROPIC_API_KEY",
-                "LLM_MODEL", "LLM_PROVIDER", "LLM_TEMPERATURE", "LLM_MAX_TOKENS",
-            ]),
-            ("Server", [
-                "SERVER_HOST", "SERVER_PORT", "JWT_SECRET",
-                "TOKEN_EXPIRE_HOURS", "RATE_LIMIT_USER", "CORS_ALLOW_ORIGINS",
-            ]),
-            ("Agent Runtime", [
-                "POLARIS_HOME", "POLARIS_LOG_LEVEL", "POLARIS_AUTONOMY", "POLARIS_MAX_STEPS",
-            ]),
-            ("Local LLM", [
-                "LOCAL_LLM_PROVIDER", "LOCAL_LLM_MODEL", "LOCAL_LLM_URL",
-            ]),
-            ("Memory & Storage", [
-                "REDIS_HOST", "REDIS_PORT", "MILVUS_HOST", "MILVUS_PORT",
-                "EMBEDDING_PROVIDER", "EMBEDDING_MODEL",
-            ]),
+            ("LLM Provider", ["OPENAI_API_KEY", "OPENAI_API_BASE", "ANTHROPIC_API_KEY",
+                              "LLM_MODEL", "LLM_PROVIDER", "LLM_TEMPERATURE", "LLM_MAX_TOKENS"]),
+            ("Server", ["SERVER_HOST", "SERVER_PORT", "JWT_SECRET",
+                        "TOKEN_EXPIRE_HOURS", "RATE_LIMIT_USER", "CORS_ALLOW_ORIGINS"]),
+            ("Agent Runtime", ["POLARIS_HOME", "POLARIS_LOG_LEVEL", "POLARIS_AUTONOMY", "POLARIS_MAX_STEPS"]),
+            ("Local LLM", ["LOCAL_LLM_PROVIDER", "LOCAL_LLM_MODEL", "LOCAL_LLM_URL"]),
+            ("Memory & Storage", ["REDIS_HOST", "REDIS_PORT", "MILVUS_HOST", "MILVUS_PORT",
+                                  "EMBEDDING_PROVIDER", "EMBEDDING_MODEL"]),
         ]
         for category, keys in categories:
             lines.append(f"# --- {category} ---")
             for k in keys:
-                v = self.get(k)
-                lines.append(f"{k}={v}")
+                lines.append(f"{k}={self.get(k)}")
             lines.append("")
         return "\n".join(lines)
 
@@ -207,16 +266,44 @@ class ConfigManager:
 
     @property
     def config_path(self) -> Path:
-        return self._config_path
+        """Primary config path (global)."""
+        return self._global_path
+
+    @property
+    def global_path(self) -> Path:
+        return self._global_path
+
+    @property
+    def project_path(self) -> Path | None:
+        return self._project_path
+
+    @property
+    def local_path(self) -> Path | None:
+        return self._local_path
 
     @property
     def home(self) -> Path:
         return self._home
 
+    def all_paths(self) -> list[tuple[str, Path | None]]:
+        """Return all config file paths with labels."""
+        return [
+            ("local",   self._local_path),
+            ("project", self._project_path),
+            ("global",  self._global_path),
+        ]
+
+    def raw_data(self) -> dict[str, dict[str, Any]]:
+        """Return raw data from each layer for display."""
+        return {
+            "local":   dict(self._local),
+            "project": dict(self._project),
+            "global":  dict(self._global),
+        }
+
     # ── Helpers ─────────────────────────────────────────────────────────
 
     def _coerce(self, value: str, key: str) -> Any:
-        """Coerce string env var to the type of its default."""
         default = DEFAULTS.get(key)
         if default is None:
             return value
@@ -235,12 +322,10 @@ class ConfigManager:
         return value
 
 
-# ── Ollama auto-discovery ──────────────────────────────────────────────────
+# ── Auto-discovery ─────────────────────────────────────────────────────────
 
 def discover_ollama() -> dict[str, Any] | None:
-    """Check if Ollama is running and return available info."""
     import urllib.request
-
     url = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
     try:
         req = urllib.request.Request(f"{url}/api/tags", method="GET")
@@ -253,9 +338,7 @@ def discover_ollama() -> dict[str, Any] | None:
 
 
 def discover_vllm() -> dict[str, Any] | None:
-    """Check if a vLLM/OpenAI-compatible server is running locally."""
     import urllib.request
-
     url = os.environ.get("LOCAL_LLM_URL", "http://localhost:8000/v1")
     try:
         req = urllib.request.Request(f"{url}/models", method="GET")

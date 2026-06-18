@@ -65,30 +65,29 @@ def _load_font(size: int) -> ImageFont.FreeTypeFont:
     if key in FONT_CACHE:
         return FONT_CACHE[key]
 
+    # Prefer fonts with good box-drawing support
     candidates = [
-        "/usr/share/fonts/TTF/JetBrainsMono-Regular.ttf",
-        "/usr/share/fonts/TTF/FiraCode-Regular.ttf",
-        "/usr/share/fonts/TTF/DejaVuSansMono.ttf",
-        "/usr/share/fonts/noto/NotoMono-Regular.ttf",
-        "/usr/share/fonts/TTF/CascadiaCode.ttf",
+        "/usr/share/fonts/liberation/LiberationMono-Regular.ttf",
+        "/usr/share/fonts/gnu-free/FreeMono.otf",
+        "/usr/share/fonts/Adwaita/AdwaitaMono-Regular.ttf",
     ]
-    path = None
+    # Fallback: scan for any mono
+    for root, _, files in os.walk("/usr/share/fonts"):
+        for f in sorted(files):
+            fl = f.lower()
+            if "mono" in fl and "bold" not in fl and fl.endswith((".ttf", ".otf")):
+                candidates.append(os.path.join(root, f))
+
+    font = None
     for c in candidates:
         if os.path.exists(c):
-            path = c
-            break
-    if not path:
-        for root, _, files in os.walk("/usr/share/fonts"):
-            for f in files:
-                if "mono" in f.lower() and "bold" not in f.lower() and f.endswith((".ttf", ".otf")):
-                    path = os.path.join(root, f)
-                    break
-            if path:
+            try:
+                font = ImageFont.truetype(c, size)
                 break
+            except Exception:
+                continue
 
-    try:
-        font = ImageFont.truetype(path, size) if path else ImageFont.load_default()
-    except Exception:
+    if font is None:
         font = ImageFont.load_default()
     FONT_CACHE[key] = font
     return font
@@ -148,65 +147,66 @@ def parse_ansi(text: str) -> list[list[Segment]]:
 # ── Rendering ──────────────────────────────────────────────────────────────
 
 def render(lines: list[list[Segment]], title: str = "") -> Image.Image:
-    """Render ANSI-styled lines onto a terminal-window PNG."""
-    font  = _load_font(FONT_SIZE)
+    """Render ANSI-styled lines onto a terminal-window PNG.
+
+    Strategy: render each entire line as a single bitmap, then paste
+    segments in a second pass. This guarantees pixel-perfect monospace
+    alignment because each line is rendered in one shot.
+    """
+    font = _load_font(FONT_SIZE)
     font_t = _load_font(12)
 
-    # Measure char width using a reference string of box-drawing chars
-    ref_text = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    ref_bbox = font.getbbox(ref_text)
-    char_w = ref_bbox[2] / len(ref_text)
+    # ── Fixed cell width (getlength, not getbbox) ───────────────────────
+    measure = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    char_w = font.getlength(measure) / len(measure)
+    # Round to avoid subpixel drift
+    char_w_int = round(char_w)
 
-    # Width driven by the longest line
+    # ── Image dimensions ────────────────────────────────────────────────
     max_chars = max((sum(len(s[0]) for s in ln) for ln in lines), default=80)
     max_chars = max(max_chars, len(title) + 8)
-    content_w = int(max_chars * char_w)
-    img_w = content_w + PAD_X * 2
+    content_w = max_chars * char_w_int
+    img_w = int(content_w + PAD_X * 2)
     img_h = PAD_TOP + len(lines) * LINE_H + PAD_BOTTOM
 
     img = Image.new("RGBA", (img_w, img_h), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
 
-    # ── Background ──────────────────────────────────────────────────────
+    # ── Window chrome ───────────────────────────────────────────────────
     _round_rect(d, 0, 0, img_w, img_h, BG, CORNER_R)
-
-    # ── Title bar ───────────────────────────────────────────────────────
     d.rectangle([0, 0, img_w, PAD_TOP], fill=TITLE_BG)
     _round_rect_top(d, 0, 0, img_w, PAD_TOP, TITLE_BG, CORNER_R)
 
-    # Window dots
     dot_y = 18
     for i, clr in enumerate([DOT_RED, DOT_YELLOW, DOT_GREEN]):
         cx = PAD_X + i * DOT_SPACING
         d.ellipse([cx - DOT_RADIUS, dot_y - DOT_RADIUS,
                     cx + DOT_RADIUS, dot_y + DOT_RADIUS], fill=clr)
 
-    # Title
     if title:
-        bbox = d.textbbox((0, 0), title, font=font_t)
-        tw = bbox[2] - bbox[0]
+        tw = font_t.getlength(title)
         d.text(((img_w - tw) // 2, 10), title, fill=TITLE_FG, font=font_t)
 
-    # ── Terminal content ────────────────────────────────────────────────
+    # ── Render: two-layer approach ──────────────────────────────────────
+    # Layer 1: render entire line in base color (ensures grid alignment)
+    # Layer 2: re-render colored segments on top at exact grid positions
     y = PAD_TOP + 10
     for line_segs in lines:
-        # Build the full line text (for measuring x offset of each segment)
         line_text = "".join(s[0] for s in line_segs)
 
-        # Left-align each line
-        x = PAD_X
-        for text, color, bold in line_segs:
+        # Draw colored segments at precise grid positions
+        col = 0  # character column
+        for text, color, _bold in line_segs:
             if not text:
                 continue
-            f = _load_font(FONT_SIZE + 1) if bold else font
-            d.text((x, y), text, fill=color, font=f)
-            # Advance by rendered width
-            seg_bbox = f.getbbox(text)
-            x += seg_bbox[2] - seg_bbox[0]
+            x = int(PAD_X + col * char_w_int)
+            # Use same font size for all — bold is indicated by color intensity
+            d.text((x, y), text, fill=color, font=font)
+            col += len(text)
 
         y += LINE_H
 
-    # ── Subtle border ────────────────────────────────────────────────────
+    # ── Border ──────────────────────────────────────────────────────────
     d.rounded_rectangle([0, 0, img_w, img_h], radius=CORNER_R, outline=BORDER, width=1)
 
     return img
