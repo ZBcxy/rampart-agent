@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo.svg" alt="✦ Polaris Agent" width="800">
+  <img src="https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/assets/logo.svg?v=2" alt="✦ Polaris Agent" width="800">
   <p>
     <img src="https://img.shields.io/badge/version-1.1.0-blue" alt="Version">
     <img src="https://img.shields.io/badge/python-3.11+-green" alt="Python">
