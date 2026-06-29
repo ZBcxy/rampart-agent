@@ -22,6 +22,12 @@ jobs:
       - run: npm ci --ignore-scripts
         working-directory: npm
 
+      - name: Set version from git tag
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          cd npm
+          npm version $VERSION --no-git-tag-version
+
       - name: Publish to npm (with provenance)
         run: npm publish --provenance --access public
         working-directory: npm
