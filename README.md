@@ -2,7 +2,7 @@
 
 [English](#english) | [中文](#中文)
 
-<img src="https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/assets/logo.svg?v=3" alt="Rampart Agent" width="800">
+<img src="https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/assets/logo.svg?v=4" alt="Rampart Agent" width="800">
 
 <p>
   <img src="https://img.shields.io/badge/version-1.1.0-blue" alt="Version">
