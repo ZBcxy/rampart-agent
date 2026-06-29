@@ -12,13 +12,13 @@ from mcp.protocol import (
     parse_message,
     serialize_message,
 )
-from mcp.server import PolarisMCPServer
+from mcp.server import RampartMCPServer
 
 
 @pytest.fixture
 def server():
     """Create a test MCP server with mock tools."""
-    server = PolarisMCPServer(name="test-server")
+    server = RampartMCPServer(name="test-server")
 
     # Register mock tools directly
     server.register_tool(
@@ -168,7 +168,7 @@ class TestMCPServerWithRegistry:
         registry = ToolRegistry()
         registry.register_all()
 
-        server = PolarisMCPServer(tool_registry=registry)
+        server = RampartMCPServer(tool_registry=registry)
 
         req = create_request(MCPMethod.TOOLS_LIST)
         resp = server.handle_request(req)

@@ -1,6 +1,6 @@
-"""Polaris Agent SDK Client
+"""Rampart Agent SDK Client
 
-Provides a Python client for interacting with the Polaris Agent Gateway API.
+Provides a Python client for interacting with the Rampart Agent Gateway API.
 Supports synchronous and asynchronous usage patterns.
 """
 
@@ -62,8 +62,8 @@ class TaskInfo:
     result: Optional[Dict[str, Any]] = None
 
 
-class PolarisClient:
-    """Synchronous client for the Polaris Agent Gateway API."""
+class RampartClient:
+    """Synchronous client for the Rampart Agent Gateway API."""
 
     def __init__(
         self,
@@ -75,7 +75,7 @@ class PolarisClient:
         Initialize the client.
 
         Args:
-            base_url: Base URL of the Polaris Gateway API
+            base_url: Base URL of the Rampart Gateway API
             api_key: API key for authentication
             timeout: Request timeout in seconds
         """
@@ -289,8 +289,8 @@ class PolarisClient:
         self.close()
 
 
-class AsyncPolarisClient:
-    """Asynchronous client for the Polaris Agent Gateway API."""
+class AsyncRampartClient:
+    """Asynchronous client for the Rampart Agent Gateway API."""
 
     def __init__(
         self,

@@ -1,6 +1,6 @@
-"""MCP Client - Connect Polaris to external MCP servers.
+"""MCP Client - Connect Rampart to external MCP servers.
 
-Allows Polaris to discover and use tools from MCP-compatible servers,
+Allows Rampart to discover and use tools from MCP-compatible servers,
 including Claude Code's built-in tools, filesystem servers, web search servers, etc.
 
 Usage:
@@ -110,7 +110,7 @@ class MCPClient:
         # Initialize
         await self._send_stdio(conn, MCPMethod.INITIALIZE, {
             "protocolVersion": "2024-11-05",
-            "clientInfo": {"name": "Polaris-Agent", "version": "1.0.0"},
+            "clientInfo": {"name": "Rampart-Agent", "version": "1.0.0"},
             "capabilities": {},
         })
 
@@ -140,7 +140,7 @@ class MCPClient:
         # Initialize over HTTP
         await self._send_http(conn, MCPMethod.INITIALIZE, {
             "protocolVersion": "2024-11-05",
-            "clientInfo": {"name": "Polaris-Agent", "version": "1.0.0"},
+            "clientInfo": {"name": "Rampart-Agent", "version": "1.0.0"},
             "capabilities": {},
         })
 

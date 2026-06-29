@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * ✦ Polaris Agent — npm bin entry point
+ * ✦ Rampart Agent — npm bin entry point
  *
- * This script locates the Python polaris CLI and execs it.
+ * This script locates the Python rampart CLI and execs it.
  * It's a thin wrapper — the real work is done by the Python package.
  */
 
@@ -14,22 +14,22 @@ const os = require("os");
 function main() {
   const args = process.argv.slice(2);
 
-  // ── Try 1: polaris in PATH (pip/pipx) ─────────────────────────────────
-  const pathPolaris = findInPath("polaris");
-  if (pathPolaris && pathPolaris !== __filename) {
-    const result = spawnSync(pathPolaris, args, { stdio: "inherit" });
+  // ── Try 1: rampart in PATH (pip/pipx) ─────────────────────────────────
+  const pathRampart = findInPath("rampart");
+  if (pathRampart && pathRampart !== __filename) {
+    const result = spawnSync(pathRampart, args, { stdio: "inherit" });
     process.exit(result.status ?? 1);
   }
 
-  // ── Try 2: ~/.local/bin/polaris ──────────────────────────────────────
-  const localBin = path.join(os.homedir(), ".local", "bin", "polaris");
+  // ── Try 2: ~/.local/bin/rampart ──────────────────────────────────────
+  const localBin = path.join(os.homedir(), ".local", "bin", "rampart");
   if (fs.existsSync(localBin)) {
     const result = spawnSync(localBin, args, { stdio: "inherit" });
     process.exit(result.status ?? 1);
   }
 
   // ── Try 3: pipx venv ─────────────────────────────────────────────────
-  const pipxBin = path.join(os.homedir(), ".local", "pipx", "venvs", "polaris-agent", "bin", "polaris");
+  const pipxBin = path.join(os.homedir(), ".local", "pipx", "venvs", "rampart-agent", "bin", "rampart");
   if (fs.existsSync(pipxBin)) {
     const result = spawnSync(pipxBin, args, { stdio: "inherit" });
     process.exit(result.status ?? 1);
@@ -38,10 +38,10 @@ function main() {
   // ── Try 4: Python module directly ────────────────────────────────────
   const python = findPython();
   if (python) {
-    // Check if polaris package is importable
-    try {
-      execSync(`"${python}" -c "import cli.polaris_cli"`, { stdio: "ignore" });
-      const result = spawnSync(python, ["-m", "cli.polaris_cli", ...args], { stdio: "inherit" });
+    // Check if rampart package is importable
+  try {
+      execSync(`"${python}" -c "import cli.rampart_cli"`, { stdio: "ignore" });
+      const result = spawnSync(python, ["-m", "cli.rampart_cli", ...args], { stdio: "inherit" });
       process.exit(result.status ?? 1);
     } catch {
       // Package not installed yet
@@ -50,16 +50,16 @@ function main() {
 
   // ── Not found ─────────────────────────────────────────────────────────
   console.error("");
-  console.error("  ✦ Polaris Agent is not fully installed yet.");
+  console.error("  ✦ Rampart Agent is not fully installed yet.");
   console.error("");
   console.error("  The npm package is a distribution wrapper. The Python package");
   console.error("  still needs to be installed. Choose one:");
   console.error("");
-  console.error("    1. pip install polaris-agent");
-  console.error("    2. pipx install polaris-agent");
-  console.error("    3. curl -sSL https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/install.py | python3");
+  console.error("    1. pip install rampart-agent");
+  console.error("    2. pipx install rampart-agent");
+  console.error("    3. curl -sSL https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/install.py | python3");
   console.error("");
-  console.error("  Then run: polaris");
+  console.error("  Then run: rampart");
   console.error("");
   process.exit(1);
 }

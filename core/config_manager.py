@@ -1,12 +1,12 @@
-"""✦ Polaris Agent — Layered Configuration Manager
+"""✦ Rampart Agent — Layered Configuration Manager
 
 Config layers (like Claude Code's settings.json + .claude.json):
 
   1. CLI arguments                         (highest priority)
   2. Environment variables
-  3. .polaris/config.local.json  (project-local, gitignored)
-  4. .polaris/config.json        (project, committed)
-  5. ~/.polaris/config.json      (global)
+  3. .rampart/config.local.json  (project-local, gitignored)
+  4. .rampart/config.json        (project, committed)
+  5. ~/.rampart/config.json      (global)
   6. Built-in defaults            (lowest)
 
 Usage:
@@ -27,7 +27,7 @@ from typing import Any
 
 # ── Constants ──────────────────────────────────────────────────────────────
 
-POLARIS_HOME = Path(os.environ.get("POLARIS_HOME", Path.home() / ".polaris"))
+RAMPART_HOME = Path(os.environ.get("RAMPART_HOME", Path.home() / ".rampart"))
 
 # Canonical defaults
 DEFAULTS: dict[str, Any] = {
@@ -44,10 +44,10 @@ DEFAULTS: dict[str, Any] = {
     "TOKEN_EXPIRE_HOURS": 24,
     "RATE_LIMIT_USER": 100,
     "CORS_ALLOW_ORIGINS": '["*"]',
-    "POLARIS_HOME": str(POLARIS_HOME),
-    "POLARIS_LOG_LEVEL": "INFO",
-    "POLARIS_AUTONOMY": "L2",
-    "POLARIS_MAX_STEPS": 20,
+    "RAMPART_HOME": str(RAMPART_HOME),
+    "RAMPART_LOG_LEVEL": "INFO",
+    "RAMPART_AUTONOMY": "L2",
+    "RAMPART_MAX_STEPS": 20,
     "LOCAL_LLM_PROVIDER": "",
     "LOCAL_LLM_MODEL": "",
     "LOCAL_LLM_URL": "",
@@ -64,16 +64,16 @@ class ConfigManager:
     """Layered configuration manager.
 
     Three config files (plus env vars and defaults):
-      Layer 3 (project-local): .polaris/config.local.json   ← gitignored
-      Layer 2 (project):       .polaris/config.json         ← committed
-      Layer 1 (global):        ~/.polaris/config.json       ← user-global
+      Layer 3 (project-local): .rampart/config.local.json   ← gitignored
+      Layer 2 (project):       .rampart/config.json         ← committed
+      Layer 1 (global):        ~/.rampart/config.json       ← user-global
 
     Resolution order: env var > L3 > L2 > L1 > defaults
     """
 
     def __init__(self, cwd: Path | None = None):
         self._cwd = cwd or Path.cwd()
-        self._home = POLARIS_HOME
+        self._home = RAMPART_HOME
 
         # Layer paths (highest priority first in resolution)
         self._global_path = self._home / "config.json"
@@ -91,12 +91,12 @@ class ConfigManager:
     # ── Layer discovery ─────────────────────────────────────────────────
 
     def _find_project_config(self) -> Path | None:
-        """Walk up from cwd to find .polaris/config.json.
-        Stops before ~/.polaris to avoid treating global as project."""
+        """Walk up from cwd to find .rampart/config.json.
+        Stops before ~/.rampart to avoid treating global as project."""
         d = self._cwd.resolve()
         home = Path.home().resolve()
         while True:
-            candidate = d / ".polaris" / "config.json"
+            candidate = d / ".rampart" / "config.json"
             if candidate.exists() and candidate != self._global_path:
                 return candidate
             parent = d.parent
@@ -106,11 +106,11 @@ class ConfigManager:
         return None
 
     def _find_local_config(self) -> Path | None:
-        """Walk up from cwd to find .polaris/config.local.json."""
+        """Walk up from cwd to find .rampart/config.local.json."""
         d = self._cwd.resolve()
         home = Path.home().resolve()
         while True:
-            candidate = d / ".polaris" / "config.local.json"
+            candidate = d / ".rampart" / "config.local.json"
             if candidate.exists() and candidate != self._global_path:
                 return candidate
             parent = d.parent
@@ -198,11 +198,11 @@ class ConfigManager:
         """Set a config value. layer: 'global', 'project', or 'local'."""
         if layer == "local":
             if self._local_path is None:
-                self._local_path = self._cwd / ".polaris" / "config.local.json"
+                self._local_path = self._cwd / ".rampart" / "config.local.json"
             self._local[key] = value
         elif layer == "project":
             if self._project_path is None:
-                self._project_path = self._cwd / ".polaris" / "config.json"
+                self._project_path = self._cwd / ".rampart" / "config.json"
             self._project[key] = value
         else:
             self._global[key] = value
@@ -244,13 +244,13 @@ class ConfigManager:
         return result
 
     def to_env_file(self) -> str:
-        lines = ["# ✦ Polaris Agent — Navigate Complexity with AI", ""]
+        lines = ["# ✦ Rampart Agent — Navigate Complexity with AI", ""]
         categories = [
             ("LLM Provider", ["OPENAI_API_KEY", "OPENAI_API_BASE", "ANTHROPIC_API_KEY",
                               "LLM_MODEL", "LLM_PROVIDER", "LLM_TEMPERATURE", "LLM_MAX_TOKENS"]),
             ("Server", ["SERVER_HOST", "SERVER_PORT", "JWT_SECRET",
                         "TOKEN_EXPIRE_HOURS", "RATE_LIMIT_USER", "CORS_ALLOW_ORIGINS"]),
-            ("Agent Runtime", ["POLARIS_HOME", "POLARIS_LOG_LEVEL", "POLARIS_AUTONOMY", "POLARIS_MAX_STEPS"]),
+            ("Agent Runtime", ["RAMPART_HOME", "RAMPART_LOG_LEVEL", "RAMPART_AUTONOMY", "RAMPART_MAX_STEPS"]),
             ("Local LLM", ["LOCAL_LLM_PROVIDER", "LOCAL_LLM_MODEL", "LOCAL_LLM_URL"]),
             ("Memory & Storage", ["REDIS_HOST", "REDIS_PORT", "MILVUS_HOST", "MILVUS_PORT",
                                   "EMBEDDING_PROVIDER", "EMBEDDING_MODEL"]),

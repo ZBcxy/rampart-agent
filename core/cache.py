@@ -53,7 +53,7 @@ class ResponseCache:
         backend: str = "memory",
         redis_url: str = "redis://localhost:6379",
         ttl: int = 3600,
-        namespace: str = "polaris:cache",
+        namespace: str = "rampart:cache",
         similarity_threshold: float = 0.92,
     ):
         self.backend = backend

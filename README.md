@@ -1,26 +1,33 @@
-<div align="center">
-  <img src="https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/assets/logo.svg?v=2" alt="✦ Polaris Agent" width="800">
-  <p>
-    <img src="https://img.shields.io/badge/version-1.1.0-blue" alt="Version">
-    <img src="https://img.shields.io/badge/python-3.11+-green" alt="Python">
-    <img src="https://img.shields.io/badge/license-Apache%202.0-orange" alt="License">
-    <img src="https://img.shields.io/badge/protocols-MCP%20%7C%20A2A-purple" alt="Protocols">
-    <img src="https://img.shields.io/badge/tests-139%20passed-brightgreen" alt="Tests">
-  </p>
+﻿<div align="center">
+
+[English](#english) | [中文](#中文)
+
+<img src="https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/assets/logo.svg?v=3" alt="Rampart Agent" width="800">
+
+<p>
+  <img src="https://img.shields.io/badge/version-1.1.0-blue" alt="Version">
+  <img src="https://img.shields.io/badge/python-3.11+-green" alt="Python">
+  <img src="https://img.shields.io/badge/license-Apache%202.0-orange" alt="License">
+  <img src="https://img.shields.io/badge/protocols-MCP%20%7C%20A2A-purple" alt="Protocols">
+  <img src="https://img.shields.io/badge/tests-139%20passed-brightgreen" alt="Tests">
+</p>
+
 </div>
 
 ---
 
-## What is Polaris?
+<h2 id="english">English</h2>
 
-Polaris (北极星) is a complete agent framework that works out of the box. Named after the North Star — the one fixed point navigators have relied on for millennia — Polaris is your constant AI companion through complexity.
+## What is Rampart?
+
+Rampart is a complete agent framework that works out of the box. Named for the defensive fortification that protects and empowers — it is your steadfast AI companion through complexity, with built-in alignment guards, policy engines, and comprehensive safety mechanisms.
 
 **Three ways to use it:**
 
 ```bash
-polaris "summarize this codebase"       # Single-shot — one answer, done
-echo "..." | polaris                    # Pipe — works in scripts
-polaris                                 # Interactive REPL — full conversation
+rampart "summarize this codebase"       # Single-shot — one answer, done
+echo "..." | rampart                    # Pipe — works in scripts
+rampart                                 # Interactive REPL — full conversation
 ```
 
 ---
@@ -29,33 +36,33 @@ polaris                                 # Interactive REPL — full conversation
 
 ```bash
 # 1. Install (pick one)
-npm install -g polaris-agent     # npm (recommended)
-pip install polaris-agent        # PyPI
-pipx install polaris-agent       # pipx (isolated)
+npm install -g rampart-agent     # npm (recommended)
+pip install rampart-agent        # PyPI
+pipx install rampart-agent       # pipx (isolated)
 
 # 2. Configure (interactive — 30 seconds)
-polaris init
+rampart init
 
 # 3. Go
-polaris "Hello! What can you do?"
+rampart "Hello! What can you do?"
 ```
 
 ### More install options
 
 ```bash
 # Docker
-docker run -p 8000:8000 -e OPENAI_API_KEY=sk-... ghcr.io/zbcxy/polaris-agent:latest
+docker run -p 8000:8000 -e OPENAI_API_KEY=sk-... ghcr.io/zbcxy/rampart-agent:latest
 docker compose up -d
 
 # One-command curl
-curl -sSL https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/install.py | python3
+curl -sSL https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/install.py | python3
 ```
 
 ### Zero config with Ollama
 
 ```bash
 ollama pull qwen3:8b
-polaris          # ✦ Auto-detected Ollama! Model: qwen3:8b
+rampart          # ✦ Auto-detected Ollama! Model: qwen3:8b
 ```
 
 ---
@@ -63,31 +70,31 @@ polaris          # ✦ Auto-detected Ollama! Model: qwen3:8b
 ## Lifecycle
 
 ```
-┌─ Install ───────────────────────────────────────────────┐
-│  pip install polaris-agent                               │
-│  polaris init          ← Interactive setup wizard        │
-│  polaris login         ← Save API keys                   │
-└─────────────────────────────────────────────────────────┘
+┌─ Install ──────────────────────────────────────────────┐
+│ pip install rampart-agent                              │
+│ rampart init          → Interactive setup wizard       │
+│ rampart login         → Save API keys                  │
+└────────────────────────────────────────────────────────┘
                           │
-┌─ Everyday use ──────────────────────────────────────────┐
-│  polaris "fix this bug"        Single-shot               │
-│  cat log.txt | polaris         Pipe / stdin              │
-│  polaris                       Interactive REPL          │
-│  polaris exec task.txt         Execute task file         │
-│  polaris --model gpt-4o        Override model            │
-│  polaris --approval-mode L2    Override autonomy         │
-└─────────────────────────────────────────────────────────┘
+┌─ Everyday use ─────────────────────────────────────────┐
+│ rampart "fix this bug"        Single-shot              │
+│ cat log.txt | rampart         Pipe / stdin             │
+│ rampart                       Interactive REPL         │
+│ rampart exec task.txt         Execute task file        │
+│ rampart --model gpt-4o        Override model           │
+│ rampart --approval-mode L2    Override autonomy        │
+└────────────────────────────────────────────────────────┘
                           │
-┌─ Manage ────────────────────────────────────────────────┐
-│  polaris config               Show all config            │
-│  polaris config set KEY VAL   Change a setting           │
-│  polaris profiles use work    Switch profile             │
-│  polaris sessions resume ...   Continue a conversation   │
-│  polaris mcp add NAME CMD     Add an MCP server          │
-│  polaris doctor               Diagnose issues            │
-│  polaris update               Self-update                │
-│  polaris logout               Remove credentials         │
-└─────────────────────────────────────────────────────────┘
+┌─ Manage ───────────────────────────────────────────────┐
+│ rampart config               Show all config           │
+│ rampart config set KEY VAL   Change a setting          │
+│ rampart profiles use work    Switch profile            │
+│ rampart sessions resume ...   Continue a conversation  │
+│ rampart mcp add NAME CMD     Add an MCP server         │
+│ rampart doctor               Diagnose issues           │
+│ rampart update               Self-update               │
+│ rampart logout               Remove credentials        │
+└────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -98,78 +105,64 @@ polaris          # ✦ Auto-detected Ollama! Model: qwen3:8b
 
 | Command | Description |
 |---------|-------------|
-| `polaris "prompt"` | Single-shot, non-interactive |
-| `echo "..." \| polaris` | Pipe / stdin mode |
-| `polaris` | Interactive REPL with session history |
-| `polaris exec <file>` | Execute a task file |
-| `polaris --model <name>` | Override model for this session |
-| `polaris --approval-mode L0-L4` | Override autonomy level |
+| `rampart "prompt"` | Single-shot, non-interactive |
+| `echo "..." \| rampart` | Pipe / stdin mode |
+| `rampart` | Interactive REPL with session history |
+| `rampart exec <file>` | Execute a task file |
+| `rampart --model <name>` | Override model for this session |
+| `rampart --approval-mode L0-L4` | Override autonomy level |
 
 ### Setup & Auth
 
 | Command | Description |
 |---------|-------------|
-| `polaris init` | Interactive setup wizard (LLM → Model → Autonomy → Save) |
-| `polaris login` | Securely save API keys to config |
-| `polaris logout` | Remove stored credentials |
-| `polaris doctor` | Environment diagnostics |
+| `rampart init` | Interactive setup wizard |
+| `rampart login` | Securely save API keys to config |
+| `rampart logout` | Remove stored credentials |
+| `rampart doctor` | Environment diagnostics |
 
 ### Config
 
 | Command | Description |
 |---------|-------------|
-| `polaris config` | Show all configuration with categories |
-| `polaris config get <key>` | Get a single value |
-| `polaris config set <key> <val>` | Set and persist a value |
-| `polaris config unset <key>` | Revert to default |
-| `polaris config reset` | Reset all to defaults |
-| `polaris config path` | Show config file path (`~/.polaris/config.json`) |
-| `polaris config export --profile <name>` | Export current config as a named profile |
+| `rampart config` | Show all configuration with categories |
+| `rampart config get <key>` | Get a single value |
+| `rampart config set <key> <val>` | Set and persist a value |
+| `rampart config unset <key>` | Revert to default |
+| `rampart config reset` | Reset all to defaults |
+| `rampart config path` | Show config file path (`~/.rampart/config.json`) |
+| `rampart config export --profile <name>` | Export current config as a named profile |
 
 ### Profiles
 
 | Command | Description |
 |---------|-------------|
-| `polaris profiles list` | List named profiles |
-| `polaris profiles use <name>` | Switch to a profile |
+| `rampart profiles list` | List named profiles |
+| `rampart profiles use <name>` | Switch to a profile |
 
 ### Sessions
 
 | Command | Description |
 |---------|-------------|
-| `polaris sessions list` | List recent sessions |
-| `polaris sessions resume <id>` | Resume a conversation |
+| `rampart sessions list` | List recent sessions |
+| `rampart sessions resume <id>` | Resume a conversation |
 
 ### MCP
 
 | Command | Description |
 |---------|-------------|
-| `polaris mcp add <name> "<cmd>"` | Register an MCP server |
-| `polaris mcp list` | List registered servers |
-| `polaris mcp remove <name>` | Remove a server |
+| `rampart mcp add <name> "<cmd>"` | Register an MCP server |
+| `rampart mcp list` | List registered servers |
+| `rampart mcp remove <name>` | Remove a server |
 
 ### Maintenance
 
 | Command | Description |
 |---------|-------------|
-| `polaris update` | Self-update via pip |
-| `polaris doctor` | Full environment diagnostics |
-| `polaris --logo [--style ...]` | Display brand logo |
-| `polaris --version` | Version info |
-
-### Install / Uninstall
-
-| Command | Description |
-|---------|-------------|
-| `npm install -g polaris-agent` | npm global install (recommended) |
-| `npm uninstall -g polaris-agent` | npm uninstall (cleanup everything) |
-| `pip install polaris-agent` | PyPI install |
-| `pip uninstall polaris-agent` | PyPI uninstall |
-| `pipx install polaris-agent` | pipx isolated install |
-| `python install.py` | One-command curl install |
-| `python install.py --uninstall` | Full uninstall |
-| `python install.py --verify` | Verify installation |
-| `python install.py --doctor` | Environment diagnostics |
+| `rampart update` | Self-update via pip |
+| `rampart doctor` | Full environment diagnostics |
+| `rampart --logo` | Display brand logo |
+| `rampart --version` | Version info |
 
 ---
 
@@ -207,11 +200,11 @@ Inside the interactive REPL:
 
 ## Configuration
 
-Config priority (like Claude Code's `settings.json`):
+Config priority:
 
 ```
-CLI flags > env vars > .polaris/config.local.json > .polaris/config.json > ~/.polaris/config.json > defaults
-    ↑                        ↑                          ↑                      ↑
+CLI flags > env vars > .rampart/config.local.json > .rampart/config.json > ~/.rampart/config.json > defaults
+    →                        →                          →                      →
   session              project-local              project (committed)       global
                        (gitignored)
 ```
@@ -220,12 +213,9 @@ Three config files, three scopes:
 
 | File | Scope | Git | Use |
 |------|-------|-----|-----|
-| `~/.polaris/config.json` | Global | — | API keys, default model, personal settings |
-| `.polaris/config.json` | Project | Commit | Team model choice, project env vars |
-| `.polaris/config.local.json` | Project | Ignore | Personal overrides per project |
-
-`polaris config` shows which layer provides each value (GLB/PRJ/LOC/DEF).
-`polaris config set KEY VAL --project` writes to the project layer.
+| `~/.rampart/config.json` | Global | — | API keys, default model, personal settings |
+| `.rampart/config.json` | Project | Commit | Team model choice, project env vars |
+| `.rampart/config.local.json` | Project | Ignore | Personal overrides per project |
 
 ### Key variables
 
@@ -235,11 +225,12 @@ Three config files, three scopes:
 | `LLM_PROVIDER` | `openai` | openai / anthropic |
 | `OPENAI_API_KEY` | — | OpenAI API key |
 | `ANTHROPIC_API_KEY` | — | Anthropic API key |
-| `POLARIS_AUTONOMY` | `L2` | Autonomy level |
-| `POLARIS_MAX_STEPS` | `20` | Max OODA iterations |
+| `RAMPART_AUTONOMY` | `L2` | Autonomy level |
+| `RAMPART_MAX_STEPS` | `20` | Max OODA iterations |
 | `LOCAL_LLM_PROVIDER` | — | ollama / openai_compatible |
 | `LOCAL_LLM_MODEL` | — | Local model name |
 | `SERVER_PORT` | `8000` | Gateway port |
+| `JWT_SECRET` | — | JWT signing secret (required for API) |
 | `EMBEDDING_PROVIDER` | `openai` | Embedding backend |
 
 ---
@@ -247,26 +238,40 @@ Three config files, three scopes:
 ## Architecture
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│                       ✦ Polaris Agent                          │
-├────────────────────────────────────────────────────────────────┤
-│  CLI (polaris)     │  Gateway (FastAPI)  │  SDK (Python)       │
-├────────────────────────────────────────────────────────────────┤
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────────────────┐  │
-│  │ Planner  │  │ Executor │  │        Multi-Agent            │  │
-│  │ OODA +   │  │ DAG +    │  │ Blackboard + Coordinator      │  │
-│  │ LLM      │  │ Retry    │  │                               │  │
-│  └──────────┘  └──────────┘  └──────────────────────────────┘  │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────────────────┐  │
-│  │ Memory   │  │ Align    │  │         26 Tools              │  │
-│  │ Working  │  │ Guard +  │  │ file / web / code / data /    │  │
-│  │ Semantic │  │ Policy   │  │ system                        │  │
-│  │ Episodic │  │ Engine   │  │                               │  │
-│  └──────────┘  └──────────┘  └──────────────────────────────┘  │
-├────────────────────────────────────────────────────────────────┤
-│  Protocols:  MCP Server/Client  │  A2A Server/Client           │
-└────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│                      ⬡ Rampart Agent                     │
+├──────────────────────────────────────────────────────────┤
+│ CLI (rampart)     │ Gateway (FastAPI)   │ SDK (Python)   │
+├────────────────────┼─────────────────────┼────────────────┤
+│ ┌───────┐ ┌───────┐│ ┌───────┐ ┌───────┐│ ┌────────────┐│
+│ │Planner│ │Executor││ │Planner│ │Executor││ │Multi-Agent ││
+│ │OODA + │ │DAG +  ││ │OODA + │ │DAG +  ││ │Blackboard +││
+│ │LLM    │ │Retry  ││ │LLM    │ │Retry  ││ │Coordinator ││
+│ └───────┘ └───────┘│ └───────┘ └───────┘│ └────────────┘│
+│ ┌───────┐ ┌───────┐│ ┌───────┐ ┌───────┐│ ┌────────────┐│
+│ │Memory │ │Align  ││ │Memory │ │Align  ││ │ 26 Tools   ││
+│ │Working│ │Guard +││ │Working│ │Guard +││ │file / web /││
+│ │Semantic│ │Policy ││ │Semantic│ │Policy ││ │code / data/││
+│ │Episodic│ │Engine ││ │Episodic│ │Engine ││ │system      ││
+│ └───────┘ └───────┘│ └───────┘ └───────┘│ └────────────┘│
+├────────────────────┴─────────────────────┴────────────────┤
+│ Protocols:  MCP Server/Client  │  A2A Server/Client       │
+└──────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## Security
+
+Rampart includes multiple layers of security:
+
+- **JWT Authentication** — Bearer token based, HS256 with configurable secret
+- **Security Headers** — CSP, HSTS, X-Frame-Options, X-Content-Type-Options on all responses
+- **Rate Limiting** — Per-user and per-agent request throttling
+- **Input Validation** — Pydantic schema validation on all API inputs
+- **Alignment Guard** — Policy-based prompt and tool execution filtering
+- **CORS Whitelisting** — Configurable origin restrictions
+- **Error Sanitization** — No stack traces in production error responses
 
 ---
 
@@ -274,14 +279,14 @@ Three config files, three scopes:
 
 ### MCP (Model Context Protocol)
 
-Polaris is both an **MCP Server** and **MCP Client**.
+Rampart is both an **MCP Server** and **MCP Client**.
 
 **As Server** — expose 26 tools to any MCP-compatible client:
 
 ```json
 {
   "mcpServers": {
-    "polaris": {
+    "rampart": {
       "command": "python",
       "args": ["-m", "mcp.server", "--stdio"]
     }
@@ -292,14 +297,7 @@ Polaris is both an **MCP Server** and **MCP Client**.
 **As Client** — consume external MCP tools:
 
 ```bash
-polaris mcp add filesystem "npx -y @modelcontextprotocol/server-filesystem ."
-```
-
-```python
-from mcp import MCPClient
-client = MCPClient()
-await client.connect_stdio("filesystem", "npx", ["-y", "@modelcontextprotocol/server-filesystem", "."])
-result = await client.call_tool("read_file", {"path": "/tmp/data.txt"})
+rampart mcp add filesystem "npx -y @modelcontextprotocol/server-filesystem ."
 ```
 
 ### A2A (Agent-to-Agent Protocol)
@@ -308,9 +306,9 @@ result = await client.call_tool("read_file", {"path": "/tmp/data.txt"})
 from protocols.a2a import A2AServer, AgentCard
 
 card = AgentCard(
-    name="Polaris Agent",
-    description="Navigate Complexity with AI — Autonomous Agent Framework",
-    url="https://my-polaris.example.com",
+    name="Rampart Agent",
+    description="Fortify Your Intelligence — Autonomous Agent Framework",
+    url="https://my-rampart.example.com",
 )
 server = A2AServer(agent_card=card, tool_registry=registry)
 ```
@@ -321,38 +319,20 @@ server = A2AServer(agent_card=card, tool_registry=registry)
 
 ```python
 # Synchronous
-from sdk.client import PolarisClient, Message
+from sdk.client import RampartClient, Message
 
-with PolarisClient("http://localhost:8000") as client:
+with RampartClient("http://localhost:8000") as client:
     response = client.chat([
         Message(role="user", content="Analyze Q3 sales data")
     ])
     print(response.choices[0].message.content)
 
 # Asynchronous
-from sdk.client import AsyncPolarisClient
+from sdk.client import AsyncRampartClient
 
-async with AsyncPolarisClient() as client:
+async with AsyncRampartClient() as client:
     async for chunk in client.chat_stream(messages):
         print(chunk)
-```
-
----
-
-## Agent API
-
-```python
-from core.agent import LLMAgent
-from core.planner.llm_planner import LLMPlannerConfig
-
-agent = LLMAgent(config=LLMPlannerConfig(
-    model="gpt-4o", provider="openai", api_key="sk-...",
-))
-result = asyncio.run(agent.run("Create a report from /tmp/sales.csv"))
-
-# Streaming
-async for event in agent.run_stream("Analyze the logs"):
-    print(event)
 ```
 
 ---
@@ -377,67 +357,227 @@ async for event in agent.run_stream("Analyze the logs"):
 | vLLM | `vllm serve ...` | Any HF model |
 | llama.cpp | `llama-server ...` | GGUF format |
 
-Polaris auto-detects running Ollama instances on first launch.
-
----
-
-## Project Structure
-
-```
-.
-├── assets/                  # Logo SVG
-├── core/                    # Engine: planner, executor, memory, align
-│   ├── config_manager.py    #   Config system (JSON, auto-discovery)
-│   └── logo.py              #   Terminal brand identity (3 styles)
-├── gateway/                 # FastAPI REST API
-├── tools/                   # 26 executable tools + registry
-├── mcp/                     # MCP Server & Client
-├── protocols/a2a/           # A2A Server & Client
-├── multi_agent/             # Blackboard + Coordinator
-├── sdk/                     # Python SDK (sync + async)
-├── cli/                     # CLI interface
-│   ├── polaris_cli.py       #   Full lifecycle CLI
-│   └── init_wizard.py       #   Interactive setup wizard
-├── tests/                   # 139 tests
-├── install.py               # One-command lifecycle manager
-├── Dockerfile
-└── docker-compose.yml
-```
-
----
-
-## vs. Other Frameworks
-
-| Feature | Polaris | LangGraph | CrewAI | AutoGPT | Claude Code |
-|---------|:-------:|:---------:|:------:|:-------:|:-----------:|
-| OODA Loop | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Single-shot mode | ✅ | — | — | ❌ | ✅ |
-| Pipe/stdin mode | ✅ | — | — | ❌ | ✅ |
-| Session management | ✅ | ✅ | ❌ | ❌ | ✅ |
-| Self-update | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Interactive REPL | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Config profiles | ✅ | ❌ | ❌ | ❌ | ❌ |
-| MCP Server + Client | ✅ | ❌ | ❌ | ❌ | ✅ |
-| A2A Protocol | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Blackboard | ✅ | ❌ | ❌ | ❌ | ❌ |
-| Alignment Guard | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Docker | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 26 Tools | ✅ | ✅ | ✅ | ✅ | ✅ |
+Rampart auto-detects running Ollama instances on first launch.
 
 ---
 
 ## Development
 
 ```bash
-git clone git@github.com:ZBcxy/polaris-agent.git
-cd polaris-agent
-python -m venv venv && source venv/bin/activate
+git clone git@github.com:ZBcxy/rampart-agent.git
+cd rampart-agent
+python -m venv venv && source venv/bin/activate   # On Windows: venv\Scripts\activate
 pip install -e ".[dev]"
 pytest tests/ -v
 ```
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for system design and [DEVELOPMENT.md](DEVELOPMENT.md) for detailed contribution guide.
 
 ---
 
 ## License
 
-Apache 2.0 © Polaris Team
+Apache 2.0 © Rampart Team
+
+---
+
+<h2 id="中文">中文</h2>
+
+## 什么是 Rampart？
+
+Rampart（壁垒）是一个开箱即用的完整智能体框架。其名取自防御工事——它既保护又赋能，是你在复杂场景下坚如磐石的 AI 伙伴，内置对齐守卫、策略引擎和全面的安全机制。
+
+**三种使用方式：**
+
+```bash
+rampart "帮我总结这个代码库"         # 单次问答
+echo "..." | rampart                 # 管道模式，适合脚本
+rampart                              # 交互式 REPL，完整对话
+```
+
+---
+
+## 快速开始
+
+```bash
+# 1. 安装（三选一）
+npm install -g rampart-agent     # npm（推荐）
+pip install rampart-agent        # PyPI
+pipx install rampart-agent       # pipx（隔离环境）
+
+# 2. 配置（交互式，30 秒）
+rampart init
+
+# 3. 开始使用
+rampart "你好！你能做什么？"
+```
+
+### 更多安装方式
+
+```bash
+# Docker
+docker run -p 8000:8000 -e OPENAI_API_KEY=sk-... ghcr.io/zbcxy/rampart-agent:latest
+docker compose up -d
+
+# 一行命令
+curl -sSL https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/install.py | python3
+```
+
+### 零配置使用 Ollama
+
+```bash
+ollama pull qwen3:8b
+rampart          # ✦ 自动检测到 Ollama！模型：qwen3:8b
+```
+
+---
+
+## 生命周期
+
+```
+┌─ 安装 ────────────────────────────────────────────────┐
+│ pip install rampart-agent                             │
+│ rampart init          → 交互式设置向导                │
+│ rampart login         → 保存 API 密钥                 │
+└───────────────────────────────────────────────────────┘
+                          │
+┌─ 日常使用 ────────────────────────────────────────────┐
+│ rampart "修复这个 bug"       单次执行                  │
+│ cat log.txt | rampart        管道/标准输入             │
+│ rampart                      交互式 REPL              │
+│ rampart exec task.txt        执行任务文件              │
+│ rampart --model gpt-4o       覆盖模型                  │
+│ rampart --approval-mode L2   覆盖自主级别              │
+└───────────────────────────────────────────────────────┘
+                          │
+┌─ 管理 ────────────────────────────────────────────────┐
+│ rampart config               显示全部配置              │
+│ rampart config set KEY VAL   修改配置                  │
+│ rampart profiles use work    切换配置集                │
+│ rampart sessions resume ...   继续对话                 │
+│ rampart mcp add NAME CMD     添加 MCP 服务器           │
+│ rampart doctor               诊断环境问题              │
+│ rampart update               自我更新                  │
+│ rampart logout               清除凭据                  │
+└───────────────────────────────────────────────────────┘
+```
+
+---
+
+## 命令参考
+
+### 运行
+
+| 命令 | 说明 |
+|------|------|
+| `rampart "prompt"` | 单次执行，非交互 |
+| `echo "..." \| rampart` | 管道模式 |
+| `rampart` | 交互式 REPL，带会话历史 |
+| `rampart exec <file>` | 执行任务文件 |
+| `rampart --model <name>` | 覆盖本次会话的模型 |
+| `rampart --approval-mode L0-L4` | 覆盖自主级别 |
+
+### 配置
+
+| 命令 | 说明 |
+|------|------|
+| `rampart config` | 显示所有配置 |
+| `rampart config get <key>` | 获取单个值 |
+| `rampart config set <key> <val>` | 设置并持久化 |
+| `rampart config unset <key>` | 恢复默认值 |
+
+### MCP
+
+| 命令 | 说明 |
+|------|------|
+| `rampart mcp add <name> "<cmd>"` | 注册 MCP 服务器 |
+| `rampart mcp list` | 列出已注册服务器 |
+| `rampart mcp remove <name>` | 移除服务器 |
+
+---
+
+## 自主级别
+
+| 级别 | 名称 | 行为 |
+|------|------|------|
+| L0 | 手动 | 仅建议，不执行 |
+| L1 | 辅助 | 确认后执行 |
+| L2 | 监督 | 自主执行，事后报告 |
+| L3 | 自主 | 在策略边界内行动 |
+| L4 | 完全 | 完全授权 |
+
+---
+
+## 安全
+
+Rampart 内置多层安全防护：
+
+- **JWT 认证** — Bearer Token，HS256 算法，可配置密钥
+- **安全响应头** — 所有响应附带 CSP、HSTS、X-Frame-Options、X-Content-Type-Options
+- **限流** — 按用户和 Agent 的请求频率控制
+- **输入验证** — 所有 API 输入经 Pydantic 模式验证
+- **对齐守卫** — 基于策略的提示词和工具执行过滤
+- **CORS 白名单** — 可配置的来源限制
+- **错误脱敏** — 生产环境错误响应不含堆栈追踪
+
+---
+
+## 协议
+
+### MCP（模型上下文协议）
+
+Rampart 同时是 **MCP 服务端** 和 **MCP 客户端**。
+
+**作为服务端** — 向任何 MCP 兼容客户端暴露 26 个工具：
+
+```json
+{
+  "mcpServers": {
+    "rampart": {
+      "command": "python",
+      "args": ["-m", "mcp.server", "--stdio"]
+    }
+  }
+}
+```
+
+**作为客户端** — 使用外部 MCP 工具：
+
+```bash
+rampart mcp add filesystem "npx -y @modelcontextprotocol/server-filesystem ."
+```
+
+---
+
+## SDK
+
+```python
+# 同步
+from sdk.client import RampartClient, Message
+
+with RampartClient("http://localhost:8000") as client:
+    response = client.chat([
+        Message(role="user", content="分析 Q3 销售数据")
+    ])
+    print(response.choices[0].message.content)
+```
+
+---
+
+## 开发
+
+```bash
+git clone git@github.com:ZBcxy/rampart-agent.git
+cd rampart-agent
+python -m venv venv && source venv/bin/activate   # Windows: venv\Scripts\activate
+pip install -e ".[dev]"
+pytest tests/ -v
+```
+
+详见 [ARCHITECTURE.md](ARCHITECTURE.md)（系统设计）和 [DEVELOPMENT.md](DEVELOPMENT.md)（贡献指南）。
+
+---
+
+## 许可证
+
+Apache 2.0 © Rampart Team

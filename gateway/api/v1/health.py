@@ -18,6 +18,6 @@ async def health_check():
     return {
         "status": "healthy",
         "timestamp": datetime.now(),
-        "version": "1.0.0",
+        "version": "1.1.0",
         "services": {"gateway": "running", "planner": "running", "executor": "running", "memory": "running"},
     }

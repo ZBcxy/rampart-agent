@@ -1,4 +1,4 @@
-"""Polaris Agent Tools - 20+ Executable Tools
+"""Rampart Agent Tools - 20+ Executable Tools
 
 Tools are organized into categories:
 - file: File system operations

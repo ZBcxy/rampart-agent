@@ -20,7 +20,7 @@ def _get_coordinator() -> Coordinator:
     global _coordinator
     if _coordinator is not None:
         return _coordinator
-    _coordinator = Coordinator(blackboard=Blackboard(name="polaris-gateway"))
+    _coordinator = Coordinator(blackboard=Blackboard(name="rampart-gateway"))
     return _coordinator
 
 

@@ -1,4 +1,4 @@
-"""Shared pytest fixtures for the Polaris Agent test suite.
+"""Shared pytest fixtures for the Rampart Agent test suite.
 
 To use these fixtures in test files, they are auto-discovered by pytest.
 No explicit import needed — the function name as a parameter is sufficient.
@@ -99,7 +99,7 @@ def app():
     # Ensure no real API keys leak during tests
     os.environ.setdefault("LLM_MODEL", "test")
     os.environ.setdefault("LLM_PROVIDER", "test")
-    os.environ.setdefault("POLARIS_MAX_STEPS", "1")
+    os.environ.setdefault("RAMPART_MAX_STEPS", "1")
 
     from gateway.main import create_app
 

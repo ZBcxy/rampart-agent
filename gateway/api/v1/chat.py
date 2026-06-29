@@ -43,7 +43,7 @@ def _get_agent():
         provider=os.environ.get("LLM_PROVIDER", "openai"),
         api_key=os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"),
         api_base=os.environ.get("OPENAI_API_BASE"),
-        max_steps=int(os.environ.get("POLARIS_MAX_STEPS", "20")),
+        max_steps=int(os.environ.get("RAMPART_MAX_STEPS", "20")),
     )
 
     _agent = Agent(config=config)
@@ -129,7 +129,7 @@ class ChatResponse(BaseModel):
     id: str = Field(..., description="Response ID")
     object: str = Field("chat.completion", description="Object type")
     created: int = Field(..., description="Unix timestamp")
-    model: str = Field("polaris-agent", description="Model used")
+    model: str = Field("rampart-agent", description="Model used")
     choices: List[ChatChoice]
     usage: UsageInfo = Field(default_factory=UsageInfo, description="Token usage")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
@@ -254,7 +254,7 @@ async def stream_chat(request: Request, body: ChatRequest):
                 "id": chat_id,
                 "object": "chat.completion.chunk",
                 "created": int(time_module.time()),
-                "model": "polaris-agent",
+                "model": "rampart-agent",
                 "choices": [{"index": 0, "delta": {"role": "assistant", "content": ""}, "finish_reason": None}],
             }
         )
@@ -267,7 +267,7 @@ async def stream_chat(request: Request, body: ChatRequest):
                 if event["type"] == "blocked":
                     yield _sse_event({
                         "id": chat_id, "object": "chat.completion.chunk", "created": int(time_module.time()),
-                        "model": "polaris-agent",
+                        "model": "rampart-agent",
                         "choices": [{"index": 0, "delta": {"content": f"⚠️ {event['reason']}"}, "finish_reason": "content_filter"}],
                     })
                     yield _sse_done()
@@ -288,14 +288,14 @@ async def stream_chat(request: Request, body: ChatRequest):
                 if content:
                     yield _sse_event({
                         "id": chat_id, "object": "chat.completion.chunk", "created": int(time_module.time()),
-                        "model": "polaris-agent",
+                        "model": "rampart-agent",
                         "choices": [{"index": 0, "delta": {"content": content}, "finish_reason": None}],
                     })
 
         except Exception as e:
             yield _sse_event({
                 "id": chat_id, "object": "chat.completion.chunk", "created": int(time_module.time()),
-                "model": "polaris-agent",
+                "model": "rampart-agent",
                 "choices": [{"index": 0, "delta": {"content": f"\n❌ Error: {e}"}, "finish_reason": "error"}],
             })
 

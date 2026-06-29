@@ -32,7 +32,7 @@ class EmbeddingSemanticMemory(SemanticMemory):
 
     Usage:
         memory = EmbeddingSemanticMemory(
-            storage_path="~/.polaris/memory/semantic.json",
+            storage_path="~/.rampart/memory/semantic.json",
             embedding_config=EmbeddingConfig(provider="openai", api_key="...")
         )
         memory.add("The capital of France is Paris", tags=["geography"])

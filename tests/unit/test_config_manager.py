@@ -10,17 +10,17 @@ import pytest
 
 @pytest.fixture
 def temp_home():
-    """Create a temporary Polaris home directory."""
+    """Create a temporary Rampart home directory."""
     with tempfile.TemporaryDirectory() as tmp:
         yield Path(tmp)
 
 
 def _import_config_manager(home_path):
-    """Import config_manager with a custom POLARIS_HOME, bypassing core.__init__."""
+    """Import config_manager with a custom RAMPART_HOME, bypassing core.__init__."""
     import importlib.util as iu
 
     # Set env var BEFORE exec so the module picks it up
-    os.environ["POLARIS_HOME"] = str(home_path)
+    os.environ["RAMPART_HOME"] = str(home_path)
 
     src = Path(__file__).parent.parent.parent / "core" / "config_manager.py"
     spec = iu.spec_from_file_location("_cm_test", str(src))
@@ -40,8 +40,8 @@ class TestConfigManager:
         assert cm.get("LLM_PROVIDER") == "openai"
         assert cm.get("LLM_TEMPERATURE") == 0.3
         assert cm.get("LLM_MAX_TOKENS") == 2000
-        assert cm.get("POLARIS_AUTONOMY") == "L2"
-        assert cm.get("POLARIS_MAX_STEPS") == 20
+        assert cm.get("RAMPART_AUTONOMY") == "L2"
+        assert cm.get("RAMPART_MAX_STEPS") == 20
         assert cm.get("SERVER_PORT") == 8000
         assert cm.get("NONEXISTENT_KEY", "fallback") == "fallback"
 
@@ -89,12 +89,12 @@ class TestConfigManager:
         cm = mod.ConfigManager(cwd=temp_home)
 
         cm.set("LLM_MODEL", "custom")
-        cm.set("POLARIS_AUTONOMY", "L4")
+        cm.set("RAMPART_AUTONOMY", "L4")
         cm.write()
 
         cm.reset()
         assert cm.get("LLM_MODEL") == "gpt-4o"
-        assert cm.get("POLARIS_AUTONOMY") == "L2"
+        assert cm.get("RAMPART_AUTONOMY") == "L2"
         assert not cm.config_path.exists()
 
     def test_env_var_priority(self, temp_home):
@@ -120,9 +120,9 @@ class TestConfigManager:
         assert cm.get("LLM_TEMPERATURE") == 0.7
         del os.environ["LLM_TEMPERATURE"]
 
-        os.environ["POLARIS_MAX_STEPS"] = "50"
-        assert cm.get("POLARIS_MAX_STEPS") == 50
-        del os.environ["POLARIS_MAX_STEPS"]
+        os.environ["RAMPART_MAX_STEPS"] = "50"
+        assert cm.get("RAMPART_MAX_STEPS") == 50
+        del os.environ["RAMPART_MAX_STEPS"]
 
     def test_to_dict(self, temp_home):
         mod = _import_config_manager(temp_home)
@@ -134,7 +134,7 @@ class TestConfigManager:
         assert d["LLM_MODEL"] == "test-model"
         assert d["LLM_PROVIDER"] == "openai"  # default
         assert "LLM_TEMPERATURE" in d
-        assert "POLARIS_AUTONOMY" in d
+        assert "RAMPART_AUTONOMY" in d
 
     def test_to_env_file(self, temp_home):
         mod = _import_config_manager(temp_home)
@@ -146,7 +146,7 @@ class TestConfigManager:
 
         assert "LLM_MODEL=gpt-4o" in env_content
         assert "OPENAI_API_KEY=sk-test123" in env_content
-        assert "✦ Polaris Agent" in env_content
+        assert "✦ Rampart Agent" in env_content
 
     def test_empty_config_dirs_created(self, temp_home):
         mod = _import_config_manager(temp_home)

@@ -9,6 +9,7 @@ from gateway.config import settings
 from gateway.middlewares.error_handler import ErrorHandlerMiddleware
 from gateway.middlewares.rate_limiter import RateLimiterMiddleware
 from gateway.middlewares.request_logger import RequestLoggerMiddleware
+from gateway.middlewares.security_headers import SecurityHeadersMiddleware
 
 
 @asynccontextmanager
@@ -18,8 +19,8 @@ async def lifespan(app: FastAPI):
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Polaris Agent Gateway API",
-        description="✦ Polaris Agent — Navigate Complexity with AI. REST API gateway for the Polaris autonomous agent framework.",
+        title="Rampart Agent Gateway API",
+        description="✦ Rampart Agent — Navigate Complexity with AI. REST API gateway for the Rampart autonomous agent framework.",
         version="1.1.0",
         docs_url="/docs",
         redoc_url="/redoc",
@@ -37,6 +38,9 @@ def create_app() -> FastAPI:
     app.add_middleware(ErrorHandlerMiddleware)
     app.add_middleware(RequestLoggerMiddleware)
     app.add_middleware(RateLimiterMiddleware)
+    app.add_middleware(SecurityHeadersMiddleware)
+
+    app.state.csp_directives = settings.csp_directives
 
     app.include_router(health, prefix="/v1/health", tags=["Health"])
     app.include_router(chat, prefix="/v1/chat", tags=["Chat"])
@@ -51,16 +55,16 @@ app = create_app()
 
 @app.get("/", tags=["Root"])
 async def root(request: Request):
-    return {"message": "Polaris Agent Gateway", "version": "1.0.0"}
+    return {"message": "Rampart Agent Gateway", "version": "1.1.0"}
 
 
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
-        title="Polaris Agent Gateway",
-        version="1.0.0",
-        description="API gateway for Polaris autonomous agent framework",
+        title="Rampart Agent Gateway",
+        version="1.1.0",
+        description="API gateway for Rampart autonomous agent framework",
         routes=app.routes,
     )
     app.openapi_schema = openapi_schema

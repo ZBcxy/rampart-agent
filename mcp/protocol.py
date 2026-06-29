@@ -84,7 +84,7 @@ class ServerCapabilities:
 @dataclass
 class ImplementationInfo:
     """Server/client implementation metadata."""
-    name: str = "Polaris-Agent"
+    name: str = "Rampart-Agent"
     version: str = "1.0.0"
 
 

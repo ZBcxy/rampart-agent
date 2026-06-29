@@ -1,7 +1,7 @@
 {
-  "name": "polaris-agent",
+  "name": "rampart-agent",
   "version": "1.1.0",
-  "description": "✦ Polaris Agent — Navigate Complexity with AI. Autonomous Agent Framework with OODA Loop, MCP, A2A.",
+  "description": "✦ Rampart Agent — Navigate Complexity with AI. Autonomous Agent Framework with OODA Loop, MCP, A2A.",
   "keywords": [
     "ai",
     "agent",
@@ -14,23 +14,23 @@
     "framework",
     "assistant"
   ],
-  "homepage": "https://github.com/ZBcxy/polaris-agent",
+  "homepage": "https://github.com/ZBcxy/rampart-agent",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ZBcxy/polaris-agent.git"
+    "url": "git+https://github.com/ZBcxy/rampart-agent.git"
   },
   "license": "Apache-2.0",
   "author": {
-    "name": "Polaris Team",
-    "email": "team@polaris.agent"
+    "name": "Rampart Team",
+    "email": "team@rampart.agent"
   },
   "bin": {
-    "polaris": "bin/polaris"
+    "rampart": "bin/rampart"
   },
   "scripts": {
     "postinstall": "bash ./scripts/install.sh",
     "preuninstall": "bash ./scripts/uninstall.sh",
-    "test": "echo '✦ Polaris Agent — npm wrapper verified' && polaris --version"
+    "test": "echo '✦ Rampart Agent — npm wrapper verified' && rampart --version"
   },
   "files": [
     "bin/",
@@ -42,7 +42,8 @@
   },
   "os": [
     "darwin",
-    "linux"
+    "linux",
+    "win32"
   ],
   "preferGlobal": true
 }

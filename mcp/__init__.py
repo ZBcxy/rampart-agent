@@ -6,12 +6,12 @@ the broader agent ecosystem, including Claude Code.
 MCP Protocol version: 2024-11-05
 
 Usage:
-    # As a server (expose Polaris tools to other agents)
-    from mcp import PolarisMCPServer
-    server = PolarisMCPServer(tool_registry)
+    # As a server (expose Rampart tools to other agents)
+    from mcp import RampartMCPServer
+    server = RampartMCPServer(tool_registry)
     server.run_stdio()
 
-    # As a client (use external MCP tools in Polaris)
+    # As a client (use external MCP tools in Rampart)
     from mcp import MCPClient
     client = MCPClient()
     tools = await client.list_tools()
@@ -19,7 +19,7 @@ Usage:
 """
 
 from mcp.client import MCPClient
-from mcp.server import PolarisMCPServer
+from mcp.server import RampartMCPServer
 from mcp.protocol import (
     JSONRPCRequest,
     JSONRPCResponse,
@@ -34,7 +34,7 @@ from mcp.protocol import (
 )
 
 __all__ = [
-    "PolarisMCPServer",
+    "RampartMCPServer",
     "MCPClient",
     "JSONRPCRequest",
     "JSONRPCResponse",

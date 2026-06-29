@@ -1,8 +1,8 @@
 from typing import Any, Dict, Optional
 
 
-class PolarisException(Exception):
-    """Base exception class for Polaris Agent"""
+class RampartException(Exception):
+    """Base exception class for Rampart Agent"""
 
     def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
         super().__init__(message)
@@ -19,7 +19,7 @@ class PolarisException(Exception):
         }
 
 
-class PlannerException(PolarisException):
+class PlannerException(RampartException):
     """Base exception for planner-related errors"""
 
 
@@ -39,7 +39,7 @@ class ConfidenceError(PlannerException):
 
 
 
-class ExecutorException(PolarisException):
+class ExecutorException(RampartException):
     """Base exception for executor-related errors"""
 
 
@@ -75,7 +75,7 @@ class SandboxError(ExecutorException):
 
 
 
-class MemoryException(PolarisException):
+class MemoryException(RampartException):
     """Base exception for memory-related errors"""
 
 
@@ -93,7 +93,7 @@ class MemoryStorageError(MemoryException):
 
 
 
-class GatewayException(PolarisException):
+class GatewayException(RampartException):
     """Base exception for gateway-related errors"""
 
 
@@ -121,7 +121,7 @@ class RateLimitError(GatewayException):
         self.retry_after = retry_after
 
 
-class AlignException(PolarisException):
+class AlignException(RampartException):
     """Base exception for align-related errors"""
 
 
@@ -139,7 +139,7 @@ class ContentFilterError(AlignException):
 
 
 
-class ConfigurationException(PolarisException):
+class ConfigurationException(RampartException):
     """Configuration error"""
 
 
@@ -152,7 +152,7 @@ class ConfigurationMissingError(ConfigurationException):
         self.config_key = config_key
 
 
-class ResourceException(PolarisException):
+class ResourceException(RampartException):
     """Resource-related exception"""
 
 
@@ -167,7 +167,7 @@ class ResourceExhaustedError(ResourceException):
 
 
 
-class TimeoutException(PolarisException):
+class TimeoutException(RampartException):
     """Operation timed out"""
 
     def __init__(self, message: str, timeout_seconds: float):
@@ -175,12 +175,12 @@ class TimeoutException(PolarisException):
         self.timeout_seconds = timeout_seconds
 
 
-class RetryableException(PolarisException):
+class RetryableException(RampartException):
     """Base class for retryable exceptions"""
 
 
 
-class FailureAttributionException(PolarisException):
+class FailureAttributionException(RampartException):
     """Base exception for failure attribution errors."""
 
 

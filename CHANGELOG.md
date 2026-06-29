@@ -2,34 +2,34 @@
 
 ## v1.1.0 (2026-06-18) — Complete Lifecycle
 
-### Brand & Identity
-- ✦ New brand mark: four-pointed star with Big Dipper narrative
-- Terminal logo: 3 styles (default 北斗七星叙事风 / minimal 极简符号风 / box 星空主题风)
-- SVG logo for GitHub, PyPI, documentation (`assets/logo.svg`)
-- Tagline: "Navigate Complexity with AI"
-- Unified naming across all files (README, pyproject, Docker, CLI, gateway, A2A, env)
+### Brand & Identity (v1.1.0 → rebranded as Rampart)
+- Rebranded from Polaris to Rampart Agent — name, logo, tagline, all references updated
+- New 3D "R" logo SVG (`assets/logo.svg`)
+- Tagline: "Fortify Your Intelligence"
+- Terminal logo: single fortress/rampart visual with hexagon mark ⬡
+- Unified naming across all 48 files (README, pyproject, Docker, CLI, gateway, A2A, env)
 
 ### Lifecycle CLI (like Claude Code / OpenClaw / Codex)
-- **Single-shot mode:** `polaris "prompt"` — non-interactive execution
-- **Pipe/stdin mode:** `echo "..." | polaris` — works in scripts
+- **Single-shot mode:** `rampart "prompt"` — non-interactive execution
+- **Pipe/stdin mode:** `echo "..." | rampart` — works in scripts
 - **Interactive REPL:** readline history, session auto-save, slash commands
-- **polaris init** — interactive 4-step setup wizard (Provider → Model → Autonomy → Save)
-- **polaris login / logout** — API key management
-- **polaris doctor** — full environment diagnostics (Python, Ollama, API keys, PATH, disk)
-- **polaris update** — self-update via pip
-- **polaris config** — CRUD operations (`get/set/unset/reset/path`)
-- **polaris profiles** — named config profiles (`list/use`)
-- **polaris sessions** — session history (`list/resume`)
-- **polaris mcp** — MCP server management (`add/list/remove`)
-- **polaris exec <file>** — execute task files
-- **polaris --model / --approval-mode** — runtime overrides
+- **rampart init** — interactive 4-step setup wizard (Provider → Model → Autonomy → Save)
+- **rampart login / logout** — API key management
+- **rampart doctor** — full environment diagnostics (Python, Ollama, API keys, PATH, disk)
+- **rampart update** — self-update via pip
+- **rampart config** — CRUD operations (`get/set/unset/reset/path`)
+- **rampart profiles** — named config profiles (`list/use`)
+- **rampart sessions** — session history (`list/resume`)
+- **rampart mcp** — MCP server management (`add/list/remove`)
+- **rampart exec <file>** — execute task files
+- **rampart --model / --approval-mode** — runtime overrides
 - **Slash commands:** `/help`, `/config`, `/model`, `/autonomy`, `/doctor`, `/sessions`
 
 ### Configuration System
 - New `core/config_manager.py`: JSON-based config manager (zero external deps)
-- Config priority: CLI args > env vars > `~/.polaris/config.json` > `.env` > defaults
+- Config priority: CLI args > env vars > `~/.rampart/config.json` > `.env` > defaults
 - Ollama auto-discovery on first launch
-- Named config profiles (`~/.polaris/profiles/`)
+- Named config profiles (`~/.rampart/profiles/`)
 
 ### Install Lifecycle
 - Rewrite `install.py`: install, upgrade, uninstall (`--keep-data`), verify, doctor
@@ -49,11 +49,11 @@
 
 ---
 
-## v1.1.0-alpha (2026-06-11) — Polaris Agent
+## v1.1.0-alpha (2026-06-11) — Rampart Agent
 
 ### Breaking
-- Renamed: BeiJiXing Agent → Polaris Agent
-- CLI: `beijixing` → `polaris`, config: `~/.beijixing` → `~/.polaris`
+- Renamed: BeiJiXing Agent → Rampart Agent
+- CLI: `beijixing` → `rampart`, config: `~/.beijixing` → `~/.rampart`
 
 ### New
 - LLM-powered OODA Agent with PromptManager (zero hardcoded prompts)
@@ -70,7 +70,7 @@
 - RAG pipeline: ingest → chunk → embed → retrieve
 - Python SDK: sync + async client
 - Docker: multi-stage, multi-arch (amd64/arm64), docker-compose with Redis
-- New Polaris star ASCII art logo (3 styles)
+- New Rampart star ASCII art logo (3 styles)
 
 ### Fixed
 - Critical: `timedelta` import in working_memory.py

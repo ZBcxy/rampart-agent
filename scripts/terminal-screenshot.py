@@ -6,8 +6,8 @@ perfect monospace alignment. Box-drawing characters, CJK, and emoji
 all render correctly.
 
 Usage:
-    python scripts/terminal-screenshot.py -c "polaris doctor" -o doctor.png
-    FORCE_COLOR=1 polaris config | python scripts/terminal-screenshot.py -o config.png
+    python scripts/terminal-screenshot.py -c "rampart doctor" -o doctor.png
+    FORCE_COLOR=1 rampart config | python scripts/terminal-screenshot.py -o config.png
 """
 
 import argparse
@@ -255,7 +255,7 @@ def main():
         sys.exit(1)
 
     lines = parse_ansi(text)
-    img = render(lines, title=args.title or args.command or "✦ Polaris Agent")
+    img = render(lines, title=args.title or args.command or "✦ Rampart Agent")
 
     Path(args.output).parent.mkdir(parents=True, exist_ok=True)
     img.save(args.output, "PNG", optimize=True)

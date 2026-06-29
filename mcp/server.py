@@ -1,4 +1,4 @@
-"""MCP Server v2025-11-25 — Expose Polaris tools via Model Context Protocol.
+"""MCP Server v2025-11-25 — Expose Rampart tools via Model Context Protocol.
 
 Implements latest MCP spec features:
 - Tools (list/call)
@@ -16,10 +16,10 @@ Usage with Claude Code:
     Add to .claude/mcp.json:
     {
         "mcpServers": {
-            "polaris": {
+            "rampart": {
                 "command": "python",
                 "args": ["-m", "mcp.server", "--stdio"],
-                "env": {"POLARIS_CONFIG": "/path/to/config"}
+                "env": {"RAMPART_CONFIG": "/path/to/config"}
             }
         }
     }
@@ -48,13 +48,13 @@ INVALID_PARAMS = -32602
 INTERNAL_ERROR = -32603
 
 
-class PolarisMCPServer:
-    """MCP Server that exposes Polaris tools via the Model Context Protocol.
+class RampartMCPServer:
+    """MCP Server that exposes Rampart tools via the Model Context Protocol.
 
     Can run over stdio (for desktop app integration) or HTTP (for web clients).
     """
 
-    def __init__(self, tool_registry=None, name: str = "polaris-agent"):
+    def __init__(self, tool_registry=None, name: str = "rampart-agent"):
         """
         Initialize the MCP server.
 
@@ -241,9 +241,9 @@ class PolarisMCPServer:
         """Handle resources/list request with icon support."""
         return create_response(request_id, {"resources": [
             {
-                "uri": "polaris://tools/manifest",
+                "uri": "rampart://tools/manifest",
                 "name": "Tool Manifest",
-                "description": "List of all available Polaris tools with schemas",
+                "description": "List of all available Rampart tools with schemas",
                 "mimeType": "application/json",
                 "icons": [{"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14'>🔧</text></svg>", "mimeType": "image/svg+xml"}],
             }
@@ -328,7 +328,7 @@ def main():
     """Entry point for stdio MCP server."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Polaris MCP Server")
+    parser = argparse.ArgumentParser(description="Rampart MCP Server")
     parser.add_argument("--stdio", action="store_true", default=True, help="Run over stdio")
     parser.add_argument("--http", action="store_true", help="Run over HTTP")
     parser.add_argument("--port", type=int, default=9000, help="HTTP port")
@@ -342,7 +342,7 @@ def main():
     except ImportError:
         registry = None
 
-    server = PolarisMCPServer(tool_registry=registry)
+    server = RampartMCPServer(tool_registry=registry)
 
     if args.http:
         asyncio.run(server.run_http(port=args.port))

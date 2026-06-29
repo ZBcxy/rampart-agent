@@ -1,16 +1,16 @@
-# ── Polaris Agent — One-command deployment ──────────────────────────────
+# ── Rampart Agent — One-command deployment ──────────────────────────────
 # Start: docker compose up -d
 # Stop:  docker compose down
-# Logs:  docker compose logs -f polaris
+# Logs:  docker compose logs -f rampart
 
 version: "3.9"
 
 services:
   # ── Main Agent Gateway ───────────────────────────────────────────────
-  polaris:
-    image: ghcr.io/zbcxy/polaris-agent:latest
+  rampart:
+    image: ghcr.io/zbcxy/rampart-agent:latest
     # build: .  # 或本地构建
-    container_name: polaris-agent
+    container_name: rampart-agent
     ports:
       - "${SERVER_PORT:-8000}:8000"
       - "${MCP_PORT:-9000}:9000"
@@ -24,17 +24,17 @@ services:
       # Server
       - SERVER_HOST=0.0.0.0
       - SERVER_PORT=8000
-      - JWT_SECRET=${JWT_SECRET:-polaris-dev-secret-change-in-production}
+      - JWT_SECRET=${JWT_SECRET:-rampart-dev-secret-change-in-production}
       # Agent
-      - POLARIS_AUTONOMY=${POLARIS_AUTONOMY:-L3}
-      - POLARIS_MAX_STEPS=${POLARIS_MAX_STEPS:-20}
-      - POLARIS_LOG_LEVEL=${POLARIS_LOG_LEVEL:-INFO}
+      - RAMPART_AUTONOMY=${RAMPART_AUTONOMY:-L3}
+      - RAMPART_MAX_STEPS=${RAMPART_MAX_STEPS:-20}
+      - RAMPART_LOG_LEVEL=${RAMPART_LOG_LEVEL:-INFO}
       # Memory (optional, uses in-memory fallback if Redis unavailable)
       - REDIS_HOST=${REDIS_HOST:-redis}
       - REDIS_PORT=6379
       - EMBEDDING_PROVIDER=${EMBEDDING_PROVIDER:-openai}
     volumes:
-      - polaris_data:/home/polaris/.polaris
+      - rampart_data:/home/rampart/.rampart
       - ./docs:/app/docs:ro
     depends_on:
       redis:
@@ -49,7 +49,7 @@ services:
   # ── Redis (cache + message queue) ─────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: polaris-redis
+    container_name: rampart-redis
     ports:
       - "6379:6379"
     volumes:
@@ -64,7 +64,7 @@ services:
   # ── MCP Server (stdio mode exposed via HTTP bridge) ──────────────────
   mcp-server:
     build: .
-    container_name: polaris-mcp
+    container_name: rampart-mcp
     command: ["python", "-m", "uvicorn", "mcp.server:create_app", "--host", "0.0.0.0", "--port", "9000"]
     ports:
       - "9000:9000"
@@ -74,5 +74,5 @@ services:
     restart: unless-stopped
 
 volumes:
-  polaris_data:
+  rampart_data:
   redis_data:

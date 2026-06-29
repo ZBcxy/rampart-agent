@@ -27,7 +27,7 @@ def temp_cm():
     import os as _os
     with tempfile.TemporaryDirectory() as tmp:
         home = Path(tmp)
-        _os.environ["POLARIS_HOME"] = str(home)
+        _os.environ["RAMPART_HOME"] = str(home)
         spec.loader.exec_module(mod)
         cm = mod.ConfigManager(cwd=home)
         yield cm, mod
@@ -70,7 +70,7 @@ class TestConfigManagerIntegration:
     def test_manager_defaults_present(self, temp_cm):
         cm, mod = temp_cm
         # All keys needed by wizard should have defaults
-        required = ["LLM_MODEL", "LLM_PROVIDER", "POLARIS_AUTONOMY",
+        required = ["LLM_MODEL", "LLM_PROVIDER", "RAMPART_AUTONOMY",
                      "LOCAL_LLM_PROVIDER", "LOCAL_LLM_MODEL", "LOCAL_LLM_URL"]
         for k in required:
             assert cm.get(k) is not None, f"Missing default for {k}"
@@ -79,11 +79,11 @@ class TestConfigManagerIntegration:
         cm, mod = temp_cm
         cm.set("LLM_MODEL", "test-model")
         cm.set("LLM_PROVIDER", "openai")
-        cm.set("POLARIS_AUTONOMY", "L2")
+        cm.set("RAMPART_AUTONOMY", "L2")
         cm.write()
         assert cm.config_path.exists()
 
         # Re-read
         cm2 = mod.ConfigManager(cwd=cm.home)
         assert cm2.get("LLM_MODEL") == "test-model"
-        assert cm2.get("POLARIS_AUTONOMY") == "L2"
+        assert cm2.get("RAMPART_AUTONOMY") == "L2"

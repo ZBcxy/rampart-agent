@@ -1,14 +1,14 @@
-"""✦ Polaris Agent — Interactive Setup Wizard
+"""✦ Rampart Agent — Interactive Setup Wizard
 
 Provides an interactive terminal UI for first-time setup:
   - LLM provider selection (OpenAI / Anthropic / Ollama / vLLM / skip)
   - Model selection (auto-discovered or manual)
   - Autonomy level configuration
-  - Writes config to ~/.polaris/config.yaml
+  - Writes config to ~/.rampart/config.yaml
 
 Usage:
     python -m cli.init_wizard
-    polaris init
+    rampart init
 """
 
 import importlib.util as _iu
@@ -22,7 +22,7 @@ sys.path.insert(0, str(_PROJECT_ROOT))
 
 # Import config_manager directly, bypassing core.__init__ (avoids heavy deps)
 _cm_path = _PROJECT_ROOT / "core" / "config_manager.py"
-_cm_spec = _iu.spec_from_file_location("_polaris_config_manager", str(_cm_path))
+_cm_spec = _iu.spec_from_file_location("_rampart_config_manager", str(_cm_path))
 _cm = _iu.module_from_spec(_cm_spec)
 _cm_spec.loader.exec_module(_cm)
 ConfigManager = _cm.ConfigManager
@@ -47,7 +47,7 @@ def _header():
     _clear()
     w = 52
     print(f"\n{_c('c', '╭' + '─' * w + '╮')}")
-    print(f"{_c('c', '│')}  {_c('y', '✦')} {_c('bold', _c('w', 'Polaris Agent — Setup Wizard'))}{' ' * 21}{_c('c', '│')}")
+    print(f"{_c('c', '│')}  {_c('y', '✦')} {_c('bold', _c('w', 'Rampart Agent — Setup Wizard'))}{' ' * 21}{_c('c', '│')}")
     print(f"{_c('c', '│')}  {_c('dim', 'Navigate Complexity with AI'):<52}{_c('c', '│')}")
     print(f"{_c('c', '╰' + '─' * w + '╯')}\n")
 
@@ -105,8 +105,8 @@ def run_wizard(cm: ConfigManager | None = None) -> ConfigManager:
 
     # ── Step 1: LLM Provider ────────────────────────────────────────────
     print(f"  {_c('bold', _c('y', 'Step 1/4') + ' — Choose your LLM Provider')}")
-    print(f"  {_c('dim', 'Polaris needs an LLM backend to think and act.')}")
-    print(f"  {_c('dim', 'You can change this anytime with: polaris config set LLM_PROVIDER <name>')}")
+    print(f"  {_c('dim', 'Rampart needs an LLM backend to think and act.')}")
+    print(f"  {_c('dim', 'You can change this anytime with: rampart config set LLM_PROVIDER <name>')}")
 
     # Auto-discover local providers
     ollama = discover_ollama()
@@ -137,9 +137,9 @@ def run_wizard(cm: ConfigManager | None = None) -> ConfigManager:
     provider = _choice("Select LLM provider:", options, default_idx=default_idx)
 
     if provider == "skip":
-        _info("Skipping LLM setup. Run 'polaris init' again to configure.")
+        _info("Skipping LLM setup. Run 'rampart init' again to configure.")
         print(f"\n  {_c('y', '✦')} {_c('bold', 'Setup complete (minimal config).')}")
-        print(f"  Run {_c('c', 'polaris init')} to configure an LLM provider later.\n")
+        print(f"  Run {_c('c', 'rampart init')} to configure an LLM provider later.\n")
         cm.write()
         return cm
 
@@ -189,7 +189,7 @@ def run_wizard(cm: ConfigManager | None = None) -> ConfigManager:
 
     # ── Step 3: Autonomy Level ──────────────────────────────────────────
     print(f"\n  {_c('bold', _c('y', 'Step 3/4') + ' — Set Autonomy Level')}")
-    print(f"  {_c('dim', 'Controls how independently Polaris acts.')}")
+    print(f"  {_c('dim', 'Controls how independently Rampart acts.')}")
 
     autonomy_options = [
         ("L1 — Assisted", "L1", "Every action needs your explicit confirmation"),
@@ -198,7 +198,7 @@ def run_wizard(cm: ConfigManager | None = None) -> ConfigManager:
         ("L4 — Full", "L4", "Complete decision-making authority"),
     ]
     auto_level = _choice("Select autonomy level:", autonomy_options, default_idx=1)
-    cm.set("POLARIS_AUTONOMY", auto_level)
+    cm.set("RAMPART_AUTONOMY", auto_level)
 
     # ── Step 4: Review & Save ───────────────────────────────────────────
     print(f"\n  {_c('bold', _c('y', 'Step 4/4') + ' — Review & Save')}")
@@ -207,7 +207,7 @@ def run_wizard(cm: ConfigManager | None = None) -> ConfigManager:
     summary = [
         ("Provider", provider),
         ("Model", cm.get("LLM_MODEL")),
-        ("Autonomy", cm.get("POLARIS_AUTONOMY")),
+        ("Autonomy", cm.get("RAMPART_AUTONOMY")),
     ]
     if provider == "ollama":
         summary.append(("Ollama URL", cm.get("LOCAL_LLM_URL", "auto")))
@@ -221,10 +221,10 @@ def run_wizard(cm: ConfigManager | None = None) -> ConfigManager:
         cm.write()
         print(f"\n  {_c('g', '╭────────────────────────────────────────╮')}")
         print(f"  {_c('g', '│')}  {_c('bold', '✓ Configuration saved!')}              {_c('g', '│')}")
-        print(f"  {_c('g', '│')}  Run {_c('c', 'polaris')} to start.                {_c('g', '│')}")
+        print(f"  {_c('g', '│')}  Run {_c('c', 'rampart')} to start.                {_c('g', '│')}")
         print(f"  {_c('g', '╰────────────────────────────────────────╯')}\n")
     else:
-        _info("Configuration not saved. Run 'polaris init' to try again.\n")
+        _info("Configuration not saved. Run 'rampart init' to try again.\n")
 
     return cm
 
@@ -234,7 +234,7 @@ def run_wizard(cm: ConfigManager | None = None) -> ConfigManager:
 def quick_start_ollama() -> ConfigManager | None:
     """Try to auto-configure with Ollama. Returns None if not possible.
 
-    This is called automatically when the user runs `polaris`
+    This is called automatically when the user runs `rampart`
     with no prior configuration — zero-friction onboarding.
     """
     ollama = discover_ollama()

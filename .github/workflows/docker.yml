@@ -24,4 +24,4 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
-          tags: ghcr.io/${{ env.REPO_LC }}/polaris-agent:latest,ghcr.io/${{ env.REPO_LC }}/polaris-agent:${{ github.ref_name }}
+          tags: ghcr.io/${{ env.REPO_LC }}/rampart-agent:latest,ghcr.io/${{ env.REPO_LC }}/rampart-agent:${{ github.ref_name }}

@@ -28,7 +28,7 @@ def _get_agent():
         provider=os.environ.get("LLM_PROVIDER", "openai"),
         api_key=os.environ.get("OPENAI_API_KEY") or os.environ.get("ANTHROPIC_API_KEY"),
         api_base=os.environ.get("OPENAI_API_BASE"),
-        max_steps=int(os.environ.get("POLARIS_MAX_STEPS", "20")),
+        max_steps=int(os.environ.get("RAMPART_MAX_STEPS", "20")),
     )
 
     _agent = Agent(config=config)

@@ -1,25 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 300" fill="none">
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 300" fill="none">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0F172A"/>
       <stop offset="100%" stop-color="#0B1120"/>
     </linearGradient>
-    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#87CEEB"/>
-      <stop offset="100%" stop-color="#4682B4"/>
+    <linearGradient id="rFront" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
     </linearGradient>
-    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFA500"/>
-      <stop offset="100%" stop-color="#FF8C00"/>
+    <linearGradient id="rSide" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E40AF"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="rTop" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
     </linearGradient>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#6366F1" stop-opacity="0"/>
-      <stop offset="20%" stop-color="#6366F1" stop-opacity="0.8"/>
-      <stop offset="80%" stop-color="#6366F1" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="#6366F1" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#3B82F6" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#3B82F6" stop-opacity="0.8"/>
+      <stop offset="80%" stop-color="#3B82F6" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#3B82F6" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
     </linearGradient>
     <filter id="glow">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feGaussianBlur stdDeviation="4" result="blur"/>
       <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
   </defs>
@@ -28,79 +36,96 @@
   <rect x="0" y="0" width="1600" height="300" rx="10" fill="url(#bg)"/>
   <rect x="0" y="0" width="1600" height="300" rx="10" stroke="#1E293B" stroke-width="1.5"/>
 
-  <!-- Robot + Computer — adapted from user's design -->
-  <g transform="translate(220, 65) scale(0.85)">
-    <!-- Laptop -->
-    <g transform="translate(20, 110)">
-      <rect x="0" y="40" width="120" height="15" rx="5" fill="#bdc3c7" stroke="#2c3e50" stroke-width="3"/>
-      <polygon points="10,40 110,40 130,-20 -10,-20" fill="#ecf0f1" stroke="#2c3e50" stroke-width="3" stroke-linejoin="round"/>
-      <circle cx="60" cy="10" r="8" fill="#fff" opacity="0.5"/>
+  <!-- 3D R Letter -->
+  <g transform="translate(170, 42)">
+    <!-- R shadow -->
+    <g opacity="0.15">
+      <rect x="18" y="18" width="22" height="182" fill="#000"/>
+      <rect x="18" y="18" width="148" height="22" fill="#000"/>
+      <rect x="148" y="18" width="22" height="82" fill="#000"/>
+      <rect x="100" y="100" width="70" height="100" fill="#000"/>
     </g>
 
-    <!-- Mouse with glow -->
-    <g transform="translate(160, 130)" filter="url(#glow)">
-      <ellipse cx="10" cy="10" rx="25" ry="15" fill="#FFD700" opacity="0.3"/>
-      <ellipse cx="10" cy="5" rx="15" ry="10" fill="#FFA500" stroke="#2c3e50" stroke-width="3"/>
-      <line x1="10" y1="-5" x2="10" y2="5" stroke="#2c3e50" stroke-width="2"/>
+    <!-- R Top face -->
+    <polygon points="0,0 170,0 192,20 22,20" fill="url(#rTop)"/>
+
+    <!-- R Front face -->
+    <rect x="0" y="0" width="170" height="22" fill="url(#rFront)"/>
+    <rect x="0" y="22" width="170" height="22" fill="url(#rFront)"/>
+
+    <!-- R Right side face (3D depth) -->
+    <polygon points="170,0 192,20 192,42 170,22" fill="url(#rSide)"/>
+    <polygon points="170,22 192,42 192,64 170,44" fill="url(#rSide)"/>
+
+    <!-- R vertical stem Front -->
+    <rect x="0" y="0" width="22" height="180" fill="url(#rFront)"/>
+
+    <!-- R vertical stem Right side -->
+    <rect x="22" y="20" width="22" height="180" fill="url(#rSide)"/>
+
+    <!-- R vertical stem Top face -->
+    <polygon points="0,0 22,0 44,20 22,20" fill="url(#rTop)"/>
+
+    <!-- R top horizontal bar Front -->
+    <rect x="22" y="0" width="148" height="22" fill="url(#rFront)"/>
+
+    <!-- R top horizontal bar Right side -->
+    <rect x="170" y="20" width="22" height="22" fill="url(#rSide)"/>
+
+    <!-- R bottom leg (diagonal) Front -->
+    <polygon points="60,44 170,44 170,66 60,66" fill="url(#rFront)"/>
+
+    <!-- R bottom leg top face -->
+    <polygon points="60,44 170,44 192,64 82,64" fill="url(#rTop)"/>
+
+    <!-- R bottom leg right side -->
+    <polygon points="170,44 192,64 192,86 170,66" fill="url(#rSide)"/>
+
+    <!-- R bowl Front -->
+    <rect x="22" y="88" width="80" height="112" fill="url(#rFront)"/>
+
+    <!-- R bowl Right side -->
+    <rect x="102" y="108" width="22" height="92" fill="url(#rSide)"/>
+
+    <!-- R bowl Top face -->
+    <polygon points="22,88 102,88 124,108 44,108" fill="url(#rTop)"/>
+
+    <!-- R bowl inner cutout Front -->
+    <rect x="44" y="110" width="36" height="68" fill="#0F172A"/>
+
+    <!-- R bowl inner cutout right side -->
+    <rect x="80" y="130" width="22" height="48" fill="#0B1120"/>
+
+    <!-- R leg extension Front -->
+    <polygon points="82,110 170,66 170,88 82,132" fill="url(#rFront)"/>
+
+    <!-- R leg extension right side -->
+    <polygon points="170,66 192,86 192,108 170,88" fill="url(#rSide)"/>
+
+    <!-- R leg extension top -->
+    <polygon points="82,110 170,66 192,86 104,130" fill="url(#rTop)"/>
+
+    <!-- Amber accent dot on R -->
+    <g filter="url(#glow)">
+      <circle cx="154" cy="154" r="10" fill="url(#amberGrad)"/>
     </g>
-
-    <!-- Body -->
-    <rect x="20" y="80" width="160" height="120" rx="40" fill="url(#blueGrad)" stroke="#2c3e50" stroke-width="4"/>
-    <circle cx="100" cy="140" r="10" fill="#fff" opacity="0.8"/>
-    <circle cx="100" cy="140" r="5" fill="#FFA500"/>
-
-    <!-- Head group -->
-    <g transform="translate(0, -30)">
-      <!-- Ears -->
-      <rect x="-10" y="30" width="20" height="40" rx="5" fill="url(#orangeGrad)" stroke="#2c3e50" stroke-width="4"/>
-      <rect x="190" y="30" width="20" height="40" rx="5" fill="url(#orangeGrad)" stroke="#2c3e50" stroke-width="4"/>
-
-      <!-- Head -->
-      <rect x="10" y="10" width="180" height="130" rx="50" fill="url(#blueGrad)" stroke="#2c3e50" stroke-width="4"/>
-
-      <!-- Face screen -->
-      <rect x="30" y="30" width="140" height="90" rx="30" fill="#E0F7FA" stroke="#2c3e50" stroke-width="2"/>
-
-      <!-- Eyes -->
-      <circle cx="65" cy="70" r="12" fill="#2c3e50"/>
-      <circle cx="135" cy="70" r="12" fill="#2c3e50"/>
-      <circle cx="69" cy="66" r="4" fill="#fff"/>
-      <circle cx="139" cy="66" r="4" fill="#fff"/>
-
-      <!-- Mouth -->
-      <path d="M85 90 Q100 105 115 90" fill="none" stroke="#2c3e50" stroke-width="3" stroke-linecap="round"/>
-
-      <!-- Antenna -->
-      <line x1="100" y1="10" x2="100" y2="-20" stroke="#2c3e50" stroke-width="4"/>
-      <circle cx="100" cy="-25" r="10" fill="url(#orangeGrad)" stroke="#2c3e50" stroke-width="2"/>
-    </g>
-
-    <!-- Left arm -->
-    <path d="M30 110 Q-10 130 0 180" fill="none" stroke="#2c3e50" stroke-width="25" stroke-linecap="round"/>
-    <path d="M30 110 Q-10 130 0 180" fill="none" stroke="url(#blueGrad)" stroke-width="17" stroke-linecap="round"/>
-    <circle cx="0" cy="180" r="18" fill="#fff" stroke="#2c3e50" stroke-width="3"/>
-
-    <!-- Right arm -->
-    <path d="M170 110 Q210 130 200 180" fill="none" stroke="#2c3e50" stroke-width="25" stroke-linecap="round"/>
-    <path d="M170 110 Q210 130 200 180" fill="none" stroke="url(#blueGrad)" stroke-width="17" stroke-linecap="round"/>
-    <circle cx="200" cy="180" r="18" fill="#fff" stroke="#2c3e50" stroke-width="3"/>
   </g>
 
   <!-- Vertical divider -->
-  <line x1="430" y1="70" x2="430" y2="230" stroke="#1E293B" stroke-width="1.5"/>
+  <line x1="440" y1="70" x2="440" y2="230" stroke="#1E293B" stroke-width="1.5"/>
 
   <!-- Title -->
-  <text x="460" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="60" font-weight="800" fill="#F8FAFC" letter-spacing="5">Polaris Agent</text>
+  <text x="470" y="128" font-family="system-ui, -apple-system, sans-serif" font-size="62" font-weight="800" fill="#F8FAFC" letter-spacing="5">Rampart Agent</text>
 
   <!-- Tagline -->
-  <text x="460" y="178" font-family="system-ui, -apple-system, sans-serif" font-size="24" fill="#94A3B8" letter-spacing="2">Navigate Complexity with AI</text>
+  <text x="470" y="172" font-family="system-ui, -apple-system, sans-serif" font-size="22" fill="#94A3B8" letter-spacing="2">Navigate Complexity with AI</text>
 
   <!-- Accent divider -->
-  <line x1="460" y1="198" x2="1480" y2="198" stroke="url(#accent)" stroke-width="1.5"/>
+  <line x1="470" y1="195" x2="1480" y2="195" stroke="url(#accent)" stroke-width="1.5"/>
 
   <!-- Framework description -->
-  <text x="460" y="236" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B" letter-spacing="1">Autonomous Agent Framework — OODA Loop · MCP · A2A · 26 Tools</text>
+  <text x="470" y="233" font-family="system-ui, -apple-system, sans-serif" font-size="16" fill="#64748B" letter-spacing="1">Autonomous Agent Framework — OODA Loop · MCP · A2A · 26 Tools</text>
 
   <!-- Bottom provider line -->
-  <text x="460" y="268" font-family="monospace" font-size="12" fill="#475569" letter-spacing="0.5">OPENAI · ANTHROPIC · OLLAMA · vLLM</text>
+  <text x="470" y="265" font-family="monospace" font-size="12" fill="#475569" letter-spacing="0.5">OPENAI · ANTHROPIC · OLLAMA · vLLM</text>
 </svg>

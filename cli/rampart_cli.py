@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
-"""✦ Polaris Agent — Complete Lifecycle CLI
+"""✦ Rampart Agent — Complete Lifecycle CLI
 
 Navigate Complexity with AI.
 
 Lifecycle commands (like Claude Code / OpenClaw / Codex):
 
-    polaris "analyze this file"     Single-shot (non-interactive)
-    echo "..." | polaris            Pipe / stdin mode
-    polaris                         Interactive REPL (default)
-    polaris init                    Interactive setup wizard (= setup)
-    polaris login                   Save API keys securely
-    polaris logout                  Remove stored credentials
-    polaris config [get|set|...]    Configuration management
-    polaris profiles [list|use|...] Named config profiles
-    polaris sessions [list|resume]  Session history
-    polaris update                  Self-update via pip
-    polaris doctor                  Environment diagnostics
-    polaris mcp [add|list|remove]   MCP server management
-    polaris exec <file>             Execute a task file
-    polaris --model <name>          Override model for this session
-    polaris --approval-mode <mode>  Override autonomy for this session
+    rampart "analyze this file"     Single-shot (non-interactive)
+    echo "..." | rampart            Pipe / stdin mode
+    rampart                         Interactive REPL (default)
+    rampart init                    Interactive setup wizard (= setup)
+    rampart login                   Save API keys securely
+    rampart logout                  Remove stored credentials
+    rampart config [get|set|...]    Configuration management
+    rampart profiles [list|use|...] Named config profiles
+    rampart sessions [list|resume]  Session history
+    rampart update                  Self-update via pip
+    rampart doctor                  Environment diagnostics
+    rampart mcp [add|list|remove]   MCP server management
+    rampart exec <file>             Execute a task file
+    rampart --model <name>          Override model for this session
+    rampart --approval-mode <mode>  Override autonomy for this session
 """
 
 import argparse
@@ -71,11 +71,11 @@ def _import_by_path(rel_path: str, name: str = None):
     return mod
 
 
-_logo = _import_by_path("core/logo.py", "_polaris_logo")
-_config = _import_by_path("core/config_manager.py", "_polaris_config")
-_init_wiz = _import_by_path("cli/init_wizard.py", "_polaris_init_wizard")
+_logo = _import_by_path("core/logo.py", "_rampart_logo")
+_config = _import_by_path("core/config_manager.py", "_rampart_config")
+_init_wiz = _import_by_path("cli/init_wizard.py", "_rampart_init_wizard")
 
-PolarisLogo = _logo.PolarisLogo
+RampartLogo = _logo.RampartLogo
 display_version_info = _logo.display_version_info
 BRAND_MARK = _logo.BRAND_MARK
 ConfigManager = _config.ConfigManager
@@ -83,50 +83,50 @@ discover_ollama = _config.discover_ollama
 
 # ── Constants ──────────────────────────────────────────────────────────────
 
-POLARIS_HOME = Path(os.environ.get("POLARIS_HOME", Path.home() / ".polaris"))
-SESSIONS_DIR = POLARIS_HOME / "sessions"
-PROFILES_DIR = POLARIS_HOME / "profiles"
-HISTORY_FILE = POLARIS_HOME / "history"
-MCP_CONFIG_FILE = POLARIS_HOME / "mcp_servers.json"
+RAMPART_HOME = Path(os.environ.get("RAMPART_HOME", Path.home() / ".rampart"))
+SESSIONS_DIR = RAMPART_HOME / "sessions"
+PROFILES_DIR = RAMPART_HOME / "profiles"
+HISTORY_FILE = RAMPART_HOME / "history"
+MCP_CONFIG_FILE = RAMPART_HOME / "mcp_servers.json"
 VERSION = "1.1.0"
 
 
 # ── Help text ──────────────────────────────────────────────────────────────
 
 CLI_EPILOG = f"""
-{_c('bold', '✦ Polaris Agent v' + VERSION + ' — Navigate Complexity with AI')}
+{_c('bold', '✦ Rampart Agent v' + VERSION + ' — Navigate Complexity with AI')}
 
 {_c('y', 'Lifecycle:')}
-  {_c('c', 'polaris')} "analyze this file"        Single-shot mode
-  {_c('c', 'echo')} "..." | {_c('c', 'polaris')}               Pipe / stdin mode
-  {_c('c', 'polaris')}                         Interactive REPL (default)
-  {_c('c', 'polaris')} exec <file>             Execute a task file
+  {_c('c', 'rampart')} "analyze this file"        Single-shot mode
+  {_c('c', 'echo')} "..." | {_c('c', 'rampart')}               Pipe / stdin mode
+  {_c('c', 'rampart')}                         Interactive REPL (default)
+  {_c('c', 'rampart')} exec <file>             Execute a task file
 
 {_c('y', 'Setup & Auth:')}
-  {_c('c', 'polaris')} init                    Interactive setup wizard
-  {_c('c', 'polaris')} login                   Save API keys
-  {_c('c', 'polaris')} logout                  Remove stored credentials
-  {_c('c', 'polaris')} doctor                  Environment diagnostics
+  {_c('c', 'rampart')} init                    Interactive setup wizard
+  {_c('c', 'rampart')} login                   Save API keys
+  {_c('c', 'rampart')} logout                  Remove stored credentials
+  {_c('c', 'rampart')} doctor                  Environment diagnostics
 
 {_c('y', 'Configuration:')}
-  {_c('c', 'polaris')} config                  Show all configuration
-  {_c('c', 'polaris')} config get <key>        Get a value
-  {_c('c', 'polaris')} config set <key> <val>  Set a value
-  {_c('c', 'polaris')} config unset <key>      Remove a key
-  {_c('c', 'polaris')} config reset            Reset to defaults
-  {_c('c', 'polaris')} config path             Show config file path
-  {_c('c', 'polaris')} profiles list           List named profiles
-  {_c('c', 'polaris')} profiles use <name>     Switch to a profile
+  {_c('c', 'rampart')} config                  Show all configuration
+  {_c('c', 'rampart')} config get <key>        Get a value
+  {_c('c', 'rampart')} config set <key> <val>  Set a value
+  {_c('c', 'rampart')} config unset <key>      Remove a key
+  {_c('c', 'rampart')} config reset            Reset to defaults
+  {_c('c', 'rampart')} config path             Show config file path
+  {_c('c', 'rampart')} profiles list           List named profiles
+  {_c('c', 'rampart')} profiles use <name>     Switch to a profile
 
 {_c('y', 'Sessions:')}
-  {_c('c', 'polaris')} sessions list           List recent sessions
-  {_c('c', 'polaris')} sessions resume <id>    Resume a session
+  {_c('c', 'rampart')} sessions list           List recent sessions
+  {_c('c', 'rampart')} sessions resume <id>    Resume a session
 
 {_c('y', 'Maintenance:')}
-  {_c('c', 'polaris')} update                  Self-update (pip)
-  {_c('c', 'polaris')} mcp add <name> <cmd>    Register an MCP server
-  {_c('c', 'polaris')} mcp list                List MCP servers
-  {_c('c', 'polaris')} mcp remove <name>       Remove an MCP server
+  {_c('c', 'rampart')} update                  Self-update (pip)
+  {_c('c', 'rampart')} mcp add <name> <cmd>    Register an MCP server
+  {_c('c', 'rampart')} mcp list                List MCP servers
+  {_c('c', 'rampart')} mcp remove <name>       Remove an MCP server
 
 {_c('y', 'Flags:')}
   {_c('c', '--model')}, {_c('c', '-m')} <name>          Override model
@@ -164,7 +164,7 @@ def _init_agent(cm=None, model_override=None, approval_override=None):
         agent_config = AgentConfig(
             model=model, provider="openai", api_key="not-needed",
             api_base=base_url,
-            max_steps=int(cm.get("POLARIS_MAX_STEPS", 20)),
+            max_steps=int(cm.get("RAMPART_MAX_STEPS", 20)),
         )
     else:
         agent_config = AgentConfig(
@@ -172,7 +172,7 @@ def _init_agent(cm=None, model_override=None, approval_override=None):
             provider=cm.get("LLM_PROVIDER", "openai"),
             api_key=cm.get("OPENAI_API_KEY") or cm.get("ANTHROPIC_API_KEY"),
             api_base=cm.get("OPENAI_API_BASE") or None,
-            max_steps=int(cm.get("POLARIS_MAX_STEPS", 20)),
+            max_steps=int(cm.get("RAMPART_MAX_STEPS", 20)),
         )
 
     agent = Agent(config=agent_config)
@@ -205,7 +205,7 @@ def _save_session(session_id: str, messages: list):
     """Save session messages to disk."""
     _ensure_sessions_dir()
     session_file = SESSIONS_DIR / f"{session_id}.json"
-    meta_file = POLARIS_HOME / "sessions_index.json"
+    meta_file = RAMPART_HOME / "sessions_index.json"
 
     session_file.write_text(json.dumps(messages, indent=2, ensure_ascii=False))
 
@@ -225,7 +225,7 @@ def _save_session(session_id: str, messages: list):
 
 def cmd_sessions_list():
     """List recent sessions."""
-    meta_file = POLARIS_HOME / "sessions_index.json"
+    meta_file = RAMPART_HOME / "sessions_index.json"
     if not meta_file.exists():
         print(f"{_c('dim', 'No sessions found.')}")
         return
@@ -236,7 +236,7 @@ def cmd_sessions_list():
         return
 
     print(f"\n{_c('c', '┌' + '─' * 68 + '┐')}")
-    print(f"{_c('c', '│')}  {_c('bold', '✦ Polaris Sessions'):<66}{_c('c', '│')}")
+    print(f"{_c('c', '│')}  {_c('bold', '✦ Rampart Sessions'):<66}{_c('c', '│')}")
     print(f"{_c('c', '├' + '─' * 68 + '┤')}")
     for sid, meta in sorted(index.items(), key=lambda x: x[1].get("updated_at", ""), reverse=True)[:20]:
         ts = meta.get("updated_at", "")[:19].replace("T", " ")
@@ -255,7 +255,7 @@ def cmd_sessions_resume(session_id: str):
         matches = list(SESSIONS_DIR.glob(f"{session_id[:8]}*.json"))
         if not matches:
             print(f"{_c('r', f'Session not found: {session_id}')}")
-            print(f"{_c('dim', 'Use \"polaris sessions list\" to see available sessions.')}")
+            print(f"{_c('dim', 'Use \"rampart sessions list\" to see available sessions.')}")
             return
         session_file = matches[0]
 
@@ -268,7 +268,7 @@ def cmd_sessions_resume(session_id: str):
         if role == "user":
             print(f"{_c('c', 'You:')} {content}")
         else:
-            print(f"{_c('y', 'Polaris:')} {content}")
+            print(f"{_c('y', 'Rampart:')} {content}")
     print(f"\n{_c('dim', '(Type your next message to continue this session)')}")
     return messages  # Return for interactive mode to continue
 
@@ -276,22 +276,22 @@ def cmd_sessions_resume(session_id: str):
 # ── Self-update ────────────────────────────────────────────────────────────
 
 def cmd_update():
-    """Self-update Polaris Agent via pip."""
+    """Self-update Rampart Agent via pip."""
     print(f"{_c('c', '✦ Checking for updates...')}")
     import subprocess
     r = subprocess.run(
-        [sys.executable, "-m", "pip", "install", "--upgrade", "polaris-agent", "-q"],
+        [sys.executable, "-m", "pip", "install", "--upgrade", "rampart-agent", "-q"],
         capture_output=True, text=True
     )
     if r.returncode == 0:
         # Check if anything was actually installed
         if "Requirement already satisfied" in r.stdout:
-            print(f"{_c('g', '✓ Polaris Agent is up to date (v' + VERSION + ').')}")
+            print(f"{_c('g', '✓ Rampart Agent is up to date (v' + VERSION + ').')}")
         else:
-            print(f"{_c('g', '✓ Polaris Agent updated successfully. Restart to use the new version.')}")
+            print(f"{_c('g', '✓ Rampart Agent updated successfully. Restart to use the new version.')}")
     else:
         print(f"{_c('y', '! Could not auto-update:')} {r.stderr[:200]}")
-        print(f"{_c('dim', 'Try: pip install --upgrade polaris-agent')}")
+        print(f"{_c('dim', 'Try: pip install --upgrade rampart-agent')}")
 
 
 # ── Doctor ─────────────────────────────────────────────────────────────────
@@ -301,7 +301,7 @@ def cmd_doctor():
     import subprocess
 
     print(f"\n{_c('c', '╭' + '─' * 50 + '╮')}")
-    print(f"{_c('c', '│')}  {_c('bold', '✦ Polaris Doctor — Environment Diagnostics'):<48}{_c('c', '│')}")
+    print(f"{_c('c', '│')}  {_c('bold', '✦ Rampart Doctor — Environment Diagnostics'):<48}{_c('c', '│')}")
     print(f"{_c('c', '╰' + '─' * 50 + '╯')}\n")
 
     checks = []
@@ -313,13 +313,13 @@ def cmd_doctor():
     print(f"    Executable: {sys.executable}")
     checks.append(("Python 3.11+", py_ok))
 
-    # Polaris home
-    print(f"\n{_c('bold', 'Polaris Home')}")
-    print(f"  {'✓' if POLARIS_HOME.exists() else '✗'} {POLARIS_HOME}")
-    if POLARIS_HOME.exists():
-        contents = [p.name for p in sorted(POLARIS_HOME.iterdir()) if not p.name.startswith(".")]
+    # Rampart home
+    print(f"\n{_c('bold', 'Rampart Home')}")
+    print(f"  {'✓' if RAMPART_HOME.exists() else '✗'} {RAMPART_HOME}")
+    if RAMPART_HOME.exists():
+        contents = [p.name for p in sorted(RAMPART_HOME.iterdir()) if not p.name.startswith(".")]
         print(f"    Contents: {', '.join(contents) if contents else '(empty)'}")
-    checks.append(("Polaris home", POLARIS_HOME.exists()))
+    checks.append(("Rampart home", RAMPART_HOME.exists()))
 
     # Config
     cm = _get_cm()
@@ -329,7 +329,7 @@ def cmd_doctor():
     if has_config:
         model = cm.get("LLM_MODEL", "not set")
         provider = cm.get("LLM_PROVIDER", "not set")
-        autonomy = cm.get("POLARIS_AUTONOMY", "L2")
+        autonomy = cm.get("RAMPART_AUTONOMY", "L2")
         print(f"    Model: {model}  |  Provider: {provider}  |  Autonomy: {autonomy}")
     checks.append(("Config file", has_config))
 
@@ -370,7 +370,7 @@ def cmd_doctor():
     # Disk
     print(f"\n{_c('bold', 'Disk')}")
     try:
-        usage = shutil.disk_usage(POLARIS_HOME if POLARIS_HOME.exists() else Path.home())
+        usage = shutil.disk_usage(RAMPART_HOME if RAMPART_HOME.exists() else Path.home())
         gb_free = usage.free / (1024 ** 3)
         icon = "✓" if gb_free > 1 else "✗"
         print(f"  {icon} Free: {gb_free:.1f} GB")
@@ -389,7 +389,7 @@ def cmd_doctor():
     print(f"{_c('c', '└' + '─' * 50 + '┘')}\n")
 
     if failed > 0:
-        print(f"{_c('y', 'Run \"polaris init\" to fix configuration issues.')}\n")
+        print(f"{_c('y', 'Run \"rampart init\" to fix configuration issues.')}\n")
 
 
 # ── Auth / Login ───────────────────────────────────────────────────────────
@@ -397,7 +397,7 @@ def cmd_doctor():
 def cmd_login():
     """Interactive login — securely save API keys."""
     cm = _get_cm()
-    print(f"\n{_c('bold', _c('y', '✦ Polaris Login'))}")
+    print(f"\n{_c('bold', _c('y', '✦ Rampart Login'))}")
     print(f"{_c('dim', 'Enter your API keys. Leave blank to skip.')}")
     print(f"{_c('dim', 'Keys are stored in ' + str(cm.config_path))}\n")
 
@@ -413,9 +413,9 @@ def cmd_login():
 
     cm.write()
     if openai_key or anthropic_key:
-        print(f"\n{_c('g', '✓ Credentials saved. Run \"polaris\" to start.')}\n")
+        print(f"\n{_c('g', '✓ Credentials saved. Run \"rampart\" to start.')}\n")
     else:
-        print(f"\n{_c('y', 'No keys entered. Run \"polaris login\" again to add keys.')}\n")
+        print(f"\n{_c('y', 'No keys entered. Run \"rampart login\" again to add keys.')}\n")
 
 
 def cmd_logout():
@@ -450,8 +450,8 @@ def cmd_profiles_list():
     print(f"\n{_c('bold', '✦ Config Profiles:')}\n")
     if not profiles:
         print(f"  {_c('dim', 'No profiles found. Create one with:')}")
-        print(f"  {_c('c', 'polaris config export --profile work')}")
-        print(f"  {_c('c', 'polaris profiles use work')}\n")
+        print(f"  {_c('c', 'rampart config export --profile work')}")
+        print(f"  {_c('c', 'rampart profiles use work')}\n")
         return
 
     for p in sorted(profiles):
@@ -461,7 +461,7 @@ def cmd_profiles_list():
         marker = " ← current" if str(current) == str(p) else ""
         print(f"  {_c('y', p.stem)}  {provider}/{model}{_c('g', marker)}")
 
-    print(f"\n{_c('dim', 'Use \"polaris profiles use <name>\" to switch.')}\n")
+    print(f"\n{_c('dim', 'Use \"rampart profiles use <name>\" to switch.')}\n")
 
 
 def cmd_profiles_use(name: str):
@@ -471,7 +471,7 @@ def cmd_profiles_use(name: str):
         print(f"{_c('r', f'Profile not found: {name}')}")
         # Offer to create from current config
         print(f"{_c('dim', 'Create it from current config:')}")
-        print(f"{_c('c', f'  polaris config export --profile {name}')}")
+        print(f"{_c('c', f'  rampart config export --profile {name}')}")
         return
 
     # Copy profile to active config
@@ -493,7 +493,7 @@ def cmd_config_export(profile_name: str):
     profile_path = PROFILES_DIR / f"{profile_name}.json"
     profile_path.write_text(json.dumps(cm.to_dict(), indent=2, ensure_ascii=False))
     print(f"{_c('g', '✓ Profile ' + repr(profile_name) + ' saved.')}")
-    print(f"{_c('dim', f'  Switch to it: polaris profiles use {profile_name}')}")
+    print(f"{_c('dim', f'  Switch to it: rampart profiles use {profile_name}')}")
 
 
 # ── MCP management ─────────────────────────────────────────────────────────
@@ -502,8 +502,8 @@ def cmd_mcp_list():
     """List registered MCP servers."""
     if not MCP_CONFIG_FILE.exists():
         print(f"\n{_c('dim', 'No MCP servers registered.')}")
-        print(f"{_c('dim', 'Add one: polaris mcp add <name> <command> [args...]')}")
-        print(f"{_c('dim', 'Example: polaris mcp add filesystem npx -y @modelcontextprotocol/server-filesystem .')}\n")
+        print(f"{_c('dim', 'Add one: rampart mcp add <name> <command> [args...]')}")
+        print(f"{_c('dim', 'Example: rampart mcp add filesystem npx -y @modelcontextprotocol/server-filesystem .')}\n")
         return
 
     servers = json.loads(MCP_CONFIG_FILE.read_text())
@@ -582,7 +582,7 @@ def cmd_config_show():
              "global": _c("c", "GLB"), "default": _c("dim", "DEF")}
 
     print(f"\n{top}")
-    print(_row((_c("bold", "✦ Polaris Agent — Configuration"), INNER_W)))
+    print(_row((_c("bold", "✦ Rampart Agent — Configuration"), INNER_W)))
     # Show layer files
     for label, path in cm.all_paths():
         suffix = _c("g", " ✓") if path and path.exists() else _c("dim", " —")
@@ -594,7 +594,7 @@ def cmd_config_show():
         ("LLM Provider", ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "LLM_MODEL", "LLM_PROVIDER",
                            "LLM_TEMPERATURE", "LLM_MAX_TOKENS", "OPENAI_API_BASE"]),
         ("Local LLM", ["LOCAL_LLM_PROVIDER", "LOCAL_LLM_MODEL", "LOCAL_LLM_URL"]),
-        ("Agent Runtime", ["POLARIS_AUTONOMY", "POLARIS_MAX_STEPS", "POLARIS_LOG_LEVEL"]),
+        ("Agent Runtime", ["RAMPART_AUTONOMY", "RAMPART_MAX_STEPS", "RAMPART_LOG_LEVEL"]),
         ("Server", ["SERVER_HOST", "SERVER_PORT", "TOKEN_EXPIRE_HOURS", "RATE_LIMIT_USER"]),
         ("Memory", ["REDIS_HOST", "REDIS_PORT", "EMBEDDING_PROVIDER", "EMBEDDING_MODEL"]),
     ]
@@ -620,7 +620,7 @@ def cmd_config_show():
 def _ok(msg): print(f"{_c('g', '✓')} {msg}")
 
 
-# ── Single-shot mode (polaris "prompt") ────────────────────────────────────
+# ── Single-shot mode (rampart "prompt") ────────────────────────────────────
 
 def run_single_shot(prompt: str, model_override=None, approval_override=None, output_format: str = "text"):
     """Non-interactive single-shot execution. Returns exit code.
@@ -636,9 +636,9 @@ def run_single_shot(prompt: str, model_override=None, approval_override=None, ou
     # Check if configured
     if not _check_configured(cm):
         if output_format == "json":
-            print(json.dumps({"error": "not_configured", "message": "Run polaris init or polaris login first."}))
+            print(json.dumps({"error": "not_configured", "message": "Run rampart init or rampart login first."}))
         else:
-            print(f"{_c('r', '✗ Not configured.')} Run {_c('c', 'polaris init')} or {_c('c', 'polaris login')} first.", file=sys.stderr)
+            print(f"{_c('r', '✗ Not configured.')} Run {_c('c', 'rampart init')} or {_c('c', 'rampart login')} first.", file=sys.stderr)
         return 1
 
     try:
@@ -648,11 +648,11 @@ def run_single_shot(prompt: str, model_override=None, approval_override=None, ou
             print(json.dumps({"error": "init_failed", "message": str(e)}))
         else:
             print(f"{_c('r', f'Failed to initialize: {e}')}", file=sys.stderr)
-            print(f"{_c('y', 'Run \"polaris init\" to configure.')}", file=sys.stderr)
+            print(f"{_c('y', 'Run \"rampart init\" to configure.')}", file=sys.stderr)
         return 1
 
     if output_format != "json":
-        print(f"{_c('dim', f'Polaris v{VERSION}  |  {model_name}  |  processing...')}", file=sys.stderr)
+        print(f"{_c('dim', f'Rampart v{VERSION}  |  {model_name}  |  processing...')}", file=sys.stderr)
 
     try:
         result = asyncio.run(agent.run(prompt))
@@ -694,7 +694,7 @@ def run_single_shot(prompt: str, model_override=None, approval_override=None, ou
 # ── Pipe / stdin mode ──────────────────────────────────────────────────────
 
 def run_pipe_mode(model_override=None):
-    """Read from stdin and process. Like: echo '...' | polaris"""
+    """Read from stdin and process. Like: echo '...' | rampart"""
     if _TTY:
         return None  # No pipe data
     if sys.stdin.isatty():
@@ -723,11 +723,11 @@ def run_interactive(model_override=None, approval_override=None, resume_session_
 
     # Show splash
     if show_logo:
-        PolarisLogo(animate=True, show_info=True).display()
+        RampartLogo(animate=True, show_info=True).display()
 
     # Check if configured
     if not _check_configured(cm):
-        print(f"{_c('y', 'Run \"polaris init\" for interactive setup, or \"polaris login\" to add API keys.')}\n")
+        print(f"{_c('y', 'Run \"rampart init\" for interactive setup, or \"rampart login\" to add API keys.')}\n")
         return
 
     # Init agent
@@ -735,13 +735,13 @@ def run_interactive(model_override=None, approval_override=None, resume_session_
         agent, cm = _init_agent(cm, model_override, approval_override)
     except Exception as e:
         print(f"{_c('r', f'Failed to initialize agent: {e}')}")
-        print(f"{_c('y', 'Run \"polaris init\" to configure your LLM provider.')}\n")
+        print(f"{_c('y', 'Run \"rampart init\" to configure your LLM provider.')}\n")
         return
 
     model = cm.get("LLM_MODEL", "?")
-    autonomy = cm.get("POLARIS_AUTONOMY", "L2")
+    autonomy = cm.get("RAMPART_AUTONOMY", "L2")
 
-    print(f"\n{_c('g', f'Polaris Agent — Model: {model}  |  Autonomy: {autonomy}')}")
+    print(f"\n{_c('g', f'Rampart Agent — Model: {model}  |  Autonomy: {autonomy}')}")
     print(f"{_c('dim', 'Type \"exit\" to quit, \"/help\" for commands')}\n")
 
     # Session tracking
@@ -762,7 +762,7 @@ def run_interactive(model_override=None, approval_override=None, resume_session_
     try:
         while True:
             try:
-                user_input = input(f"{_c('c', '✦')} {_c('bold', 'polaris')}{_c('dim', '>')} ").strip()
+                user_input = input(f"{_c('c', '✦')} {_c('bold', 'rampart')}{_c('dim', '>')} ").strip()
             except (EOFError, KeyboardInterrupt):
                 print()
                 break
@@ -782,7 +782,7 @@ def run_interactive(model_override=None, approval_override=None, resume_session_
                 _show_repl_help()
                 continue
             elif user_input.lower() == "version":
-                print(f"Polaris Agent v{VERSION}")
+                print(f"Rampart Agent v{VERSION}")
                 continue
             elif user_input.lower() == "clear":
                 os.system("cls" if os.name == "nt" else "clear")
@@ -814,7 +814,7 @@ def run_interactive(model_override=None, approval_override=None, resume_session_
 
         save()
         print(f"\n{_c('y', f'Goodbye! Session saved: {session_id[:16]}')}")
-        print(f"{_c('dim', f'Resume: polaris sessions resume {session_id}')}\n")
+        print(f"{_c('dim', f'Resume: rampart sessions resume {session_id}')}\n")
 
     except KeyboardInterrupt:
         save()
@@ -833,7 +833,7 @@ def _setup_readline():
 
 
 def _check_configured(cm) -> bool:
-    """Check if Polaris is minimally configured to run."""
+    """Check if Rampart is minimally configured to run."""
     provider = cm.get("LLM_PROVIDER")
     if provider == "ollama" or cm.get("LOCAL_LLM_PROVIDER"):
         return True  # Local — no API key needed
@@ -853,7 +853,7 @@ def _auto_configure_ollama(cm):
         print(f"\n{_c('g', '✦ Auto-detected Ollama!')}")
         auto_model = result.get('LLM_MODEL', '?')
         print(f"{_c('dim', f'  Model: {auto_model}')}")
-        print(f"{_c('dim', '  Run \"polaris init\" to change.')}\n")
+        print(f"{_c('dim', '  Run \"rampart init\" to change.')}\n")
 
 
 def _handle_slash_command(cmd: str, cm):
@@ -869,7 +869,7 @@ def _handle_slash_command(cmd: str, cm):
         cm.write()
         _ok(f"Model set to {parts[1]} (restart to apply)")
     elif cmd_name == "/autonomy" and len(parts) > 1:
-        cm.set("POLARIS_AUTONOMY", parts[1].upper())
+        cm.set("RAMPART_AUTONOMY", parts[1].upper())
         cm.write()
         _ok(f"Autonomy set to {parts[1].upper()} (restart to apply)")
     elif cmd_name == "/doctor":
@@ -925,8 +925,8 @@ def main():
 
     # Parse remaining args as normal
     parser = argparse.ArgumentParser(
-        prog="polaris",
-        description=f"✦ Polaris Agent — Navigate Complexity with AI",
+        prog="rampart",
+        description=f"✦ Rampart Agent — Navigate Complexity with AI",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=CLI_EPILOG,
     )
@@ -947,7 +947,7 @@ def main():
     cs = cp.add_subparsers(dest="config_action")
     cs.add_parser("show", help="Show all config")
     cg = cs.add_parser("get", help="Get a value"); cg.add_argument("key")
-    cset = cs.add_parser("set", help="Set a value"); cset.add_argument("key"); cset.add_argument("value"); cset.add_argument("--global", "-g", dest="layer", action="store_const", const="global", help="Write to global config"); cset.add_argument("--project", "-p", dest="layer", action="store_const", const="project", help="Write to project config (.polaris/config.json)"); cset.add_argument("--local", "-l", dest="layer", action="store_const", const="local", help="Write to local config (.polaris/config.local.json)")
+    cset = cs.add_parser("set", help="Set a value"); cset.add_argument("key"); cset.add_argument("value"); cset.add_argument("--global", "-g", dest="layer", action="store_const", const="global", help="Write to global config"); cset.add_argument("--project", "-p", dest="layer", action="store_const", const="project", help="Write to project config (.rampart/config.json)"); cset.add_argument("--local", "-l", dest="layer", action="store_const", const="local", help="Write to local config (.rampart/config.local.json)")
     cu = cs.add_parser("unset", help="Unset a key"); cu.add_argument("key"); cu.add_argument("--global", "-g", dest="layer", action="store_const", const="global", help="Remove from global"); cu.add_argument("--project", "-p", dest="layer", action="store_const", const="project", help="Remove from project"); cu.add_argument("--local", "-l", dest="layer", action="store_const", const="local", help="Remove from local")
     cs.add_parser("reset", help="Reset to defaults")
     cs.add_parser("path", help="Show config file path")
@@ -992,7 +992,7 @@ def main():
 
     # ── Logo / Version (fast paths) ───────────────────────────────────
     if args.logo:
-        PolarisLogo(style=args.style, animate=True).display()
+        RampartLogo(style=args.style, animate=True).display()
         return
     if args.version:
         display_version_info()
@@ -1078,7 +1078,7 @@ def main():
     if args.resume:
         if args.resume == "last":
             # Find most recent session
-            meta_file = POLARIS_HOME / "sessions_index.json"
+            meta_file = RAMPART_HOME / "sessions_index.json"
             if meta_file.exists():
                 index = json.loads(meta_file.read_text())
                 if index:

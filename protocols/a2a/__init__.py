@@ -1,6 +1,6 @@
 """A2A (Agent-to-Agent) Protocol Implementation — Google Standard v1.0
 
-A2A enables Polaris agents to discover, communicate with, and delegate tasks
+A2A enables Rampart agents to discover, communicate with, and delegate tasks
 to other A2A-compliant agents across different frameworks and vendors.
 
 Spec: https://a2a-protocol.org

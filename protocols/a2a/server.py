@@ -1,4 +1,4 @@
-"""A2A Server — Expose Polaris as an A2A-compliant agent.
+"""A2A Server — Expose Rampart as an A2A-compliant agent.
 
 Publishes Agent Card at /.well-known/agent-card.json and handles
 A2A JSON-RPC task lifecycle via HTTP + SSE.
@@ -22,7 +22,7 @@ from protocols.a2a.types import (
 
 
 class A2AServer:
-    """A2A protocol server for Polaris Agent.
+    """A2A protocol server for Rampart Agent.
 
     Usage:
         server = A2AServer(

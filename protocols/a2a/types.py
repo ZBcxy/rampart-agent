@@ -163,7 +163,7 @@ class AgentCard:
 
     Published at: GET /.well-known/agent-card.json
     """
-    name: str = "Polaris Agent"
+    name: str = "Rampart Agent"
     description: str = "Navigate Complexity with AI — Autonomous Agent Framework"
     url: str = ""  # Base URL of the agent
     version: str = "1.1.0"

@@ -56,7 +56,7 @@ class JSONFormatter(logging.Formatter):
 
 def setup_logging(level: str = "INFO", json_format: bool = True):
     """Configure structured logging for the agent."""
-    logger = logging.getLogger("polaris")
+    logger = logging.getLogger("rampart")
     logger.setLevel(getattr(logging, level.upper(), logging.INFO))
     logger.handlers.clear()
 
@@ -132,7 +132,7 @@ class Tracer:
     Can be extended to export to Jaeger/Zipkin/OTLP.
     """
 
-    def __init__(self, name: str = "polaris-agent"):
+    def __init__(self, name: str = "rampart-agent"):
         self.name = name
         self._spans: List[Span] = []
         self._active: List[Span] = []

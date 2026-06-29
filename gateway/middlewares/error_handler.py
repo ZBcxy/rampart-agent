@@ -7,10 +7,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 
 class ErrorHandlerMiddleware(BaseHTTPMiddleware):
-    """
-    错误处理中间件
-    统一处理应用中的异常并返回标准化的错误响应
-    """
+    """Unified error handling with structured error responses."""
 
     async def dispatch(self, request: Request, call_next):
         request_id = str(uuid.uuid4())[:8]
@@ -41,7 +38,7 @@ class ErrorHandlerMiddleware(BaseHTTPMiddleware):
                 "error": {
                     "code": error_code,
                     "message": error_message,
-                    "details": traceback.format_exc().split("\n")[-5:],
+                    "details": None,
                     "request_id": request_id,
                 }
             }

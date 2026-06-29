@@ -31,7 +31,7 @@ clean:
 
 # ── Run ──────────────────────────────────────────────────────────────────
 run:
-	python -m cli.polaris_cli
+	python -m cli.rampart_cli
 
 run-gateway:
 	python -m uvicorn gateway.main:app --host 0.0.0.0 --port 8000 --reload
@@ -40,38 +40,38 @@ run-mcp:
 	python -m mcp.server --stdio
 
 run-single-shot:
-	python -m cli.polaris_cli "$(PROMPT)"
+	python -m cli.rampart_cli "$(PROMPT)"
 
 # ── Lifecycle ────────────────────────────────────────────────────────────
 init:
-	python -m cli.polaris_cli init
+	python -m cli.rampart_cli init
 
 doctor:
-	python -m cli.polaris_cli doctor
+	python -m cli.rampart_cli doctor
 
 config:
-	python -m cli.polaris_cli config
+	python -m cli.rampart_cli config
 
 login:
-	python -m cli.polaris_cli login
+	python -m cli.rampart_cli login
 
 sessions:
-	python -m cli.polaris_cli sessions list
+	python -m cli.rampart_cli sessions list
 
 profiles:
-	python -m cli.polaris_cli profiles list
+	python -m cli.rampart_cli profiles list
 
 update:
-	python -m cli.polaris_cli update
+	python -m cli.rampart_cli update
 
 logo:
-	python -m cli.polaris_cli --logo
+	python -m cli.rampart_cli --logo
 
 logo-minimal:
-	python -m cli.polaris_cli --logo --style minimal
+	python -m cli.rampart_cli --logo --style minimal
 
 logo-box:
-	python -m cli.polaris_cli --logo --style box
+	python -m cli.rampart_cli --logo --style box
 
 # ── Install lifecycle ────────────────────────────────────────────────────
 install-full:
@@ -96,7 +96,7 @@ doctor-install:
 	python install.py --doctor
 
 # ── Docker ───────────────────────────────────────────────────────────────
-DOCKER_IMAGE ?= polaris-agent
+DOCKER_IMAGE ?= rampart-agent
 DOCKER_TAG ?= latest
 
 docker-build:
@@ -113,10 +113,10 @@ docker-down:
 	docker compose down
 
 docker-logs:
-	docker compose logs -f polaris
+	docker compose logs -f rampart
 
 docker-shell:
-	docker compose exec polaris bash
+	docker compose exec rampart bash
 
 docker-push:
 	docker tag $(DOCKER_IMAGE):$(DOCKER_TAG) $(DOCKER_REGISTRY)/$(DOCKER_IMAGE):$(DOCKER_TAG)

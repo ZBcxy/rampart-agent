@@ -39,15 +39,15 @@ Thumbs.db
 logs/
 
 # Docker data
-polaris_data/
+rampart_data/
 redis_data/
 docker-compose.override.yml
 
 # Node (if using npx for MCP)
 node_modules/
 
-# Polaris project-local config (like .claude/settings.local.json)
-.polaris/config.local.json
+# Rampart project-local config (like .claude/settings.local.json)
+.rampart/config.local.json
 
 # SDK dist
 sdk/dist/

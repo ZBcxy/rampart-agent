@@ -121,7 +121,7 @@ def _web_fetch(url: str, max_length: int = 10000, extract_text: bool = True) -> 
 
     try:
         headers = {
-            "User-Agent": "Polaris-Agent/1.0 (Web Fetcher)",
+            "User-Agent": "Rampart-Agent/1.0 (Web Fetcher)",
             "Accept": "text/html,application/xhtml+xml,text/plain",
         }
         resp = requests.get(url, headers=headers, timeout=15, allow_redirects=True)
@@ -161,7 +161,7 @@ def _http_request(
 ) -> Dict[str, Any]:
     """Make a raw HTTP request."""
     try:
-        req_headers = {"User-Agent": "Polaris-Agent/1.0"}
+        req_headers = {"User-Agent": "Rampart-Agent/1.0"}
         if headers:
             req_headers.update(headers)
 

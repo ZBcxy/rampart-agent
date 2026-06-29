@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# ✦ Polaris Agent — npm postinstall script
-# Bootstraps the Python polaris-agent package after npm install.
+# ✦ Rampart Agent — npm postinstall script
+# Bootstraps the Python rampart-agent package after npm install.
 set -e
 
 cat << 'BANNER'
 
 ╭──────────────────────────────────────╮
-│  ✦ Polaris Agent — npm install       │
+│  ✦ Rampart Agent — npm install       │
 │  Navigate Complexity with AI         │
 ╰──────────────────────────────────────╯
 
@@ -48,10 +48,10 @@ if [ -z "$PYTHON" ]; then
     err "Python 3.11+ is required but not found."
     echo ""
     echo "  Install Python 3.11+ then run:"
-    echo "    pip install polaris-agent"
+    echo "    pip install rampart-agent"
     echo ""
     echo "  Or use Docker:"
-    echo "    docker run -p 8000:8000 ghcr.io/zbcxy/polaris-agent:latest"
+    echo "    docker run -p 8000:8000 ghcr.io/zbcxy/rampart-agent:latest"
     echo ""
     exit 1
 fi
@@ -73,18 +73,18 @@ else
     exit 1
 fi
 
-# ── Install polaris-agent ─────────────────────────────────────────────────
+# ── Install rampart-agent ─────────────────────────────────────────────────
 
 echo ""
-echo "▸ Polaris Agent"
+echo "▸ Rampart Agent"
 
 # Check if already installed
-if "$PYTHON" -c "import cli.polaris_cli" 2>/dev/null; then
+if "$PYTHON" -c "import cli.rampart_cli" 2>/dev/null; then
     INSTALLED_VER=$("$PYTHON" -c "from core.logo import __version__; print(__version__)" 2>/dev/null || echo "?")
     ok "Already installed (v$INSTALLED_VER)"
 else
-    info "Installing polaris-agent via pip..."
-    if "$PYTHON" -m pip install polaris-agent -q 2>/dev/null; then
+    info "Installing rampart-agent via pip..."
+    if "$PYTHON" -m pip install rampart-agent -q 2>/dev/null; then
         ok "Installed successfully"
     else
         # Fallback: try to find the package locally
@@ -95,8 +95,8 @@ else
         else
             warn "Could not install from PyPI."
             info "The npm package is a wrapper. Install the Python package manually:"
-            info "  pip install polaris-agent"
-            info "  curl -sSL https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/install.py | python3"
+            info "  pip install rampart-agent"
+            info "  curl -sSL https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/install.py | python3"
         fi
     fi
 fi
@@ -106,29 +106,29 @@ fi
 echo ""
 echo "▸ CLI"
 
-if command -v polaris &>/dev/null; then
-    POLARIS_PATH=$(command -v polaris)
-    if [ "$POLARIS_PATH" != "$(npm root -g 2>/dev/null || echo '')/polaris-agent/bin/polaris" ]; then
-        ok "polaris command available: $POLARIS_PATH"
+if command -v rampart &>/dev/null; then
+    RAMPART_PATH=$(command -v rampart)
+    if [ "$RAMPART_PATH" != "$(npm root -g 2>/dev/null || echo '')/rampart-agent/bin/rampart" ]; then
+        ok "rampart command available: $RAMPART_PATH"
     else
-        ok "polaris command available"
+        ok "rampart command available"
     fi
-elif [ -x "$HOME/.local/bin/polaris" ]; then
-    ok "polaris at ~/.local/bin/polaris"
-elif "$PYTHON" -c "import cli.polaris_cli" 2>/dev/null; then
-    ok "polaris importable as Python module"
+elif [ -x "$HOME/.local/bin/rampart" ]; then
+    ok "rampart at ~/.local/bin/rampart"
+elif "$PYTHON" -c "import cli.rampart_cli" 2>/dev/null; then
+    ok "rampart importable as Python module"
 else
-    warn "polaris CLI not fully linked yet."
-    info "Use: $PYTHON -m cli.polaris_cli"
+    warn "rampart CLI not fully linked yet."
+    info "Use: $PYTHON -m cli.rampart_cli"
 fi
 
 # ── Done ──────────────────────────────────────────────────────────────────
 
 echo ""
 echo -e "${GREEN}╭────────────────────────────────────────────────╮${RESET}"
-echo -e "${GREEN}│${RESET}  ${CYAN}✦${RESET} ${GREEN}Polaris Agent is ready!${RESET}                      ${GREEN}│${RESET}"
+echo -e "${GREEN}│${RESET}  ${CYAN}✦${RESET} ${GREEN}Rampart Agent is ready!${RESET}                      ${GREEN}│${RESET}"
 echo -e "${GREEN}│${RESET}                                                ${GREEN}│${RESET}"
-echo -e "${GREEN}│${RESET}  First time? Run: ${CYAN}polaris init${RESET}                 ${GREEN}│${RESET}"
-echo -e "${GREEN}│${RESET}  Start:          ${CYAN}polaris${RESET}                        ${GREEN}│${RESET}"
+echo -e "${GREEN}│${RESET}  First time? Run: ${CYAN}rampart init${RESET}                 ${GREEN}│${RESET}"
+echo -e "${GREEN}│${RESET}  Start:          ${CYAN}rampart${RESET}                        ${GREEN}│${RESET}"
 echo -e "${GREEN}╰────────────────────────────────────────────────╯${RESET}"
 echo ""

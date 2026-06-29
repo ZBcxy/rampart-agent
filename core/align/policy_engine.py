@@ -1,6 +1,6 @@
 """Policy Engine Module
 
-Defines and enforces operational policies for the Polaris agent.
+Defines and enforces operational policies for the Rampart agent.
 Policies govern autonomy levels, resource usage limits, and operational boundaries.
 """
 

@@ -17,5 +17,5 @@ build
 *.swo
 *~
 .DS_Store
-polaris_data
+rampart_data
 redis_data

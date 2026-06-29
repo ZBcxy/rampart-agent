@@ -20,7 +20,7 @@ class TestFileTools:
         # file_write requires confirmation, use auto_confirm callback
         result = registry.execute(
             "file_write",
-            path="/tmp/polaris_test_write.txt",
+            path="/tmp/rampart_test_write.txt",
             content="Hello World!",
             mode="w",
             confirm_callback=lambda msg: True,
@@ -28,12 +28,12 @@ class TestFileTools:
         assert result["success"] is True
 
         # Read back
-        result = registry.execute("file_read", path="/tmp/polaris_test_write.txt")
+        result = registry.execute("file_read", path="/tmp/rampart_test_write.txt")
         assert result["success"] is True
         assert "Hello World!" in result["result"]["content"]
 
         # Cleanup
-        os.unlink("/tmp/polaris_test_write.txt")
+        os.unlink("/tmp/rampart_test_write.txt")
 
     def test_list_directory(self, registry):
         result = registry.execute("file_list", path="/tmp", pattern="*.txt", recursive=False)

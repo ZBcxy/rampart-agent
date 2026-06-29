@@ -1,4 +1,4 @@
-"""Polaris Agent — Fully integrated OODA agent with Harness modules.
+"""Rampart Agent — Fully integrated OODA agent with Harness modules.
 
 All modules wired in:
 - tracer: span around every OODA phase, tool call, LLM invocation
@@ -105,7 +105,7 @@ class AgentResult:
 
 
 class Agent:
-    """Fully integrated Polaris Agent — all modules wired in, zero hardcoded prompts."""
+    """Fully integrated Rampart Agent — all modules wired in, zero hardcoded prompts."""
 
     def __init__(
         self,

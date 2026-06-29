@@ -1,6 +1,6 @@
 """A2A Client — Discover and delegate tasks to remote A2A agents.
 
-Allows Polaris to find and use other A2A-compliant agents across the web.
+Allows Rampart to find and use other A2A-compliant agents across the web.
 """
 
 import json

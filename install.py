@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""✦ Polaris Agent — One-command lifecycle manager.
+"""✦ Rampart Agent — One-command lifecycle manager.
 
 Navigate Complexity with AI.
 
 Usage:
-    curl -sSL https://raw.githubusercontent.com/ZBcxy/polaris-agent/main/install.py | python3
+    curl -sSL https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/install.py | python3
     python install.py                  # install + launch CLI
     python install.py --no-launch      # install only
     python install.py --upgrade        # upgrade in-place
@@ -23,13 +23,13 @@ from pathlib import Path
 
 # ── Constants ──────────────────────────────────────────────────────────────
 
-APP = "polaris"
+APP = "rampart"
 HOME = Path.home() / f".{APP}"
 VENV = HOME / "venv"
 BIN_DIR = Path.home() / ".local" / "bin"
 MIN_PY = (3, 11)
-GITHUB_REPO = "ZBcxy/polaris-agent"
-PYPI_PACKAGE = "polaris-agent"
+GITHUB_REPO = "ZBcxy/rampart-agent"
+PYPI_PACKAGE = "rampart-agent"
 
 REQS = [
     "fastapi>=0.100.0", "uvicorn>=0.23.0", "pydantic>=2.0.0",
@@ -88,7 +88,7 @@ def _venv_pip() -> str:
 def _banner(action: str = "Install") -> None:
     bar = "─" * 42
     print(f"\n{_c('c', '╭' + bar + '╮')}")
-    print(f"{_c('c', '│')}  {_c('y', '✦')} {_c('bold', 'Polaris Agent')} — {_c('w', action):<27} {_c('c', '│')}")
+    print(f"{_c('c', '│')}  {_c('y', '✦')} {_c('bold', 'Rampart Agent')} — {_c('w', action):<27} {_c('c', '│')}")
     print(f"{_c('c', '╰' + bar + '╯')}\n")
 
 
@@ -176,8 +176,8 @@ def install_deps() -> bool:
     return len(failed) == 0
 
 
-def install_polaris(force: bool = False, editable: bool = False) -> bool:
-    _step("Polaris Agent")
+def install_rampart(force: bool = False, editable: bool = False) -> bool:
+    _step("Rampart Agent")
     src = Path(__file__).parent.resolve()
 
     # Determine install source
@@ -204,12 +204,12 @@ def install_polaris(force: bool = False, editable: bool = False) -> bool:
     if sys.platform == "win32":
         cli = BIN_DIR / f"{APP}.bat"
         cli.write_text(
-            f'@echo off\r\nset POLARIS_HOME={HOME}\r\n"{_venv_python()}" -m cli.polaris_cli %*\r\n'
+            f'@echo off\r\nset RAMPART_HOME={HOME}\r\n"{_venv_python()}" -m cli.rampart_cli %*\r\n'
         )
     else:
         cli = BIN_DIR / APP
         cli.write_text(
-            f'#!/bin/bash\nexport POLARIS_HOME="{HOME}"\nexec {_venv_python()} -m cli.polaris_cli "$@"\n'
+            f'#!/bin/bash\nexport RAMPART_HOME="{HOME}"\nexec {_venv_python()} -m cli.rampart_cli "$@"\n'
         )
         cli.chmod(0o755)
     _ok(f"CLI: {cli}")
@@ -235,7 +235,7 @@ def _ensure_path() -> None:
     else:
         rc_files = [Path.home() / ".bashrc", Path.home() / ".profile", Path.home() / ".bash_profile"]
 
-    marker = "# Polaris Agent PATH"
+    marker = "# Rampart Agent PATH"
     for rc in rc_files:
         if not rc.exists():
             continue
@@ -264,7 +264,7 @@ def setup_env() -> None:
         shutil.copy(src, env_file)
     else:
         env_file.write_text(
-            "# ✦ Polaris Agent — Navigate Complexity with AI\n"
+            "# ✦ Rampart Agent — Navigate Complexity with AI\n"
             "# Configure your LLM provider below.\n\n"
             "OPENAI_API_KEY=\nLLM_MODEL=gpt-4o\n"
         )
@@ -274,7 +274,7 @@ def setup_env() -> None:
 # ── Uninstall ──────────────────────────────────────────────────────────────
 
 def do_uninstall(keep_data: bool = False) -> None:
-    """Remove Polaris Agent from the system."""
+    """Remove Rampart Agent from the system."""
     banner_shown = False
 
     # Remove venv
@@ -321,14 +321,14 @@ def do_uninstall(keep_data: bool = False) -> None:
         _info("No PATH entries found (or couldn't clean)")
 
     if not banner_shown:
-        _info("Nothing to uninstall. Polaris Agent is not installed.")
+        _info("Nothing to uninstall. Rampart Agent is not installed.")
         return
 
-    _done_box("Polaris Agent has been uninstalled.")
+    _done_box("Rampart Agent has been uninstalled.")
 
 
 def _remove_path_entries() -> list:
-    """Remove Polaris PATH lines from shell rc files. Returns list of cleaned files."""
+    """Remove Rampart PATH lines from shell rc files. Returns list of cleaned files."""
     cleaned = []
     bin_str = str(BIN_DIR)
     rc_files = [
@@ -347,7 +347,7 @@ def _remove_path_entries() -> list:
             new_lines = []
             skip_next = False
             for line in lines:
-                if "# Polaris Agent PATH" in line:
+                if "# Rampart Agent PATH" in line:
                     skip_next = True
                     continue
                 if skip_next and bin_str in line:
@@ -369,7 +369,7 @@ def _remove_path_entries() -> list:
 # ── Verify ─────────────────────────────────────────────────────────────────
 
 def do_verify() -> bool:
-    """Verify that Polaris Agent is correctly installed."""
+    """Verify that Rampart Agent is correctly installed."""
     _banner("Verify")
     all_ok = True
 
@@ -428,7 +428,7 @@ def do_doctor() -> None:
     _info(f"Platform: {sys.platform} ({platform_release()})")
 
     # Virtual environment
-    _step(f"Polaris home ({HOME})")
+    _step(f"Rampart home ({HOME})")
     if HOME.exists():
         _info(f"Exists, contents: {', '.join(p.name for p in sorted(HOME.iterdir()) if p.is_dir())}")
     else:
@@ -502,9 +502,9 @@ def platform_release() -> str:
 # ── Upgrade ────────────────────────────────────────────────────────────────
 
 def do_upgrade() -> bool:
-    """Upgrade Polaris Agent in-place."""
+    """Upgrade Rampart Agent in-place."""
     _banner("Upgrade")
-    _step("Upgrading Polaris Agent")
+    _step("Upgrading Rampart Agent")
 
     r = _run(f"{_venv_pip()} install --upgrade {PYPI_PACKAGE} -q")
     if r.returncode == 0:
@@ -514,7 +514,7 @@ def do_upgrade() -> bool:
             if line.startswith("Version:"):
                 _ok(f"Upgraded to {line.split(':')[1].strip()}")
                 break
-        _done_box("Polaris Agent is up to date.")
+        _done_box("Rampart Agent is up to date.")
         return True
     else:
         _wrn(f"Upgrade had issues: {r.stderr[:300] if r.stderr else ''}")
@@ -526,7 +526,7 @@ def do_upgrade() -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="✦ Polaris Agent — One-command lifecycle manager",
+        description="✦ Rampart Agent — One-command lifecycle manager",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -544,7 +544,7 @@ Examples:
     # Actions
     parser.add_argument("--no-launch", action="store_true", help="Install only, don't launch CLI")
     parser.add_argument("--upgrade", action="store_true", help="Upgrade to latest version")
-    parser.add_argument("--uninstall", action="store_true", help="Uninstall Polaris Agent")
+    parser.add_argument("--uninstall", action="store_true", help="Uninstall Rampart Agent")
     parser.add_argument("--keep-data", action="store_true", help="Keep config & data during uninstall")
     parser.add_argument("--verify", action="store_true", help="Verify installation integrity")
     parser.add_argument("--doctor", action="store_true", help="Run environment diagnostics")
@@ -570,7 +570,7 @@ Examples:
     # ── Upgrade path ────────────────────────────────────────────────────
     if args.upgrade:
         if not VENV.exists():
-            _err("Polaris Agent is not installed. Run without --upgrade first.")
+            _err("Rampart Agent is not installed. Run without --upgrade first.")
             sys.exit(1)
         do_upgrade()
         # Launch after upgrade
@@ -593,7 +593,7 @@ Examples:
 
     install_deps()
 
-    if not install_polaris(force=args.force):
+    if not install_rampart(force=args.force):
         sys.exit(1)
 
     setup_env()
@@ -605,14 +605,14 @@ Examples:
 
 
 def _launch_cli() -> None:
-    """Launch the Polaris CLI by replacing the current process."""
+    """Launch the Rampart CLI by replacing the current process."""
     _step("Launching...\n")
     python = _venv_python()
-    cli_path = Path(__file__).parent / "cli" / "polaris_cli.py"
+    cli_path = Path(__file__).parent / "cli" / "rampart_cli.py"
     if cli_path.exists():
         os.execve(python, [python, str(cli_path)], os.environ)
     else:
-        os.execve(python, [python, "-m", "cli.polaris_cli"], os.environ)
+        os.execve(python, [python, "-m", "cli.rampart_cli"], os.environ)
 
 
 if __name__ == "__main__":
