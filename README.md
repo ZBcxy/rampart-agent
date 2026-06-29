@@ -2,7 +2,7 @@
 
 [English](#english) | [中文](#中文)
 
-<img src="https://raw.githubusercontent.com/ZBcxy/rampart-agent/main/assets/logo.svg?v=4" alt="Rampart Agent" width="800">
+<img src="https://raw.githubusercontent.com/ZBcxy/rampart-agent/868d1b6/assets/logo.svg" alt="Rampart Agent" width="800">
 
 # ⬡ Rampart Agent
 
